@@ -1,0 +1,24 @@
+﻿using Microsoft.EntityFrameworkCore;
+using RMSPrivateServerAPI.Entities;
+
+namespace RMSPrivateServerAPI.Data;
+
+// Data/ApplicationDbContext.cs
+public class ApplicationDbContext : DbContext
+{
+    public DbSet<Robot> Robots { get; set; }
+    public DbSet<PPMTask> PPMTasks { get; set; }
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
+    {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Robot>().ToTable("Robots");
+        modelBuilder.Entity<PPMTask>().ToTable("PPMTasks");
+    }
+
+    public DbSet<Models.APRStatus> AprStatus { get; set; } = default;
+}

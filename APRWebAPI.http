@@ -1,0 +1,6 @@
+@APRWebAPI_HostAddress = http://localhost:5143
+
+GET {{APRWebAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
