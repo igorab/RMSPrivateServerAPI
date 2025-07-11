@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using RMSPrivateServerAPI.DTOs;
+using RMSPrivateServerAPI.Entities;
+using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Services;
+using System.Collections;
 
 namespace RMSPrivateServerAPI.Controllers;
 
@@ -8,11 +12,26 @@ namespace RMSPrivateServerAPI.Controllers;
 [Route("api/Robot/v1.0/PPM")]
 public class PPMController : ControllerBase
 {
-    private readonly PPMService _ppmService;
-
-    public PPMController(PPMService ppmService)
+    private readonly ILogger<PPMController> _logger;
+    private readonly IPPMRepository _ppmRepository;
+    private readonly IPPMService _ppmService;
+    private readonly IMapper _mapper;
+   
+    public PPMController(ILogger<PPMController> logger, 
+                         IPPMRepository ppmRepository,           
+                         PPMService ppmService,
+                         IMapper mapper)
     {
+        _logger = logger;
+        _ppmRepository = ppmRepository;
         _ppmService = ppmService;
+        _mapper = mapper;
+    }
+
+    [HttpGet]
+    public async Task<IEnumerable<PPMTask>> GetAll([FromRoute] bool returnDeletedRecords = false ) 
+    {
+        return await _ppmRepository.GetAll(returnDeletedRecords);
     }
 
     [HttpGet("List")]

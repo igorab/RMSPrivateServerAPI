@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
+//TODO Для примера - удалить
 namespace RMSPrivateServerAPI.Controllers
 {
     [Route("api/[controller]")]
