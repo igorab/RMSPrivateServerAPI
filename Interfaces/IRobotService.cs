@@ -4,9 +4,9 @@ namespace RMSPrivateServerAPI.Interfaces
 {
     public interface IRobotService
     {
-        Task<Robot> Insert(Robot robot);
-        Task<Robot> Update(Robot robot);
+        Task<RobotInfo> Insert(RobotInfo robot);
+        Task<RobotInfo> Update(RobotInfo robot);
         Task Delete(int id);
-        Task<Robot> Get(int id);
+        Task<RobotInfo> Get(int id);
     }
 }

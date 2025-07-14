@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
+using RMSPrivateServerAPI.Entities;
 
 namespace RMSPrivateServerAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class APRTaskController : ControllerBase
+    public class RobotTaskController : ControllerBase
     {
         private static readonly int[] TaskIds = new[] {0,1,2,3,4,5,6,7,8,9};
         private static readonly int[] TaskValues = new[] { 135, 136, 137, 144, 145, 146, 147, 148, 149, 150};
@@ -13,23 +14,23 @@ namespace RMSPrivateServerAPI.Controllers
             "Free", "Run", "LinearMotion", "Rotate", "Arc", "Adjustment", "Parking", "ExtenionFork", "Furcation", "SyncExit"
         };
 
-        private readonly ILogger<APRTaskController> _logger;
+        private readonly ILogger<RobotTaskController> _logger;
 
-        public APRTaskController(ILogger<APRTaskController> logger)
+        public RobotTaskController(ILogger<RobotTaskController> logger)
         {
             _logger = logger;
         }
 
         [HttpGet(Name = "GetRobotTask")]
-        public IEnumerable<APRTask> Get()
+        public IEnumerable<RobotTask> Get()
         {
-            APRTask[] tasks = Enumerable.Range(0, TaskNames.Length).Select(index => new APRTask
+            RobotTask[] tasks = Enumerable.Range(0, TaskNames.Length).Select(index => new RobotTask
             {
                 TaskId = TaskIds.ElementAt(index),
 
-                TaskValue = TaskValues.ElementAt(index),
+                RobotId = TaskValues.ElementAt(index),
 
-                TaskName = TaskNames.ElementAt(index)
+                Title = TaskNames.ElementAt(index)
 
             }).ToArray();
 
@@ -37,7 +38,7 @@ namespace RMSPrivateServerAPI.Controllers
         }
 
         [HttpPost(Name = "CreateRobotTask")]
-        public ActionResult<APRTask> Post([FromBody] APRTask newTask)
+        public ActionResult<RobotTask> Post([FromBody] RobotTask newTask)
         {
             if (newTask == null)
             {

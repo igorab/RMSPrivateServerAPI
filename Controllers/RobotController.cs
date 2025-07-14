@@ -26,7 +26,7 @@ public class RobotController : ControllerBase
     }
 
     [HttpPost("Add")]
-    public ActionResult AddRobot([FromBody] RobotDto  robotDto)
+    public ActionResult AddRobot([FromBody] RobotInfoDto  robotDto)
     {
         _robotService.AddRobot(robotDto);
 
@@ -34,7 +34,7 @@ public class RobotController : ControllerBase
     }
 
     [HttpPost("Edit")]
-    public ActionResult EditRobot([FromBody] RobotDto robotDto)
+    public ActionResult EditRobot([FromBody] RobotInfoDto robotDto)
     {
         _robotService.EditRobot(robotDto.Id, robotDto);
         return NoContent();

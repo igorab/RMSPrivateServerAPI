@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Data;
-using RMSPrivateServerAPI.Models;
 using RMSPrivateServerAPI.Models.Lib;
 using RMSPrivateServerAPI.Services;
-using System.Net.Http.Headers;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +11,8 @@ string? constr = builder.Configuration.GetConnectionString("DefaultConnection");
 Action<DbContextOptionsBuilder>? optionsAction = (options) => options.UseSqlServer(constr);
 builder.Services.AddDbContext<ApplicationDbContext>(optionsAction);
 RMSData.ConnectionString = constr;
+
+Debug.Assert(RMSData.ConnectionTest());
 
 // Регистрация сервисов
 builder.Services.AddScoped<RobotService>(); 
@@ -40,8 +41,5 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-if (RMSData.Connect())
-    RMSData.LoadAPRStatus();
 
 app.Run();

@@ -1,6 +1,9 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using System;
+using RMSPrivateServerAPI.Entities;
+using System.Diagnostics.Eventing.Reader;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace RMSPrivateServerAPI.Models.Lib
 {
@@ -13,6 +16,22 @@ namespace RMSPrivateServerAPI.Models.Lib
             set { _connectionString = value; }
             get { return _connectionString; }
         } 
+
+        public static bool ConnectionTest()
+        {
+            bool ok = false;
+
+            if (Connect())
+            {
+                if (GetAllPPMTask() != null)
+                {
+                    ok = true;                  
+                }
+            }
+            
+            return ok; 
+        }
+
 
         public static bool Connect()
         {
@@ -34,22 +53,20 @@ namespace RMSPrivateServerAPI.Models.Lib
         }
 
 
-        public static List<APRStatus> LoadAPRStatus()
+        public static List<PPMTask>? GetAllPPMTask()
         {
             try
             {
                 using (var cnn = new SqlConnection(ConnectionString))
                 {
-                    var output = cnn.Query<APRStatus>("select * from APRStatus", new APRStatus());
+                    var output = cnn.Query<PPMTask>("select * from PPMTask", new PPMTask());
                     return output.ToList();
                 }
             }
             catch
             {
-                return new List<APRStatus>();
+                return null;
             }
         }
-
-
     }
 }

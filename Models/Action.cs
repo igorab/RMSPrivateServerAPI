@@ -1,4 +1,6 @@
-﻿namespace RMSPrivateServerAPI.Models
+﻿using RMSPrivateServerAPI.Entities;
+
+namespace RMSPrivateServerAPI.Models
 {
     /// <summary>
     /// Классы для различных типов действий
