@@ -1,11 +1,8 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
-using RMSPrivateServerAPI.Models;
-using RMSPrivateServerAPI.Repositories;
 using RMSPrivateServerAPI.Services;
 
 namespace RMSPrivateServerAPI.Controllers;
@@ -37,13 +34,13 @@ public class RobotController : ControllerBase
     /// </summary>
     /// <param name="returnDeletedRecords">If true, the method will return all the records</param>     
     [HttpGet]
-    public async Task<IEnumerable<Robot>> GetAll([FromRoute] bool returnDeletedRecords = false)
+    public async Task<IEnumerable<RobotInfo>> GetAll([FromRoute] bool returnDeletedRecords = false)
     {
         return await _robotRepository.GetAll(returnDeletedRecords);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Robot>> Get(int id)
+    public async Task<ActionResult<RobotInfo>> Get(int id)
     {
         var robot = await _robotService.Get(id);
         if (robot == null)
