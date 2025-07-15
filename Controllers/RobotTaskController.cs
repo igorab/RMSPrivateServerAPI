@@ -1,58 +1,104 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
+using RMSPrivateServerAPI.Interfaces;
+using System.Threading.Tasks;
 
 namespace RMSPrivateServerAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     public class RobotTaskController : ControllerBase
-    {
-        private static readonly int[] TaskIds = new[] {0,1,2,3,4,5,6,7,8,9};
-        private static readonly int[] TaskValues = new[] { 135, 136, 137, 144, 145, 146, 147, 148, 149, 150};
-        private static readonly string[] TaskNames = new[]
-        {
-            "Free", "Run", "LinearMotion", "Rotate", "Arc", "Adjustment", "Parking", "ExtenionFork", "Furcation", "SyncExit"
-        };
-
+    {       
         private readonly ILogger<RobotTaskController> _logger;
+        private readonly IRobotTaskRepository _robotTaskRepository;
+        private readonly IRobotTaskService _robotTaskService;
+        private readonly IMapper _mapper;
 
-        public RobotTaskController(ILogger<RobotTaskController> logger)
+
+        public RobotTaskController(ILogger<RobotTaskController> logger, 
+                                   IRobotTaskRepository repository, 
+                                   IRobotTaskService service, 
+                                   IMapper mapper)
         {
             _logger = logger;
+            _robotTaskRepository = repository;
+            _robotTaskService = service;
+            _mapper = mapper;
         }
 
-        [HttpGet(Name = "GetRobotTask")]
-        public IEnumerable<RobotTask> Get()
-        {
-            RobotTask[] tasks = Enumerable.Range(0, TaskNames.Length).Select(index => new RobotTask
-            {
-                TaskId = TaskIds.ElementAt(index),
-
-                RobotId = TaskValues.ElementAt(index),
-
-                Title = TaskNames.ElementAt(index)
-
-            }).ToArray();
-
-            return tasks;
+        [HttpGet]
+        public async Task<IEnumerable<RobotTask>> GetAll()
+        {            
+            return await _robotTaskRepository.GetAll();
         }
 
-        [HttpPost(Name = "CreateRobotTask")]
-        public ActionResult<RobotTask> Post([FromBody] RobotTask newTask)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<RobotTask>> Get(int id)
         {
-            if (newTask == null)
+            var robotTask = await _robotTaskService.Get(id);
+            if (robotTask == null)
             {
-                return BadRequest("Task cannot be null.");
+                return NotFound();
+            }
+            return robotTask;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<RobotTask>> Insert([FromBody] RobotTaskDto robotTaskAsDto)
+        {
+            try
+            {
+                if (robotTaskAsDto == null)
+                {
+                    return BadRequest("No Task was provided");
+                }
+
+                var robotTaskToInsert = _mapper.Map<RobotTask>(robotTaskAsDto);
+
+                var insertedRobotTask = await _robotTaskService.Insert(robotTaskToInsert);
+
+                var insertedRobotTaskDto = _mapper.Map<RobotTaskDto>(insertedRobotTask);
+
+                var location = $"https://localhost:5001/RobotTask/{insertedRobotTaskDto.TaskId}";
+
+                return Created(location, insertedRobotTaskDto);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] RobotTask robotTask)
+        {
+            try
+            {
+                await _robotTaskService.Update(robotTask);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);  
             }
 
-            // Here you can add logic to save the new task to a database or in-memory collection
-            // For demonstration, we will just log the task and return it
-
-            _logger.LogInformation("New task created: {@Task}", newTask);
-
-            // Return a 201 Created response with the created task
-            return CreatedAtAction(nameof(Get), new { id = newTask.TaskId }, newTask);
+            return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _robotTaskService.Delete(id);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
+            return NoContent();
+        }
     }
 }

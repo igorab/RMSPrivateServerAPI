@@ -31,7 +31,7 @@ public class PPMController : ControllerBase
     [HttpGet]
     public async Task<IEnumerable<PPMTask>> GetAll([FromRoute] bool returnDeletedRecords = false ) 
     {
-        return await _ppmRepository.GetAll(returnDeletedRecords);
+        return await _ppmRepository.GetAll();
     }
 
     [HttpGet("List")]

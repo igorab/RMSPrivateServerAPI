@@ -1,28 +1,83 @@
-﻿using RMSPrivateServerAPI.Entities;
+﻿using Dapper;
+using RMSPrivateServerAPI.Data;
+using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
 
 namespace RMSPrivateServerAPI.Repositories
 {
     public class RobotTaskRepository : IRobotTaskRepository
     {
-        Task<int> IRobotTaskRepository.DeleteAsync(int id)
+        private readonly DatabaseConnectionFactory _databaseConnectionFactory;
+
+        public RobotTaskRepository(DatabaseConnectionFactory databaseConnectionFactory)
         {
-            throw new NotImplementedException();
+            _databaseConnectionFactory = databaseConnectionFactory;
         }
 
-        Task<RobotTask?> IRobotTaskRepository.Get(int id)
+        public async Task<RobotTask?> Get(int robotTaskId)
         {
-            throw new NotImplementedException();
+            using var db = _databaseConnectionFactory.GetConnection();
+
+            var sql =
+                    $@"SELECT * 
+               FROM  
+                    RobotTask t 
+               WHERE 
+                    t.id = @{nameof(robotTaskId)}";
+                    
+            var param = new { robotTaskId };
+
+            var car = await db.QueryFirstOrDefaultAsync<RobotTask>(sql, param);
+
+            return car;
         }
 
-        Task<IEnumerable<RobotTask>> IRobotTaskRepository.GetAll()
+        public async Task<IEnumerable<RobotTask>> GetAll()
         {
-            throw new NotImplementedException();
+            var builder = new SqlBuilder();
+            var sqlTemplate = builder.AddTemplate(
+                "SELECT * FROM RobotTask " +
+                "/**where**/ ");
+            
+            using var db = _databaseConnectionFactory.GetConnection();
+
+            return await db.QueryAsync<RobotTask>(sqlTemplate.RawSql, sqlTemplate.Parameters);
         }
 
-        Task<int> IRobotTaskRepository.UpsertAsync(RobotTask robot)
+        public async Task<int> UpsertAsync(RobotTask robotTask)
         {
-            throw new NotImplementedException();
+            using var db = _databaseConnectionFactory.GetConnection();
+
+            var sql = @"
+                DECLARE @InsertedRows AS TABLE (Id int);
+
+                MERGE INTO RobotTask AS target
+                USING (SELECT @RobotId AS RobotId, @TaskId AS TaskId, @Title as Ttitle, @Actions as Actions) AS source                 
+                ON target.Id = source.Id
+                WHEN MATCHED THEN 
+                    UPDATE SET                         
+                        RobotId   = source.RobotId,
+                        Title     = source.Title,
+                        Actions   = source.Actions                        
+                WHEN NOT MATCHED THEN
+                    INSERT (RobotId, Title, Actions)
+                    VALUES (source.RobotId, source.Title, source.Actions)                     
+                    OUTPUT inserted.Id INTO @InsertedRows;
+                
+                SELECT Id FROM @InsertedRows;";
+            
+            var newTaskId  = await db.QuerySingleOrDefaultAsync<int>(sql, robotTask);
+
+            return newTaskId == 0 ? robotTask.TaskId : newTaskId ;
+        }
+
+        public async Task<int> DeleteAsync(int robotTaskId)
+        {
+            using var db = _databaseConnectionFactory.GetConnection();
+
+            var query = "DELETE FROM RobotTask WHERE TaskId = @TaskId";
+
+            return await db.ExecuteAsync(query, new { TaskId = robotTaskId });
         }
     }
 }

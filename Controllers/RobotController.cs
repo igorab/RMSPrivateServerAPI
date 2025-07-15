@@ -13,7 +13,7 @@ public class RobotController : ControllerBase
 {
     private readonly ILogger<RobotController> _logger;
     private readonly IRobotRepository _robotRepository;
-    private readonly RobotService _robotService;
+    private readonly IRobotService _robotService;
     private readonly IMapper _mapper;
 
     public RobotController(ILogger<RobotController> logger,
@@ -50,6 +50,62 @@ public class RobotController : ControllerBase
         return robot;
     }
 
+    [HttpPost]
+    public async Task<ActionResult<RobotInfo>> Insert([FromBody] RobotInfoDto robotAsDto)
+    {
+        try
+        {
+            if (robotAsDto == null)
+            {
+                return BadRequest("No Robot was provided");
+            }
+
+            var robotToInsert = _mapper.Map<RobotInfo>(robotAsDto);
+
+            var insertedRobot = await _robotService.Insert(robotToInsert);
+
+            var insertedRobotDto = _mapper.Map<RobotInfoDto>(insertedRobot);
+
+            var location = $"https://localhost:5001/RobotInfo/{insertedRobotDto.Id}"; ;
+
+            return Created(location, insertedRobotDto);
+
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Put([FromBody] RobotInfo robot)
+    {
+        try
+        {
+            await _robotService.Update(robot);
+        }
+        catch (Exception e)
+        {
+            return BadRequest(e);
+        }
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        try
+        {
+            await _robotService.Delete(id);
+        }
+        catch (Exception e)
+        { 
+            return BadRequest(e);
+        }
+
+        return NoContent();
+    }
 
     [HttpGet("List")]
     public ActionResult GetRobots()

@@ -1,4 +1,5 @@
-﻿using RMSPrivateServerAPI.Entities;
+﻿using RMSPrivateServerAPI.DTOs;
+using RMSPrivateServerAPI.Entities;
 
 namespace RMSPrivateServerAPI.Interfaces
 {
@@ -8,5 +9,8 @@ namespace RMSPrivateServerAPI.Interfaces
         Task<RobotInfo> Update(RobotInfo robot);
         Task Delete(int id);
         Task<RobotInfo> Get(int id);
+        IEnumerable<RobotInfoDto> GetAllRobots();
+        void AddRobot(RobotInfoDto robotDto);
+        void EditRobot(int id, RobotInfoDto robotDto);
     }
 }

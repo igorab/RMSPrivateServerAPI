@@ -4,7 +4,7 @@ namespace RMSPrivateServerAPI.Interfaces
 {
     public interface IPPMRepository
     {
-        Task<IEnumerable<PPMTask>> GetAll(bool returnDeletedRecords = false);
+        Task<IEnumerable<PPMTask>> GetAll();
 
         Task<PPMTask?> Get(int id);
         
