@@ -7,16 +7,16 @@ namespace RMSPrivateServerAPI.Repositories
 {
     public class RobotRepository : IRobotRepository
     {
-        readonly DatabaseConnectionFactory databaseConnectionFactory;
+        readonly DatabaseConnectionFactory _databaseConnectionFactory;
 
         public RobotRepository(DatabaseConnectionFactory databaseConnectionFactory)
         {
-            this.databaseConnectionFactory = databaseConnectionFactory;
+            _databaseConnectionFactory = databaseConnectionFactory;
         }
 
         private async Task<T> QueryFirstOrDefaultAsync<T>(string sql, params object[] param )
         {
-            using var db = databaseConnectionFactory.GetConnection();
+            using var db = _databaseConnectionFactory.GetConnection();
 
             return await db.QueryFirstOrDefaultAsync<T>(sql, param);
         }
@@ -24,7 +24,7 @@ namespace RMSPrivateServerAPI.Repositories
 
         public async Task<int> DeleteAsync(int id)
         {
-            using var db = databaseConnectionFactory.GetConnection();
+            using var db = _databaseConnectionFactory.GetConnection();
 
             var query = "Update RobotInfo SET is_deleted = 1 WHERE Id = @Id";
 
@@ -61,14 +61,14 @@ namespace RMSPrivateServerAPI.Repositories
                 builder.Where("is_deleted=0");
             }
 
-            using var db = databaseConnectionFactory.GetConnection();
+            using var db = _databaseConnectionFactory.GetConnection();
 
             return await db.QueryAsync<RobotInfo>(sqlTemplate.RawSql, sqlTemplate.Parameters);
         }
 
         public async Task<int> UpsertAsync(RobotInfo robot)
         {
-            using var db = databaseConnectionFactory.GetConnection();
+            using var db = _databaseConnectionFactory.GetConnection();
 
             var sql = @"
                 DECLARE @InsertedRows AS TABLE (Id int);
