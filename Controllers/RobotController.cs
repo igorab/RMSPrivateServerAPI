@@ -8,7 +8,7 @@ using RMSPrivateServerAPI.Services;
 namespace RMSPrivateServerAPI.Controllers;
 
 [ApiController]
-[Route("api/Robot/v1.0/robot")]
+[Route("api/Robot/v1.0/[controller]")]
 public class RobotController : ControllerBase
 {
     private readonly ILogger<RobotController> _logger;
@@ -35,7 +35,7 @@ public class RobotController : ControllerBase
     /// <param name="returnDeletedRecords">If true, the method will return all the records</param>     
     [HttpGet]
     public async Task<IEnumerable<RobotInfo>> GetAll([FromRoute] bool returnDeletedRecords = false)
-    {
+    {        
         return await _robotRepository.GetAll(returnDeletedRecords);
     }
 

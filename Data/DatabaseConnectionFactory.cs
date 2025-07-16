@@ -6,16 +6,16 @@ namespace RMSPrivateServerAPI.Data;
 
 public class DatabaseConnectionFactory
 {
-    readonly DbSettings dbSettings;
+    readonly DbSettings _dbSettings;
     
     public DatabaseConnectionFactory(IOptions<DbSettings> dbSettings)
     {
-        this.dbSettings = dbSettings.Value;
+        _dbSettings = dbSettings.Value;
     }
     
     public IDbConnection GetConnection()
     {
-        var connection = new SqlConnection(dbSettings.DefaultConnection);
+        var connection = new SqlConnection(_dbSettings.DefaultConnection);
         connection.Open();
         return connection;
     }

@@ -1,30 +1,41 @@
-using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Data;
-using RMSPrivateServerAPI.Models.Lib;
-using RMSPrivateServerAPI.Services;
-using System.Diagnostics;
+using RMSPrivateServerAPI.Interfaces;
+using RMSPrivateServerAPI.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddAutoMapper(typeof(Program));
+
+var configuration = builder.Configuration;
+
+builder.Services.Configure<DbSettings>(configuration.GetSection("ConnectionString"));
+
+builder.Services.AddTransient<DatabaseConnectionFactory>();
+
+builder.Services.AddTransient<PPMRepository>();
+builder.Services.AddTransient<RobotRepository>();
+builder.Services.AddTransient<RobotTaskRepository>();
+
+builder.Services.RegisterDataAccessDependencies();
+
+/*
 //  Добавление контекста базы данных
 string? constr = builder.Configuration.GetConnectionString("DefaultConnection");
 Action<DbContextOptionsBuilder>? optionsAction = (options) => options.UseSqlServer(constr);
 builder.Services.AddDbContext<ApplicationDbContext>(optionsAction);
 RMSData.ConnectionString = constr;
-
 Debug.Assert(RMSData.ConnectionTest());
+*/
 
-// Регистрация сервисов
-builder.Services.AddScoped<RobotService>(); 
-builder.Services.AddScoped<PPMService>(); 
-
-// Add services to the container.
-builder.Services.AddControllers();
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-//builder.Services.AddOpenApi();
+//// Регистрация сервисов
+//builder.Services.AddScoped<RobotService>(); 
+//builder.Services.AddScoped<PPMService>(); 
+//builder.Services.AddScoped<RobotTaskService>();
 
 var app = builder.Build();
 
