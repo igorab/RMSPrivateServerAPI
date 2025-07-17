@@ -14,7 +14,7 @@ public class RobotInfo
     /// <summary>
     /// Аппаратный идентификатор робота
     /// </summary>
-    public int RobotHardwareID { get; set; }
+    public int RobotHardwareId { get; set; }
 
     /// <summary>
     /// "Тип робота (например, APR, AMR и т.д.)"
@@ -46,5 +46,5 @@ public class RobotInfo
     /// </summary>
     public string HwVersion { get; set; }
 
-    public string? is_deleted { get; set; }    
+    public bool? is_deleted { get; set; }    
 }

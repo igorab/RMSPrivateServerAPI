@@ -15,7 +15,7 @@ public class RobotInfoDto
     /// <summary>
     /// Аппаратный идентификатор робота
     /// </summary>
-    public int RobotHardwareID { get; set; }
+    public int RobotHardwareId { get; set; }
 
     /// <summary>
     /// "Тип робота (например, APR, AMR и т.д.)"
