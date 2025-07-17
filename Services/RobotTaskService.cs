@@ -4,7 +4,14 @@ using RMSPrivateServerAPI.Interfaces;
 namespace RMSPrivateServerAPI.Services
 {
     public class RobotTaskService : IRobotTaskService
-    {        
+    {
+        private readonly IRobotTaskRepository _robotTaskRepository;
+
+        public RobotTaskService(IRobotTaskRepository robotTaskRepository)
+        {
+            _robotTaskRepository = robotTaskRepository;
+        }
+
         Task<RobotTask> IRobotTaskService.Get(int id)
         {
             throw new NotImplementedException();

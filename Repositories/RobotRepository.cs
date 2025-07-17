@@ -7,7 +7,7 @@ namespace RMSPrivateServerAPI.Repositories
 {
     public class RobotRepository : IRobotRepository
     {
-        readonly DatabaseConnectionFactory _databaseConnectionFactory;
+        private readonly DatabaseConnectionFactory _databaseConnectionFactory;
 
         public RobotRepository(DatabaseConnectionFactory databaseConnectionFactory)
         {
@@ -98,7 +98,7 @@ namespace RMSPrivateServerAPI.Repositories
             ";
 
             var newId = await db.QuerySingleOrDefaultAsync<int>(sql, robot);
-            return newId == 0 ? robot.Id : newId;
+            return newId == 0 ? robot.RobotId : newId;
         }
     }
 }

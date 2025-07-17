@@ -8,7 +8,7 @@ using RMSPrivateServerAPI.Services;
 namespace RMSPrivateServerAPI.Controllers;
 
 [ApiController]
-[Route("api/Robot/v1.0/[controller]")]
+[Route("[controller]")]
 public class RobotController : ControllerBase
 {
     private readonly ILogger<RobotController> _logger;
@@ -66,7 +66,7 @@ public class RobotController : ControllerBase
 
             var insertedRobotDto = _mapper.Map<RobotInfoDto>(insertedRobot);
 
-            var location = $"https://localhost:5001/RobotInfo/{insertedRobotDto.Id}"; ;
+            var location = $"https://localhost:5001/RobotInfo/{insertedRobotDto.RobotId}"; ;
 
             return Created(location, insertedRobotDto);
 
@@ -107,26 +107,26 @@ public class RobotController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("List")]
-    public ActionResult GetRobots()
-    {
-        var robots = _robotService.GetAllRobots();
+    //[HttpGet("List")]
+    //public ActionResult GetRobots()
+    //{
+    //    var robots = _robotService.GetAllRobots();
 
-        return Ok(robots);
-    }
+    //    return Ok(robots);
+    //}
 
-    [HttpPost("Add")]
-    public ActionResult AddRobot([FromBody] RobotInfoDto  robotDto)
-    {
-        _robotService.AddRobot(robotDto);
+    //[HttpPost("Add")]
+    //public ActionResult AddRobot([FromBody] RobotInfoDto  robotDto)
+    //{
+    //    _robotService.AddRobot(robotDto);
 
-        return CreatedAtAction(nameof(GetRobots), new {id = robotDto.Id }, robotDto); 
-    }
+    //    return CreatedAtAction(nameof(GetRobots), new {id = robotDto.Id }, robotDto); 
+    //}
 
-    [HttpPost("Edit")]
-    public ActionResult EditRobot([FromBody] RobotInfoDto robotDto)
-    {
-        _robotService.EditRobot(robotDto.Id, robotDto);
-        return NoContent();
-    }
+    //[HttpPost("Edit")]
+    //public ActionResult EditRobot([FromBody] RobotInfoDto robotDto)
+    //{
+    //    _robotService.EditRobot(robotDto.Id, robotDto);
+    //    return NoContent();
+    //}
 }

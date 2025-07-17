@@ -1,28 +1,35 @@
-﻿using RMSPrivateServerAPI.Entities;
+﻿using RMSPrivateServerAPI.Data;
+using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
 
-namespace RMSPrivateServerAPI.Repositories
+namespace RMSPrivateServerAPI.Repositories;
+
+public class PPMRepository : IPPMRepository
 {
-    public class PPMRepository : IPPMRepository
-    {        
-        Task<PPMTask?> IPPMRepository.Get(int id)
-        {
-            throw new NotImplementedException();
-        }
+    private readonly DatabaseConnectionFactory _databaseConnectionFactory;
 
-        Task<IEnumerable<PPMTask>> IPPMRepository.GetAll()
-        {
-            throw new NotImplementedException();
-        }
+    public PPMRepository(DatabaseConnectionFactory databaseConnectionFactory)
+    {
+        _databaseConnectionFactory = databaseConnectionFactory;
+    }
 
-        Task<int> IPPMRepository.UpsertAsync(PPMTask ppmTask)
-        {
-            throw new NotImplementedException();
-        }
+    Task<PPMTask?> IPPMRepository.Get(int id)
+    {
+        throw new NotImplementedException();
+    }
 
-        Task<int> IPPMRepository.DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+    Task<IEnumerable<PPMTask>> IPPMRepository.GetAll()
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<int> IPPMRepository.UpsertAsync(PPMTask ppmTask)
+    {
+        throw new NotImplementedException();
+    }
+
+    Task<int> IPPMRepository.DeleteAsync(int id)
+    {
+        throw new NotImplementedException();
     }
 }

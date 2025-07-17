@@ -16,8 +16,9 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<RobotInfo>().ToTable("Robots");
-        modelBuilder.Entity<PPMTask>().ToTable("PPMTasks");
+        modelBuilder.Entity<RobotInfo>().ToTable("RobotInfo");
+        modelBuilder.Entity<PPMTask>().ToTable("PPMTask");
+        modelBuilder.Entity<RobotTask>().ToTable("RobotTask");
     }
     
 }

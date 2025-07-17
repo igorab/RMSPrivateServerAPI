@@ -1,17 +1,21 @@
 ﻿using RMSPrivateServerAPI.Repositories;
 using RMSPrivateServerAPI.Services;
 
-namespace RMSPrivateServerAPI.Interfaces
+namespace RMSPrivateServerAPI.Interfaces;
+
+public static class Extensions
 {
-    public static class Extensions
+    public static IServiceCollection RegisterDataAccessDependencies(this IServiceCollection services)
     {
-        public static IServiceCollection RegisterDataAccessDependencies(this IServiceCollection services)
-        {
-            services.AddTransient<IRobotRepository, RobotRepository>();
+        services.AddTransient<IRobotRepository, RobotRepository>();
+        services.AddTransient<IRobotService, RobotService>();
 
-            services.AddTransient<IRobotService, RobotService>();
+        //services.AddTransient<IRobotTaskRepository, RobotTaskRepository>();
+        //services.AddTransient<IRobotTaskService, RobotTaskService>();
 
-            return services;
-        }
+        //services.AddTransient<IPPMRepository, PPMRepository>();
+        //services.AddTransient<IPPMService, PPMService>();
+
+        return services;
     }
 }
