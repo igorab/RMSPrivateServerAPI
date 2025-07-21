@@ -4,7 +4,6 @@ using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Services;
-using System.Collections;
 
 namespace RMSPrivateServerAPI.Controllers;
 
@@ -19,7 +18,7 @@ public class PPMController : ControllerBase
    
     public PPMController(ILogger<PPMController> logger, 
                          IPPMRepository ppmRepository,           
-                         PPMService ppmService,
+                         IPPMService ppmService,
                          IMapper mapper)
     {
         _logger = logger;

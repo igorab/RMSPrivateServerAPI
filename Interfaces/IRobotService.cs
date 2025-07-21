@@ -1,7 +1,5 @@
-﻿using RMSPrivateServerAPI.DTOs;
-using RMSPrivateServerAPI.Entities;
+﻿using RMSPrivateServerAPI.Entities;
 namespace RMSPrivateServerAPI.Interfaces;
-
 
 public interface IRobotService
 {

@@ -1,9 +1,7 @@
 ﻿using Dapper;
 using System.Data.SqlClient;
-using System;
 using RMSPrivateServerAPI.Entities;
-using System.Diagnostics.Eventing.Reader;
-using Microsoft.AspNetCore.Components.Web;
+
 
 namespace RMSPrivateServerAPI.Models.Lib
 {

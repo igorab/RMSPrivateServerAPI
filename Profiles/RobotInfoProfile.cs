@@ -4,9 +4,9 @@ using RMSPrivateServerAPI.Entities;
 
 namespace RMSPrivateServerAPI.Profiles;
 
-public class RobotProfile : Profile
+public class RobotInfoProfile : Profile
 {
-    public RobotProfile() 
+    public RobotInfoProfile() 
     {
         CreateMap<RobotInfoDto, RobotInfo>()
             .ForMember(robot => robot.RobotId, robot => robot.MapFrom(robotDto => robotDto.RobotId))

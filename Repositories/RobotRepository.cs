@@ -3,74 +3,64 @@ using RMSPrivateServerAPI.Interfaces;
 using Dapper;
 using RMSPrivateServerAPI.Data;
 
-namespace RMSPrivateServerAPI.Repositories
+namespace RMSPrivateServerAPI.Repositories;
+
+public class RobotRepository : IRobotRepository
 {
-    public class RobotRepository : IRobotRepository
+    private readonly DatabaseConnectionFactory _databaseConnectionFactory;
+
+    public RobotRepository(DatabaseConnectionFactory databaseConnectionFactory)
     {
-        private readonly DatabaseConnectionFactory _databaseConnectionFactory;
+        _databaseConnectionFactory = databaseConnectionFactory;
+    }
 
-        public RobotRepository(DatabaseConnectionFactory databaseConnectionFactory)
+    private async Task<T> QueryFirstOrDefaultAsync<T>(string sql, params object[] param )
+    {
+        using var db = _databaseConnectionFactory.GetConnection();
+
+        return await db.QueryFirstOrDefaultAsync<T>(sql, param);
+    }
+
+    public async Task<IEnumerable<RobotInfo>> GetAll(bool returnDeletedRecords)
+    {
+        var builder = new SqlBuilder();
+
+        var sqlTemplate = builder.AddTemplate(
+            "SELECT * FROM RobotInfo " +
+            "/**where**/ ");
+
+        if (!returnDeletedRecords)
         {
-            _databaseConnectionFactory = databaseConnectionFactory;
+            builder.Where("is_deleted=0");
         }
 
-        private async Task<T> QueryFirstOrDefaultAsync<T>(string sql, params object[] param )
-        {
-            using var db = _databaseConnectionFactory.GetConnection();
+        using var db = _databaseConnectionFactory.GetConnection();
 
-            return await db.QueryFirstOrDefaultAsync<T>(sql, param);
-        }
+        return await db.QueryAsync<RobotInfo>(sqlTemplate.RawSql, sqlTemplate.Parameters);
+    }
 
-
-        public async Task<int> DeleteAsync(int id)
-        {
-            using var db = _databaseConnectionFactory.GetConnection();
-
-            var query = "Update RobotInfo SET is_deleted = 1 WHERE Id = @Id";
-
-            return await db.ExecuteAsync(query,  new { Id = id });
-        }
-
-        public async Task<RobotInfo?> Get(int robotId)
-        {
-            var sql =
-                $@"SELECT * 
+    public async Task<RobotInfo?> Get(int robotId)
+    {
+        var sql =
+            $@"SELECT * 
                     FROM  
                 RobotInfo RI 
                     WHERE 
                 RI.Id = @{nameof(robotId)}
                 AND RI.is_deleted = 0";
 
-            var param = new {robotId};
+        var param = new {robotId};
 
-            var robot = await QueryFirstOrDefaultAsync<RobotInfo>(sql, param);
+        var robot = await QueryFirstOrDefaultAsync<RobotInfo>(sql, param);
 
-            return robot;
-        }
+        return robot;
+    }
+    
+    public async Task<int> UpsertAsync(RobotInfo robot)
+    {
+        using var db = _databaseConnectionFactory.GetConnection();
 
-        public async Task<IEnumerable<RobotInfo>> GetAll(bool returnDeletedRecords)
-        {
-            var builder = new SqlBuilder();
-
-            var sqlTemplate = builder.AddTemplate(
-                "SELECT * FROM RobotInfo " +
-                "/**where**/ ");
-
-            if (!returnDeletedRecords)
-            {
-                builder.Where("is_deleted=0");
-            }
-
-            using var db = _databaseConnectionFactory.GetConnection();
-
-            return await db.QueryAsync<RobotInfo>(sqlTemplate.RawSql, sqlTemplate.Parameters);
-        }
-
-        public async Task<int> UpsertAsync(RobotInfo robot)
-        {
-            using var db = _databaseConnectionFactory.GetConnection();
-
-            var sql = @"
+        var sql = @"
                 DECLARE @InsertedRows AS TABLE (Id int);
 
                 MERGE INTO RobotInfo AS target
@@ -97,8 +87,16 @@ namespace RMSPrivateServerAPI.Repositories
                 SELECT Id FROM @InsertedRows;
             ";
 
-            var newId = await db.QuerySingleOrDefaultAsync<int>(sql, robot);
-            return newId == 0 ? robot.RobotId : newId;
-        }
+        var newId = await db.QuerySingleOrDefaultAsync<int>(sql, robot);
+        return newId == 0 ? robot.RobotId : newId;
+    }
+
+    public async Task<int> DeleteAsync(int id)
+    {
+        using var db = _databaseConnectionFactory.GetConnection();
+
+        var query = "Update RobotInfo SET is_deleted = 1 WHERE Id = @Id";
+
+        return await db.ExecuteAsync(query, new { Id = id });
     }
 }

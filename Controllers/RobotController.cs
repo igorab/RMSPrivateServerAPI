@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RMSPrivateServerAPI.Controllers;
 
@@ -18,7 +18,7 @@ public class RobotController : ControllerBase
 
     public RobotController(ILogger<RobotController> logger,
                            IRobotRepository robotRepository,
-                           RobotService robotService,
+                           IRobotService robotService,
                            IMapper  mapper)
                             
     {

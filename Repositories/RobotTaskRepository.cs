@@ -3,52 +3,52 @@ using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
 
-namespace RMSPrivateServerAPI.Repositories
+namespace RMSPrivateServerAPI.Repositories;
+
+public class RobotTaskRepository : IRobotTaskRepository
 {
-    public class RobotTaskRepository : IRobotTaskRepository
+    private readonly DatabaseConnectionFactory _databaseConnectionFactory;
+
+    public RobotTaskRepository(DatabaseConnectionFactory databaseConnectionFactory)
     {
-        private readonly DatabaseConnectionFactory _databaseConnectionFactory;
+        _databaseConnectionFactory = databaseConnectionFactory;
+    }
 
-        public RobotTaskRepository(DatabaseConnectionFactory databaseConnectionFactory)
-        {
-            _databaseConnectionFactory = databaseConnectionFactory;
-        }
+    public async Task<RobotTask?> Get(int robotTaskId)
+    {
+        using var db = _databaseConnectionFactory.GetConnection();
 
-        public async Task<RobotTask?> Get(int robotTaskId)
-        {
-            using var db = _databaseConnectionFactory.GetConnection();
-
-            var sql =
-                    $@"SELECT * 
+        var sql =
+                $@"SELECT * 
                FROM  
                     RobotTask t 
                WHERE 
                     t.id = @{nameof(robotTaskId)}";
-                    
-            var param = new { robotTaskId };
+                
+        var param = new { robotTaskId };
 
-            var car = await db.QueryFirstOrDefaultAsync<RobotTask>(sql, param);
+        var car = await db.QueryFirstOrDefaultAsync<RobotTask>(sql, param);
 
-            return car;
-        }
+        return car;
+    }
 
-        public async Task<IEnumerable<RobotTask>> GetAll()
-        {
-            var builder = new SqlBuilder();
-            var sqlTemplate = builder.AddTemplate(
-                "SELECT * FROM RobotTask " +
-                "/**where**/ ");
-            
-            using var db = _databaseConnectionFactory.GetConnection();
+    public async Task<IEnumerable<RobotTask>> GetAll()
+    {
+        var builder = new SqlBuilder();
+        var sqlTemplate = builder.AddTemplate(
+            "SELECT * FROM RobotTask " +
+            "/**where**/ ");
+        
+        using var db = _databaseConnectionFactory.GetConnection();
 
-            return await db.QueryAsync<RobotTask>(sqlTemplate.RawSql, sqlTemplate.Parameters);
-        }
+        return await db.QueryAsync<RobotTask>(sqlTemplate.RawSql, sqlTemplate.Parameters);
+    }
 
-        public async Task<int> UpsertAsync(RobotTask robotTask)
-        {
-            using var db = _databaseConnectionFactory.GetConnection();
+    public async Task<int> UpsertAsync(RobotTask robotTask)
+    {
+        using var db = _databaseConnectionFactory.GetConnection();
 
-            var sql = @"
+        var sql = @"
                 DECLARE @InsertedRows AS TABLE (Id int);
 
                 MERGE INTO RobotTask AS target
@@ -65,19 +65,18 @@ namespace RMSPrivateServerAPI.Repositories
                     OUTPUT inserted.Id INTO @InsertedRows;
                 
                 SELECT Id FROM @InsertedRows;";
-            
-            var newTaskId  = await db.QuerySingleOrDefaultAsync<int>(sql, robotTask);
+        
+        var newTaskId  = await db.QuerySingleOrDefaultAsync<int>(sql, robotTask);
 
-            return newTaskId == 0 ? robotTask.TaskId : newTaskId ;
-        }
+        return newTaskId == 0 ? robotTask.TaskId : newTaskId ;
+    }
 
-        public async Task<int> DeleteAsync(int robotTaskId)
-        {
-            using var db = _databaseConnectionFactory.GetConnection();
+    public async Task<int> DeleteAsync(int robotTaskId)
+    {
+        using var db = _databaseConnectionFactory.GetConnection();
 
-            var query = "DELETE FROM RobotTask WHERE TaskId = @TaskId";
+        var query = "DELETE FROM RobotTask WHERE TaskId = @TaskId";
 
-            return await db.ExecuteAsync(query, new { TaskId = robotTaskId });
-        }
+        return await db.ExecuteAsync(query, new { TaskId = robotTaskId });
     }
 }
