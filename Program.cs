@@ -33,8 +33,8 @@ public partial class Program
         builder.Services.AddTransient<DatabaseConnectionFactory>();
 
         builder.Services.AddTransient<RobotRepository>();
-        //builder.Services.AddTransient<PPMRepository>();
-        //builder.Services.AddTransient<RobotTaskRepository>();
+        builder.Services.AddTransient<PPMRepository>();
+        builder.Services.AddTransient<RobotTaskRepository>();
 
         builder.Services.RegisterDataAccessDependencies();
        

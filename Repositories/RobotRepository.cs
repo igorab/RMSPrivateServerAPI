@@ -41,17 +41,19 @@ public class RobotRepository : IRobotRepository
 
     public async Task<RobotInfo?> Get(int robotId)
     {
+        using var db = _databaseConnectionFactory.GetConnection();
+
         var sql =
             $@"SELECT * 
                     FROM  
                 RobotInfo RI 
                     WHERE 
-                RI.Id = @{nameof(robotId)}
+                RI.RobotId = @{nameof(robotId)}
                 AND RI.is_deleted = 0";
 
         var param = new {robotId};
 
-        var robot = await QueryFirstOrDefaultAsync<RobotInfo>(sql, param);
+        var robot = await db.QueryFirstOrDefaultAsync<RobotInfo>(sql, param);
 
         return robot;
     }
@@ -61,30 +63,29 @@ public class RobotRepository : IRobotRepository
         using var db = _databaseConnectionFactory.GetConnection();
 
         var sql = @"
-                DECLARE @InsertedRows AS TABLE (Id int);
-
+                DECLARE @InsertedRows AS TABLE (RobotId int);
                 MERGE INTO RobotInfo AS target
-                USING (SELECT @Id AS Id, @HardwareID AS HardwareID, @Type as Type, @Model as Model, @Name as Name, @IP as IP,
-                @swVersion as swVersion, @hwVersion as hwVersion, @is_deleted AS is_deleted ) AS source 
-                ON target.Id = source.Id
+                USING (SELECT @RobotId AS RobotId, @RobotHardwareID AS RobotHardwareID, @RobotType as RobotType, 
+                @RobotModel as RobotModel, @RobotName as RobotName, @IP as IP,
+                @SwVersion as swVersion, @HwVersion as hwVersion, @is_deleted AS is_deleted ) AS source 
+                ON target.RobotId = source.RobotId
                 WHEN MATCHED THEN 
                     UPDATE SET                         
-                        HardwareID = source.HardwareID,
-                        Type       = source.Type,
-                        Model      = source.Model,
-                        Name       = source.Name,
-                        IP         = source.IP,
-                        swVersion  = source.swVersion,
-                        hwVersion  = source.hwVersion,
-                        Is_Deleted = source.Is_Deleted
+                        RobotHardwareID = source.RobotHardwareID,
+                        RobotType       = source.RobotType,
+                        RobotModel      = source.RobotModel,
+                        RobotName       = source.RobotName,
+                        IP              = source.IP,
+                        SwVersion       = source.swVersion,
+                        HwVersion       = source.hwVersion,
+                        is_deleted      = source.is_deleted
                 WHEN NOT MATCHED THEN
-                    INSERT (HardwareID, Type, Model, Name, IP, swVersion, hwVersion, is_deleted)
-                    VALUES (source.HardwareID, source.Type, source.Model, source.Name, source.IP, source.swVersion, source.hwVersion, 
+                    INSERT (RobotId, RobotHardwareID, RobotType, RobotModel, RobotName, IP, SwVersion, HwVersion, is_deleted)
+                    VALUES (source.RobotId, source.RobotHardwareID, source.RobotType, source.RobotModel, source.RobotName, source.IP, source.swVersion, source.hwVersion, 
                     source.is_deleted)
-                    OUTPUT inserted.Id INTO @InsertedRows
+                    OUTPUT inserted.RobotId INTO @InsertedRows
                 ;
-
-                SELECT Id FROM @InsertedRows;
+                SELECT RobotId FROM @InsertedRows;
             ";
 
         var newId = await db.QuerySingleOrDefaultAsync<int>(sql, robot);

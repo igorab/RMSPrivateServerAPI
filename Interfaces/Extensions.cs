@@ -10,11 +10,11 @@ public static class Extensions
         services.AddTransient<IRobotRepository, RobotRepository>();
         services.AddTransient<IRobotService, RobotService>();
 
-        //services.AddTransient<IRobotTaskRepository, RobotTaskRepository>();
-        //services.AddTransient<IRobotTaskService, RobotTaskService>();
+        services.AddTransient<IRobotTaskRepository, RobotTaskRepository>();
+        services.AddTransient<IRobotTaskService, RobotTaskService>();
 
-        //services.AddTransient<IPPMRepository, PPMRepository>();
-        //services.AddTransient<IPPMService, PPMService>();
+        services.AddTransient<IPPMRepository, PPMRepository>();
+        services.AddTransient<IPPMService, PPMService>();
 
         return services;
     }

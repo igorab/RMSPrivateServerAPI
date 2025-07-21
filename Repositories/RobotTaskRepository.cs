@@ -36,9 +36,8 @@ public class RobotTaskRepository : IRobotTaskRepository
     {
         var builder = new SqlBuilder();
         var sqlTemplate = builder.AddTemplate(
-            "SELECT * FROM RobotTask " +
-            "/**where**/ ");
-        
+            $@"SELECT * FROM RobotTask ");
+             
         using var db = _databaseConnectionFactory.GetConnection();
 
         return await db.QueryAsync<RobotTask>(sqlTemplate.RawSql, sqlTemplate.Parameters);
