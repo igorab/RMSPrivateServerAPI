@@ -47,4 +47,9 @@ public class RobotInfoDto
     /// </summary>
     public string HwVersion { get; set; }
 
+    /// <summary>
+    /// признак - удален
+    /// </summary>
+    public bool? is_deleted { get; set; }
+
 }

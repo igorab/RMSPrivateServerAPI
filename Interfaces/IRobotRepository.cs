@@ -3,11 +3,11 @@ namespace RMSPrivateServerAPI.Interfaces;
 
 public interface IRobotRepository
 {
-    Task<IEnumerable<RobotInfo>> GetAll(bool returnDeletedRecords = false);
+    Task<IEnumerable<robotinfo>> GetAll(bool returnDeletedRecords = false);
 
-    Task<RobotInfo?> Get(int id);
+    Task<robotinfo?> Get(int id);
     
-    Task<int> UpsertAsync(RobotInfo robot);
+    Task<int> UpsertAsync(robotinfo robot);
     
     Task<int> DeleteAsync(int id);
 }

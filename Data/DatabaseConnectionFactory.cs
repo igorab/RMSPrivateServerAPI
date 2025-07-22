@@ -1,6 +1,6 @@
 using System.Data;
-using System.Data.SqlClient;
 using Microsoft.Extensions.Options;
+using Npgsql;
 
 namespace RMSPrivateServerAPI.Data;
 
@@ -15,7 +15,7 @@ public class DatabaseConnectionFactory
     
     public IDbConnection GetConnection()
     {
-        var connection = new SqlConnection(_dbSettings.DefaultConnection);
+        var connection = new NpgsqlConnection(_dbSettings.DefaultConnection);
         connection.Open();
         return connection;
     }

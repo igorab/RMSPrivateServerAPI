@@ -6,7 +6,7 @@ namespace RMSPrivateServerAPI.Data;
 // Data/ApplicationDbContext.cs
 public class ApplicationDbContext : DbContext
 {
-    public DbSet<RobotInfo> Robots { get; set; }
+    public DbSet<robotinfo> Robots { get; set; }
     public DbSet<PPMTask> PPMTasks { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -16,7 +16,7 @@ public class ApplicationDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<RobotInfo>().ToTable("RobotInfo");
+        modelBuilder.Entity<robotinfo>().ToTable("RobotInfo");
         modelBuilder.Entity<PPMTask>().ToTable("PPMTask");
         modelBuilder.Entity<RobotTask>().ToTable("RobotTask");
     }

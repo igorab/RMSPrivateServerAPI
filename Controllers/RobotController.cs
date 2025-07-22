@@ -34,13 +34,13 @@ public class RobotController : ControllerBase
     /// </summary>
     /// <param name="returnDeletedRecords">If true, the method will return all the records</param>     
     [HttpGet]
-    public async Task<IEnumerable<RobotInfo>> GetAll([FromRoute] bool returnDeletedRecords = false)
+    public async Task<IEnumerable<robotinfo>> GetAll([FromRoute] bool returnDeletedRecords = false)
     {        
         return await _robotRepository.GetAll(returnDeletedRecords);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<RobotInfo>> Get(int id)
+    public async Task<ActionResult<robotinfo>> Get(int id)
     {
         var robot = await _robotService.Get(id);
         if (robot == null)
@@ -51,7 +51,7 @@ public class RobotController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<RobotInfo>> Insert([FromBody] RobotInfoDto robotAsDto)
+    public async Task<ActionResult<robotinfo>> Insert([FromBody] RobotInfoDto robotAsDto)
     {
         try
         {
@@ -60,7 +60,7 @@ public class RobotController : ControllerBase
                 return BadRequest("No Robot was provided");
             }
 
-            var robotToInsert = _mapper.Map<RobotInfo>(robotAsDto);
+            var robotToInsert = _mapper.Map<robotinfo>(robotAsDto);
 
             var insertedRobot = await _robotService.Insert(robotToInsert);
 
@@ -78,7 +78,7 @@ public class RobotController : ControllerBase
     }
 
     [HttpPut]
-    public async Task<IActionResult> Put([FromBody] RobotInfo robot)
+    public async Task<IActionResult> Put([FromBody] robotinfo robot)
     {
         try
         {

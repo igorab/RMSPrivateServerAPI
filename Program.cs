@@ -24,25 +24,21 @@ public partial class Program
         builder.Services.Configure<DbSettings>( configConStr);
 
         ////  Добавление контекста базы данных
-        //string? constr =  configuration.GetConnectionString("DefaultConnection");
-        //Action<DbContextOptionsBuilder>? optionsAction = (options) => options.UseSqlServer(constr);
+        //string? constr_postgres =  configuration.GetConnectionString("DefaultConnection");
+        //Action<DbContextOptionsBuilder>? optionsAction = (options) => options.UseNpgsql(constr_postgres);
         //builder.Services.AddDbContext<ApplicationDbContext>(optionsAction);
-        //RMSData.ConnectionString = constr;
+        //RMSData.ConnectionString = constr_postgres;
         //Debug.Assert(RMSData.ConnectionTest());
         
         builder.Services.AddTransient<DatabaseConnectionFactory>();
-
+        
+        // Регистрация сервисов
         builder.Services.AddTransient<RobotRepository>();
         builder.Services.AddTransient<PPMRepository>();
         builder.Services.AddTransient<RobotTaskRepository>();
 
         builder.Services.RegisterDataAccessDependencies();
-       
-        //// Регистрация сервисов
-        //builder.Services.AddScoped<RobotService>(); 
-        //builder.Services.AddScoped<PPMService>(); 
-        //builder.Services.AddScoped<RobotTaskService>();
-
+               
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
