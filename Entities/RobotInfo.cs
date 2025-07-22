@@ -13,12 +13,12 @@ public class robotinfo
     /// <summary>
     /// "Уникальный идентификатор робота (PRIMARY KEY)"
     /// </summary>
-    public int robotid { get; set; }
+    public string robotid { get; set; }
 
     /// <summary>
     /// Аппаратный идентификатор робота
     /// </summary>
-    public int robothardwareId { get; set; }
+    public int robothardwareid { get; set; }
 
     /// <summary>
     /// "Тип робота (например, APR, AMR и т.д.)"

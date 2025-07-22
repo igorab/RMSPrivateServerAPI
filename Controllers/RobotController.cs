@@ -40,7 +40,7 @@ public class RobotController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<robotinfo>> Get(int id)
+    public async Task<ActionResult<robotinfo>> Get(string id)
     {
         var robot = await _robotService.Get(id);
         if (robot == null)
@@ -93,7 +93,7 @@ public class RobotController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> Delete(string id)
     {
         try
         {

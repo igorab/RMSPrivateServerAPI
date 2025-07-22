@@ -10,7 +10,7 @@ public class RobotInfoProfile : Profile
     {
         CreateMap<RobotInfoDto, robotinfo>()
             .ForMember(robot => robot.robotid, robot => robot.MapFrom(robotDto => robotDto.RobotId))
-            .ForMember(robot => robot.robothardwareId, robot => robot.MapFrom(robotDto => robotDto.RobotHardwareId))                                       
+            .ForMember(robot => robot.robothardwareid, robot => robot.MapFrom(robotDto => robotDto.RobotHardwareId))                                       
             .ForMember(robot => robot.robottype, robot => robot.MapFrom(robotDto => robotDto.RobotType))
             .ForMember(robot => robot.robotmodel, robot => robot.MapFrom(robotDto => robotDto.RobotModel))
             .ForMember(robot => robot.robotname, robot => robot.MapFrom(robotDto => robotDto.RobotName))

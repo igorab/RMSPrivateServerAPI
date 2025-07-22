@@ -39,7 +39,7 @@ public class RobotRepository : IRobotRepository
         return await db.QueryAsync<robotinfo>(sqlTemplate.RawSql, sqlTemplate.Parameters);
     }
 
-    public async Task<robotinfo?> Get(int robotId)
+    public async Task<robotinfo?> Get(string robotId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -58,46 +58,36 @@ public class RobotRepository : IRobotRepository
         return robot;
     }
     
-    public async Task<int> UpsertAsync(robotinfo robot)
+    public async Task<string> UpsertAsync(robotinfo robot)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
         var sql = @"
-                DECLARE @InsertedRows AS TABLE (RobotId int);
-                MERGE INTO RobotInfo AS target
-                USING (SELECT @RobotId AS RobotId, @RobotHardwareID AS RobotHardwareID, @RobotType as RobotType, 
-                @RobotModel as RobotModel, @RobotName as RobotName, @IP as IP,
-                @SwVersion as swVersion, @HwVersion as hwVersion, @is_deleted AS is_deleted ) AS source 
-                ON target.RobotId = source.RobotId
-                WHEN MATCHED THEN 
-                    UPDATE SET                         
-                        RobotHardwareID = source.RobotHardwareID,
-                        RobotType       = source.RobotType,
-                        RobotModel      = source.RobotModel,
-                        RobotName       = source.RobotName,
-                        IP              = source.IP,
-                        SwVersion       = source.swVersion,
-                        HwVersion       = source.hwVersion,
-                        is_deleted      = source.is_deleted
-                WHEN NOT MATCHED THEN
-                    INSERT (RobotId, RobotHardwareID, RobotType, RobotModel, RobotName, IP, SwVersion, HwVersion, is_deleted)
-                    VALUES (source.RobotId, source.RobotHardwareID, source.RobotType, source.RobotModel, source.RobotName, source.IP, source.swVersion, source.hwVersion, 
-                    source.is_deleted)
-                    OUTPUT inserted.RobotId INTO @InsertedRows
-                ;
-                SELECT RobotId FROM @InsertedRows;
+                NSERT INTO robotinfo (robotid, robothardwareid, robottype, robotmodel, robotname, ip, swversion, hwversion, is_deleted)
+                    VALUES (@robotid, @robothardwareid, @robottype, @robotmodel, @robotname, @ip, @swversion, @hwversion, @is_deleted)
+                    ON CONFLICT (robotid) DO UPDATE
+                    SET                         
+                        robothardwareid = EXCLUDED.robothardwareid,
+                        robottype       = EXCLUDED.robottype,
+                        robotmodel      = EXCLUDED.robotmodel,
+                        robotname       = EXCLUDED.robotname,
+                        ip              = EXCLUDED.ip,
+                        swversion       = EXCLUDED.swversion,
+                        hwversion       = EXCLUDED.hwversion,
+                        is_deleted      = EXCLUDED.is_deleted
+                    RETURNING robotid;
             ";
 
-        var newId = await db.QuerySingleOrDefaultAsync<int>(sql, robot);
-        return newId == 0 ? robot.robotid : newId;
+        var newId = await db.QuerySingleOrDefaultAsync<string>(sql, robot);
+        return newId == String.Empty ? robot.robotid : newId;
     }
 
-    public async Task<int> DeleteAsync(int id)
+    public async Task<int> DeleteAsync(string robot_id)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var query = "Update robotinfo SET is_deleted = 1 WHERE robotid = @Id";
+        var query = "Update robotinfo SET is_deleted = 1 WHERE robotid = @id";
 
-        return await db.ExecuteAsync(query, new { Id = id });
+        return await db.ExecuteAsync(query, new { id = robot_id });
     }
 }
