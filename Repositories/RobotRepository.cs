@@ -63,7 +63,7 @@ public class RobotRepository : IRobotRepository
         using var db = _databaseConnectionFactory.GetConnection();
 
         var sql = @"
-                NSERT INTO robotinfo (robotid, robothardwareid, robottype, robotmodel, robotname, ip, swversion, hwversion, is_deleted)
+                INSERT INTO robotinfo (robotid, robothardwareid, robottype, robotmodel, robotname, ip, swversion, hwversion, is_deleted)
                     VALUES (@robotid, @robothardwareid, @robottype, @robotmodel, @robotname, @ip, @swversion, @hwversion, @is_deleted)
                     ON CONFLICT (robotid) DO UPDATE
                     SET                         
