@@ -55,13 +55,13 @@ namespace RMSPrivateServerAPI.Models.Lib
         }
 
 
-        public static List<PPMTask>? GetAllPPMTask()
+        public static List<ppmtask>? GetAllPPMTask()
         {
             try
             {
                 using (var cnn = new NpgsqlConnection(ConnectionString))
                 {
-                    var output = cnn.Query<PPMTask>("select * from PPMTask", new PPMTask());
+                    var output = cnn.Query<ppmtask>("select * from PPMTask", new ppmtask());
                     return output.ToList();
                 }
             }

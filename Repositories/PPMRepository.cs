@@ -14,7 +14,7 @@ public class PPMRepository : IPPMRepository
         _databaseConnectionFactory = databaseConnectionFactory;
     }
     
-    public async Task<IEnumerable<PPMTask>> GetAll()
+    public async Task<IEnumerable<ppmtask>> GetAll()
     {
         var builder = new SqlBuilder();
 
@@ -24,10 +24,10 @@ public class PPMRepository : IPPMRepository
         
         using var db = _databaseConnectionFactory.GetConnection();
 
-        return await db.QueryAsync<PPMTask>(sqlTemplate.RawSql, sqlTemplate.Parameters);
+        return await db.QueryAsync<ppmtask>(sqlTemplate.RawSql, sqlTemplate.Parameters);
     }
 
-    public async Task<PPMTask?> Get(int id)
+    public async Task<ppmtask?> Get(int id)
     {
         var sql =
                 $@"SELECT * 
@@ -40,13 +40,13 @@ public class PPMRepository : IPPMRepository
 
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var ppmTask = await db.QueryFirstOrDefaultAsync<PPMTask>(sql, param);
+        var ppmTask = await db.QueryFirstOrDefaultAsync<ppmtask>(sql, param);
 
         return ppmTask;
     }
 
 
-    public async Task<int> UpsertAsync(PPMTask ppmTask)
+    public async Task<int> UpsertAsync(ppmtask ppmTask)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -70,7 +70,7 @@ public class PPMRepository : IPPMRepository
 
         var newTaskId = await db.QuerySingleOrDefaultAsync<int>(sql, ppmTask);
 
-        return newTaskId == 0 ? ppmTask.Id : newTaskId;
+        return newTaskId == 0 ? ppmTask.id : newTaskId;
     }
 
     public async Task<int> DeleteAsync(int id)

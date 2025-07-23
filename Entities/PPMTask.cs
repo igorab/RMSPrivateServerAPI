@@ -1,11 +1,11 @@
 ﻿namespace RMSPrivateServerAPI.Entities;
 
-public class PPMTask
+public class ppmtask
 {
-    public int Id { get; set; }
-    public int RobotId { get; set; }
-    public string? TaskDescription { get; set; }
-    public DateTime ScheduledDate { get; set; }
+    public int id { get; set; }
+    public string robotid { get; set; }
+    public string? taskdescription { get; set; }
+    public DateTime scheduleddate { get; set; }
 
     // Другие свойства для задач ППР >>
 

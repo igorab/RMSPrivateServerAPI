@@ -37,6 +37,10 @@ public partial class Program
 
         var configuration = builder.Configuration;
 
+        // Добавление контекста базы данных
+        builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
+
         IConfigurationSection configSection = configuration.GetSection("ConnectionStrings");
         builder.Services.Configure<DbSettings>(configSection);
                         

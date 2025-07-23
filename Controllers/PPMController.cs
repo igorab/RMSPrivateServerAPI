@@ -28,13 +28,13 @@ public class PPMController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IEnumerable<PPMTask>> GetAll([FromRoute] bool returnDeletedRecords = false ) 
+    public async Task<IEnumerable<ppmtask>> GetAll([FromRoute] bool returnDeletedRecords = false ) 
     {
         return await _ppmRepository.GetAll();
     }
 
     [HttpGet("List")]
-    public ActionResult<IEnumerable<PPMTaskDto>> GetPPMTasks(int robotId)
+    public ActionResult<IEnumerable<PPMTaskDto>> GetPPMTasks(string robotId)
     {
         var tasks = _ppmService.GetTasksByRobotId(robotId);
 
