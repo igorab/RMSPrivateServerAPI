@@ -50,5 +50,5 @@ public class robotinfo
     /// </summary>
     public string hwversion { get; set; }
 
-    public bool? is_deleted { get; set; }    
+    public int? is_deleted { get; set; }    
 }

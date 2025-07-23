@@ -1,9 +1,11 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Models.Lib;
 using RMSPrivateServerAPI.Repositories;
 using System.Diagnostics;
+using System.Reflection;
 
 public partial class Program
 { 
@@ -11,25 +13,33 @@ public partial class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        Debug.Assert(RMSData.ConnectionTest());
+
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen( c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RMS API/RMS.Robot-Common", Version = "v1" });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+                c.UseInlineDefinitionsForEnums();
+            }   
+        );
+        builder.Services.AddApiVersioning(options =>
+        {
+            options.ReportApiVersions = true;
+        });
+
 
         builder.Services.AddAutoMapper(typeof(Program));
 
         var configuration = builder.Configuration;
 
-        var configConStr = configuration.GetSection("ConnectionStrings");
-        builder.Services.Configure<DbSettings>( configConStr);
-
-        ////  Добавление контекста базы данных
-        //string? constr_postgres =  configuration.GetConnectionString("DefaultConnection");
-        //Action<DbContextOptionsBuilder>? optionsAction = (options) => options.UseNpgsql(constr_postgres);
-        //builder.Services.AddDbContext<ApplicationDbContext>(optionsAction);
-        //RMSData.ConnectionString = constr_postgres;
-        //Debug.Assert(RMSData.ConnectionTest());
-        
+        IConfigurationSection configSection = configuration.GetSection("ConnectionStrings");
+        builder.Services.Configure<DbSettings>(configSection);
+                        
         builder.Services.AddTransient<DatabaseConnectionFactory>();
         
         // Регистрация сервисов

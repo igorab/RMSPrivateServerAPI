@@ -1,14 +1,16 @@
-﻿using AutoMapper;
+﻿using Asp.Versioning;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Services;
-using Microsoft.AspNetCore.Mvc;
 
 namespace RMSPrivateServerAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[ApiVersion("1.0")]
+[Route("api/[controller]/v1.0/Common/")]
 public class RobotController : ControllerBase
 {
     private readonly ILogger<RobotController> _logger;
@@ -28,12 +30,12 @@ public class RobotController : ControllerBase
         _mapper = mapper;
     }
 
-
+    
     /// <summary>
     /// Get all the robots in the Database 
     /// </summary>
     /// <param name="returnDeletedRecords">If true, the method will return all the records</param>     
-    [HttpGet]
+    [HttpGet("List")]
     public async Task<IEnumerable<robotinfo>> GetAll([FromRoute] bool returnDeletedRecords = false)
     {        
         return await _robotRepository.GetAll(returnDeletedRecords);
@@ -50,7 +52,7 @@ public class RobotController : ControllerBase
         return robot;
     }
 
-    [HttpPost]
+    [HttpPost("Register")]
     public async Task<ActionResult<robotinfo>> Insert([FromBody] RobotInfoDto robotAsDto)
     {
         try
@@ -77,7 +79,7 @@ public class RobotController : ControllerBase
         }
     }
 
-    [HttpPut]
+    [HttpPut("Edit")]
     public async Task<IActionResult> Put([FromBody] robotinfo robot)
     {
         try

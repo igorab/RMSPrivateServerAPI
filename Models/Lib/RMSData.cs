@@ -1,19 +1,23 @@
 ﻿using Dapper;
-using System.Data.SqlClient;
 using RMSPrivateServerAPI.Entities;
-
+using Npgsql;
 
 namespace RMSPrivateServerAPI.Models.Lib
 {
-    public class RMSData
+    public static class RMSData
     {
-        private static string? _connectionString = $"Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog = RMSdb; Integrated Security = True; Connect Timeout = 30; Encrypt=False;Trust Server Certificate=False;Application Intent = ReadWrite; Multi Subnet Failover=False";
+        private static string? _connectionString ;
 
         public static string? ConnectionString
         {
             set { _connectionString = value; }
             get { return _connectionString; }
-        } 
+        }
+
+        static RMSData()
+        {
+            _connectionString = WebApplication.CreateBuilder().Configuration.GetConnectionString("DefaultConnection");
+        }
 
         public static bool ConnectionTest()
         {
@@ -36,7 +40,7 @@ namespace RMSPrivateServerAPI.Models.Lib
             bool ok = false;
             try
             {
-                using (SqlConnection connection = new SqlConnection(_connectionString))
+                using (var connection = new NpgsqlConnection(_connectionString))
                 {
                     connection.Open();
                     ok = true;
@@ -55,7 +59,7 @@ namespace RMSPrivateServerAPI.Models.Lib
         {
             try
             {
-                using (var cnn = new SqlConnection(ConnectionString))
+                using (var cnn = new NpgsqlConnection(ConnectionString))
                 {
                     var output = cnn.Query<PPMTask>("select * from PPMTask", new PPMTask());
                     return output.ToList();
