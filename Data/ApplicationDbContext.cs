@@ -8,6 +8,7 @@ public class ApplicationDbContext : DbContext
 {
     public DbSet<robotinfo> Robots { get; set; }
     public DbSet<PPMTask> PPMTasks { get; set; }
+    public DbSet<FaultInfo> Faults { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -19,6 +20,7 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<robotinfo>().ToTable("RobotInfo");
         modelBuilder.Entity<PPMTask>().ToTable("PPMTask");
         modelBuilder.Entity<RobotTask>().ToTable("RobotTask");
+        modelBuilder.Entity<FaultInfo>().ToTable("FaultInfo");
     }
     
 }

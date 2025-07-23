@@ -18,13 +18,13 @@ public partial class Program
         // Add services to the container.
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen( c =>
+        builder.Services.AddSwaggerGen( options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RMS API/RMS.Robot-Common", Version = "v1" });
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "RMS Private Server API", Version = "v1.0" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
-                c.UseInlineDefinitionsForEnums();
+                options.IncludeXmlComments(xmlPath);
+                options.UseInlineDefinitionsForEnums();
             }   
         );
         builder.Services.AddApiVersioning(options =>
@@ -46,6 +46,7 @@ public partial class Program
         builder.Services.AddTransient<RobotRepository>();
         builder.Services.AddTransient<PPMRepository>();
         builder.Services.AddTransient<RobotTaskRepository>();
+        
 
         builder.Services.RegisterDataAccessDependencies();
                

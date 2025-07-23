@@ -8,7 +8,7 @@ namespace RMSPrivateServerAPI.Entities
         /// <summary>
         /// ”никальный идентификатор робота, которому назначена задача.
         /// </summary>
-        public int RobotId { get; set; }
+        public string RobotId { get; set; }
 
         /// <summary>
         /// ”никальный идентификатор задачи в системе RMS.

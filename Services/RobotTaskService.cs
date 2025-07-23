@@ -1,4 +1,5 @@
-﻿using RMSPrivateServerAPI.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
 
 namespace RMSPrivateServerAPI.Services
@@ -11,8 +12,8 @@ namespace RMSPrivateServerAPI.Services
         {
             _robotTaskRepository = robotTaskRepository;
         }
-
-        Task<RobotTask> IRobotTaskService.Get(int id)
+        
+        Task<RobotTask> IRobotTaskService.Get(string robotId)
         {
             throw new NotImplementedException();
         }
@@ -27,7 +28,7 @@ namespace RMSPrivateServerAPI.Services
             throw new NotImplementedException();
         }
 
-        Task IRobotTaskService.Delete(int id)
+        Task IRobotTaskService.Delete(string id)
         {
             throw new NotImplementedException();
         }

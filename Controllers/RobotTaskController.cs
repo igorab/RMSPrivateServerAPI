@@ -28,16 +28,26 @@ namespace RMSPrivateServerAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<RobotTask>> GetAll()
+        /// <summary>
+        /// Получение списка задач робота
+        /// </summary>
+        /// <param name="robotId">Id робота</param>
+        /// <returns></returns>
+        [HttpGet("{robotId}/tasks/all/")]
+        public async Task<IEnumerable<RobotTask>> GetAll(string robotId)
         {            
-            return await _robotTaskRepository.GetAll();
+            return await _robotTaskRepository.GetAll(robotId);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<RobotTask>> Get(int id)
+        /// <summary>
+        /// Получение текущей задачи для робота
+        /// </summary>
+        /// <param name="robotId">Id робота</param>
+        /// <returns></returns>
+        [HttpGet("{robotId}/tasks/current/")]
+        public async Task<ActionResult<RobotTask>> GetCurrentTask(string robotId)
         {
-            var robotTask = await _robotTaskService.Get(id);
+            var robotTask = await _robotTaskService.Get(robotId);
             if (robotTask == null)
             {
                 return NotFound();
@@ -45,7 +55,12 @@ namespace RMSPrivateServerAPI.Controllers
             return robotTask;
         }
 
-        [HttpPost]
+        /// <summary>
+        /// Добавить задачу
+        /// </summary>
+        /// <param name="robotTaskAsDto"></param>
+        /// <returns></returns>
+        [HttpPost("Add")]
         public async Task<ActionResult<RobotTask>> Insert([FromBody] RobotTaskDto robotTaskAsDto)
         {
             try
@@ -61,7 +76,7 @@ namespace RMSPrivateServerAPI.Controllers
 
                 var insertedRobotTaskDto = _mapper.Map<RobotTaskDto>(insertedRobotTask);
 
-                var location = $"https://localhost:5001/RobotTask/{insertedRobotTaskDto.TaskId}";
+                var location = $"https://localhost/RobotTask/{insertedRobotTaskDto.TaskId}";
 
                 return Created(location, insertedRobotTaskDto);
             }
@@ -71,8 +86,12 @@ namespace RMSPrivateServerAPI.Controllers
             }
         }
 
-
-        [HttpPut]
+        /// <summary>
+        /// Редактировать задачу
+        /// </summary>
+        /// <param name="robotTask"></param>
+        /// <returns></returns>
+        [HttpPut(("Edit"))]
         public async Task<IActionResult> Put([FromBody] RobotTask robotTask)
         {
             try
@@ -87,8 +106,13 @@ namespace RMSPrivateServerAPI.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        /// <summary>
+        /// Удалить задачу
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("Delete/{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
             try
             {

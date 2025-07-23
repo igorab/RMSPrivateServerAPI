@@ -1,11 +1,14 @@
 ﻿namespace RMSPrivateServerAPI.DTOs
 {
+    /// <summary>
+    /// Robot Task Dto
+    /// </summary>
     public class RobotTaskDto
     {
         /// <summary>
         /// Уникальный идентификатор робота, которому назначена задача.
         /// </summary>
-        public int RobotId { get; set; }
+        public string RobotId { get; set; }
 
         /// <summary>
         /// Уникальный идентификатор задачи в системе RMS.

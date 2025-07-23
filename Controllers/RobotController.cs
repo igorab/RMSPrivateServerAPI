@@ -5,12 +5,15 @@ using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Services;
+using System.ComponentModel;
 
 namespace RMSPrivateServerAPI.Controllers;
+
 
 [ApiController]
 [ApiVersion("1.0")]
 [Route("api/[controller]/v1.0/Common/")]
+//[Description("Ведение справочника роботов")]
 public class RobotController : ControllerBase
 {
     private readonly ILogger<RobotController> _logger;
@@ -18,6 +21,7 @@ public class RobotController : ControllerBase
     private readonly IRobotService _robotService;
     private readonly IMapper _mapper;
 
+       
     public RobotController(ILogger<RobotController> logger,
                            IRobotRepository robotRepository,
                            IRobotService robotService,
@@ -32,15 +36,20 @@ public class RobotController : ControllerBase
 
     
     /// <summary>
-    /// Get all the robots in the Database 
+    /// Получить список роботов из базы данных
     /// </summary>
-    /// <param name="returnDeletedRecords">If true, the method will return all the records</param>     
+    /// <param name="returnDeletedRecords">в т.ч. удаленные</param>     
     [HttpGet("List")]
     public async Task<IEnumerable<robotinfo>> GetAll([FromRoute] bool returnDeletedRecords = false)
     {        
         return await _robotRepository.GetAll(returnDeletedRecords);
     }
 
+    /// <summary>
+    /// Получить параметры робота
+    /// </summary>
+    /// <param name="id">Id робота</param>
+    /// <returns></returns>
     [HttpGet("{id}")]
     public async Task<ActionResult<robotinfo>> Get(string id)
     {
@@ -52,6 +61,11 @@ public class RobotController : ControllerBase
         return robot;
     }
 
+    /// <summary>
+    /// Добавить. Робот отправляет свои характеристики.
+    /// </summary>
+    /// <param name="robotAsDto"></param>
+    /// <returns></returns>
     [HttpPost("Register")]
     public async Task<ActionResult<robotinfo>> Insert([FromBody] RobotInfoDto robotAsDto)
     {
@@ -68,7 +82,7 @@ public class RobotController : ControllerBase
 
             var insertedRobotDto = _mapper.Map<RobotInfoDto>(insertedRobot);
 
-            var location = $"https://localhost:5001/RobotInfo/{insertedRobotDto.RobotId}"; ;
+            var location = $"https://localhost/RobotInfo/{insertedRobotDto.RobotId}"; ;
 
             return Created(location, insertedRobotDto);
 
@@ -79,6 +93,11 @@ public class RobotController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Редактировать
+    /// </summary>
+    /// <param name="robot"></param>
+    /// <returns></returns>
     [HttpPut("Edit")]
     public async Task<IActionResult> Put([FromBody] robotinfo robot)
     {
@@ -94,6 +113,11 @@ public class RobotController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Удалить. 
+    /// </summary>
+    /// <param name="id"> Id робота </param>
+    /// <returns></returns>
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(string id)
     {
@@ -107,28 +131,5 @@ public class RobotController : ControllerBase
         }
 
         return NoContent();
-    }
-
-    //[HttpGet("List")]
-    //public ActionResult GetRobots()
-    //{
-    //    var robots = _robotService.GetAllRobots();
-
-    //    return Ok(robots);
-    //}
-
-    //[HttpPost("Add")]
-    //public ActionResult AddRobot([FromBody] RobotInfoDto  robotDto)
-    //{
-    //    _robotService.AddRobot(robotDto);
-
-    //    return CreatedAtAction(nameof(GetRobots), new {id = robotDto.Id }, robotDto); 
-    //}
-
-    //[HttpPost("Edit")]
-    //public ActionResult EditRobot([FromBody] RobotInfoDto robotDto)
-    //{
-    //    _robotService.EditRobot(robotDto.Id, robotDto);
-    //    return NoContent();
-    //}
+    }    
 }

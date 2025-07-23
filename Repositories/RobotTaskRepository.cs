@@ -14,7 +14,7 @@ public class RobotTaskRepository : IRobotTaskRepository
         _databaseConnectionFactory = databaseConnectionFactory;
     }
 
-    public async Task<RobotTask?> Get(int robotTaskId)
+    public async Task<RobotTask?> Get(string robotId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -23,20 +23,21 @@ public class RobotTaskRepository : IRobotTaskRepository
                FROM  
                     RobotTask t 
                WHERE 
-                    t.id = @{nameof(robotTaskId)}";
+                    t.robotid = @{nameof(robotId)}";
                 
-        var param = new { robotTaskId };
+        var param = new { robotId };
 
         var car = await db.QueryFirstOrDefaultAsync<RobotTask>(sql, param);
 
         return car;
     }
 
-    public async Task<IEnumerable<RobotTask>> GetAll()
+    public async Task<IEnumerable<RobotTask>> GetAll(string robotId)
     {
         var builder = new SqlBuilder();
         var sqlTemplate = builder.AddTemplate(
-            $@"SELECT * FROM RobotTask ");
+            $@"SELECT * FROM RobotTask t 
+               WHERE   t.robotid = @{nameof(robotId)}   ");
              
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -70,7 +71,7 @@ public class RobotTaskRepository : IRobotTaskRepository
         return newTaskId == 0 ? robotTask.TaskId : newTaskId ;
     }
 
-    public async Task<int> DeleteAsync(int robotTaskId)
+    public async Task<int> DeleteAsync(string robotTaskId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
