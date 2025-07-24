@@ -7,8 +7,8 @@ namespace RMSPrivateServerAPI.Interfaces;
 /// </summary>
 public interface IRobotTaskService
 {
-    Task<RobotTask> Get(string robotId);
-    Task<RobotTask> Insert(RobotTask task);
-    Task<RobotTask> Update(RobotTask task);
+    Task<robot_task> Get(string robotId);
+    Task<robot_task> Insert(robot_task task);
+    Task<robot_task> Update(robot_task task);
     Task Delete(string id);    
 }

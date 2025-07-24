@@ -3,12 +3,15 @@ using RMSPrivateServerAPI.Entities;
 
 namespace RMSPrivateServerAPI.Data;
 
-// Data/ApplicationDbContext.cs
+/// <summary>
+/// Data/ApplicationDbContext.cs
+/// </summary>
 public class ApplicationDbContext : DbContext
 {
     public DbSet<robotinfo> Robots { get; set; }
     public DbSet<ppmtask> PPMTasks { get; set; }
-    public DbSet<FaultInfo> Faults { get; set; }
+    public DbSet<FaultInfoDto> Faults { get; set; }
+    public DbSet<robot_task> Tasks { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -19,9 +22,12 @@ public class ApplicationDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<robotinfo>().ToTable("RobotInfo");
+
         modelBuilder.Entity<ppmtask>().ToTable("PPMTask");
-        modelBuilder.Entity<RobotTask>().ToTable("RobotTask");
-        modelBuilder.Entity<FaultInfo>().ToTable("FaultInfo");
+
+        modelBuilder.Entity<robot_task>().ToTable("RobotTask");
+
+        modelBuilder.Entity<FaultInfoDto>().ToTable("FaultInfo");
     }
     
 }

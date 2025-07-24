@@ -1,4 +1,4 @@
-﻿namespace RMSPrivateServerAPI.Entities;
+﻿namespace RMSPrivateServerAPI.Models;
         
 /// <summary>
 /// Представляет положение робота или объекта на плоскости.

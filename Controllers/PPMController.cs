@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
-using RMSPrivateServerAPI.Services;
 
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Controllers;
 
 [ApiController]

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 namespace RMSPrivateServerAPI.Entities;
 
 #pragma warning disable IDE1006
@@ -9,10 +10,11 @@ namespace RMSPrivateServerAPI.Entities;
 /// Справочник роботов (id и прочие данные, характеризующие конкретный экземпляр робота)
 /// </summary>
 public class robotinfo
-{               
+{
     /// <summary>
     /// "Уникальный идентификатор робота (PRIMARY KEY)"
     /// </summary>
+    [Key]
     public string robotid { get; set; }
 
     /// <summary>

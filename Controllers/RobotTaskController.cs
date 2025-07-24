@@ -1,8 +1,11 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
+using RMSPrivateServerAPI.Models;
 using System.Threading.Tasks;
 
 namespace RMSPrivateServerAPI.Controllers
@@ -15,6 +18,7 @@ namespace RMSPrivateServerAPI.Controllers
         private readonly IRobotTaskRepository _robotTaskRepository;
         private readonly IRobotTaskService _robotTaskService;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
 
 
         public RobotTaskController(ILogger<RobotTaskController> logger, 
@@ -28,24 +32,14 @@ namespace RMSPrivateServerAPI.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// Получение списка задач робота
-        /// </summary>
-        /// <param name="robotId">Id робота</param>
-        /// <returns></returns>
-        [HttpGet("{robotId}/tasks/all/")]
-        public async Task<IEnumerable<RobotTask>> GetAll(string robotId)
-        {            
-            return await _robotTaskRepository.GetAll(robotId);
-        }
-
+        
         /// <summary>
         /// Получение текущей задачи для робота
         /// </summary>
         /// <param name="robotId">Id робота</param>
         /// <returns></returns>
         [HttpGet("{robotId}/tasks/current/")]
-        public async Task<ActionResult<RobotTask>> GetCurrentTask(string robotId)
+        public async Task<ActionResult<robot_task>> GetCurrentTask(string robotId)
         {
             var robotTask = await _robotTaskService.Get(robotId);
             if (robotTask == null)
@@ -55,13 +49,41 @@ namespace RMSPrivateServerAPI.Controllers
             return robotTask;
         }
 
+
+        [HttpPost("{robotID}/tasks/action-done")]
+        public IActionResult ActionDone(string robotID, [FromBody] ActionDoneRequest request)
+        {
+            // Обработка завершения операции
+            robot_task? task = _context.Tasks.Find(request.TaskId);
+
+            if (task.actions[request.ActionIndex].ActionType == 0)
+            {
+                // Логика обработки ошибки
+                return Ok(new { command = "abort" });
+            }
+            return Ok(new { command = "next", action = task.actions[request.ActionIndex + 1] });                                
+        }
+
+        /// <summary>
+        /// Получение списка задач робота
+        /// </summary>
+        /// <param name="robotId">Id робота</param>
+        /// <returns></returns>
+        [HttpGet("{robotId}/tasks/all/")]
+        public async Task<IEnumerable<robot_task>> GetAll(string robotId)
+        {
+            return await _robotTaskRepository.GetAll(robotId);
+        }
+
+
+
         /// <summary>
         /// Добавить задачу
         /// </summary>
         /// <param name="robotTaskAsDto"></param>
         /// <returns></returns>
         [HttpPost("Add")]
-        public async Task<ActionResult<RobotTask>> Insert([FromBody] RobotTaskDto robotTaskAsDto)
+        public async Task<ActionResult<robot_task>> Insert([FromBody] RobotTaskDto robotTaskAsDto)
         {
             try
             {
@@ -70,7 +92,7 @@ namespace RMSPrivateServerAPI.Controllers
                     return BadRequest("No Task was provided");
                 }
 
-                var robotTaskToInsert = _mapper.Map<RobotTask>(robotTaskAsDto);
+                var robotTaskToInsert = _mapper.Map<robot_task>(robotTaskAsDto);
 
                 var insertedRobotTask = await _robotTaskService.Insert(robotTaskToInsert);
 
@@ -92,7 +114,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="robotTask"></param>
         /// <returns></returns>
         [HttpPut(("Edit"))]
-        public async Task<IActionResult> Put([FromBody] RobotTask robotTask)
+        public async Task<IActionResult> Put([FromBody] robot_task robotTask)
         {
             try
             {

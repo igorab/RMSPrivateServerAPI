@@ -1,4 +1,6 @@
-﻿namespace RMSPrivateServerAPI.DTOs
+﻿using RMSPrivateServerAPI.Models;
+
+namespace RMSPrivateServerAPI.DTOs
 {
     /// <summary>
     /// Robot Task Dto
@@ -6,15 +8,15 @@
     public class RobotTaskDto
     {
         /// <summary>
-        /// Уникальный идентификатор робота, которому назначена задача.
-        /// </summary>
-        public string RobotId { get; set; }
-
-        /// <summary>
         /// Уникальный идентификатор задачи в системе RMS.
         /// </summary>
-        public int TaskId { get; set; }
+        public string? TaskId { get; set; }
 
+        /// <summary>
+        /// Уникальный идентификатор робота, которому назначена задача.
+        /// </summary>
+        public string? RobotId { get; set; }
+        
         /// <summary>
         /// Человекочитаемое название задачи.
         /// </summary>
@@ -23,6 +25,6 @@
         /// <summary>
         /// Список операций, которые должны быть выполнены в рамках этой задачи.
         /// </summary>
-        public List<Action>? Actions { get; set; }
+        public List<RobotAction>? Actions { get; set; }
     }
 }

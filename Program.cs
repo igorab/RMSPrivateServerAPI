@@ -51,7 +51,6 @@ public partial class Program
         builder.Services.AddTransient<PPMRepository>();
         builder.Services.AddTransient<RobotTaskRepository>();
         
-
         builder.Services.RegisterDataAccessDependencies();
                
         var app = builder.Build();

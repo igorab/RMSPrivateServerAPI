@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
-
 namespace RMSPrivateServerAPI.Profiles;
+#pragma warning disable CS1591
+
 
 public class RobotInfoProfile : Profile
 {

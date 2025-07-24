@@ -18,7 +18,7 @@ public class FaultController : ControllerBase
     /// <param name="faults"></param>
     /// <returns></returns>
     [HttpPost("raise")]
-    public IActionResult RaiseFault([FromBody] List<FaultInfo> faults)
+    public IActionResult RaiseFault([FromBody] List<FaultInfoDto> faults)
     {
         // Логирование аварийных ситуаций
         foreach (var fault in faults)

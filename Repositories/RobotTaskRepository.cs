@@ -1,7 +1,9 @@
 ﻿using Dapper;
+using Microsoft.IdentityModel.Tokens;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
+#pragma warning disable CS1591
 
 namespace RMSPrivateServerAPI.Repositories;
 
@@ -14,7 +16,7 @@ public class RobotTaskRepository : IRobotTaskRepository
         _databaseConnectionFactory = databaseConnectionFactory;
     }
 
-    public async Task<RobotTask?> Get(string robotId)
+    public async Task<robot_task?> Get(string robotId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -27,12 +29,12 @@ public class RobotTaskRepository : IRobotTaskRepository
                 
         var param = new { robotId };
 
-        var car = await db.QueryFirstOrDefaultAsync<RobotTask>(sql, param);
+        var car = await db.QueryFirstOrDefaultAsync<robot_task>(sql, param);
 
         return car;
     }
 
-    public async Task<IEnumerable<RobotTask>> GetAll(string robotId)
+    public async Task<IEnumerable<robot_task>> GetAll(string robotId)
     {
         var builder = new SqlBuilder();
         var sqlTemplate = builder.AddTemplate(
@@ -41,15 +43,15 @@ public class RobotTaskRepository : IRobotTaskRepository
              
         using var db = _databaseConnectionFactory.GetConnection();
 
-        return await db.QueryAsync<RobotTask>(sqlTemplate.RawSql, sqlTemplate.Parameters);
+        return await db.QueryAsync<robot_task>(sqlTemplate.RawSql, sqlTemplate.Parameters);
     }
 
-    public async Task<int> UpsertAsync(RobotTask robotTask)
+    public async Task<string> UpsertAsync(robot_task robotTask)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
         var sql = @"
-                DECLARE @InsertedRows AS TABLE (Id int);
+                DECLARE @InsertedRows AS TABLE (Id string);
 
                 MERGE INTO RobotTask AS target
                 USING (SELECT @RobotId AS RobotId, @TaskId AS TaskId, @Title as Ttitle, @Actions as Actions) AS source                 
@@ -66,9 +68,9 @@ public class RobotTaskRepository : IRobotTaskRepository
                 
                 SELECT Id FROM @InsertedRows;";
         
-        var newTaskId  = await db.QuerySingleOrDefaultAsync<int>(sql, robotTask);
+        var newTaskId  = await db.QuerySingleOrDefaultAsync<string>(sql, robotTask);
 
-        return newTaskId == 0 ? robotTask.TaskId : newTaskId ;
+        return  string.IsNullOrEmpty(newTaskId) ? robotTask.task_id : newTaskId ;
     }
 
     public async Task<int> DeleteAsync(string robotTaskId)
