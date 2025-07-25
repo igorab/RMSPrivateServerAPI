@@ -2,7 +2,7 @@
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Repositories;
-#pragma warning disable CS1591
+#pragma warning disable CS1591, CS8603
 
 namespace RMSPrivateServerAPI.Services
 {
@@ -17,13 +17,24 @@ namespace RMSPrivateServerAPI.Services
         
         public async Task<robot_task> Get(string taskId)
         {
-            if (taskId == String.Empty)
+            if (String.IsNullOrEmpty(taskId))
             {
-                throw new Exception("Invalid Id");
+                throw new Exception("Invalid task Id");
             }
 
             return await _robotTaskRepository.Get(taskId);
         }
+
+        public async Task<robot_task> GetCurrent(string robotId)
+        {
+            if (string.IsNullOrEmpty(robotId))
+            {
+                throw new Exception("Invalid robot Id");
+            }
+
+            return await _robotTaskRepository.GetCurrent(robotId);
+        }
+
 
         public async Task<robot_task> Insert(robot_task task)
         {

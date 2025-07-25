@@ -16,7 +16,26 @@ public class RobotTaskRepository : IRobotTaskRepository
         _databaseConnectionFactory = databaseConnectionFactory;
     }
 
-    public async Task<robot_task?> Get(string robotId)
+    public async Task<robot_task?> Get(string taskId)
+    {
+        using var db = _databaseConnectionFactory.GetConnection();
+
+        var sql =
+                $@"SELECT * 
+               FROM  
+                    RobotTask t 
+               WHERE 
+                    t.robotid = @{nameof(taskId)}";
+                
+        var param = new { taskId };
+
+        var car = await db.QueryFirstOrDefaultAsync<robot_task>(sql, param);
+
+        return car;
+    }
+
+
+    public async Task<robot_task?> GetCurrent(string robotId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -26,13 +45,14 @@ public class RobotTaskRepository : IRobotTaskRepository
                     RobotTask t 
                WHERE 
                     t.robotid = @{nameof(robotId)}";
-                
+
         var param = new { robotId };
 
         var car = await db.QueryFirstOrDefaultAsync<robot_task>(sql, param);
 
         return car;
     }
+
 
     public async Task<IEnumerable<robot_task>> GetAll(string robotId)
     {
@@ -53,17 +73,16 @@ public class RobotTaskRepository : IRobotTaskRepository
         var sql = @"
                 DECLARE @InsertedRows AS TABLE (Id string);
 
-                MERGE INTO RobotTask AS target
-                USING (SELECT @RobotId AS RobotId, @TaskId AS TaskId, @Title as Ttitle, @Actions as Actions) AS source                 
+                MERGE INTO robot_task AS target
+                USING (SELECT @robot_id AS RobotId, @task_id AS TaskId, @title as Title) AS source                 
                 ON target.Id = source.Id
                 WHEN MATCHED THEN 
                     UPDATE SET                         
-                        RobotId   = source.RobotId,
-                        Title     = source.Title,
-                        Actions   = source.Actions                        
+                        robotId   = source.robot_id,
+                        title     = source.title,                        
                 WHEN NOT MATCHED THEN
-                    INSERT (RobotId, Title, Actions)
-                    VALUES (source.RobotId, source.Title, source.Actions)                     
+                    INSERT (robot_id, title)
+                    VALUES (source.RobotId, source.Title)                     
                     OUTPUT inserted.Id INTO @InsertedRows;
                 
                 SELECT Id FROM @InsertedRows;";

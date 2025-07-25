@@ -25,6 +25,6 @@ namespace RMSPrivateServerAPI.DTOs
         /// <summary>
         /// Список операций, которые должны быть выполнены в рамках этой задачи.
         /// </summary>
-        public List<RobotAction>? Actions { get; set; }
+        public List<RobotActionsDto>? RobotActions { get; set; }
     }
 }

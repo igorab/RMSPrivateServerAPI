@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+#pragma warning disable CS1591
 
 namespace RMSPrivateServerAPI.Models;
 
@@ -7,15 +8,15 @@ namespace RMSPrivateServerAPI.Models;
 /// </summary>
 public class ActionDoneRequest
 {
-    [JsonPropertyName("taskID")]
+    [JsonPropertyName("taskId")]
     public Guid TaskId { get; set; }
 
     [JsonPropertyName("actionIndex")]
     public int ActionIndex { get; set; }
 
     [JsonPropertyName("result")]
-    public string Result { get; set; } // "success" или "failed"
+    public string? Result { get; set; } // "success" или "failed"
 
     [JsonPropertyName("Reason")]
-    public string Reason { get; set; } 
+    public string? Reason { get; set; } 
 }

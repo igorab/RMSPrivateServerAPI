@@ -1,6 +1,7 @@
 using RMSPrivateServerAPI.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+#pragma warning disable CS1591
 
 namespace RMSPrivateServerAPI.Entities;
 
@@ -25,9 +26,5 @@ public class robot_task
     /// Человекочитаемое название задачи.
     /// </summary>
     public string title { get; set; }
-
-    /// <summary>
-    /// Список операций, которые должны быть выполнены в рамках этой задачи.
-    /// </summary>
-    public List<RobotAction>? actions { get; set; }
+    
 }

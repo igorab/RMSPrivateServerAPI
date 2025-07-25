@@ -16,8 +16,18 @@ public class RobotTaskProfile : Profile
         CreateMap<RobotTaskDto, robot_task>()
             .ForMember(tsk => tsk.task_id, task => task.MapFrom(robotDto => robotDto.TaskId))
             .ForMember(tsk => tsk.robot_id, task => task.MapFrom(robotDto => robotDto.RobotId))
-            .ForMember(tsk => tsk.title, task => task.MapFrom(robotDto => robotDto.Title))
-            .ForMember(tsk => tsk.actions, task => task.MapFrom(robotDto => robotDto.Actions))
+            .ForMember(tsk => tsk.title, task => task.MapFrom(robotDto => robotDto.Title))            
             .ReverseMap();
+
+        CreateMap<List<robot_task_actions_flat>, RobotTaskDto>()
+            .ForPath(dest => dest.TaskId, ac => ac.MapFrom(src => src.First().task_id))
+            .ForPath(dest => dest.RobotId, ac => ac.MapFrom(src => src.First().robot_id))
+            .ForPath(dest => dest.RobotActions, ac => ac.MapFrom(src => src));
+
+        CreateMap<RobotActionsDto, robot_task_actions_flat>()
+            .ForMember(dest => dest.action_id, opt => opt.MapFrom(src => src.ActionId))
+            .ForMember(dest => dest.action_name, opt => opt.MapFrom(src => src.ActionName))
+            .ForMember(dest => dest.action_type, opt => opt.MapFrom(src => src.ActionType))
+            .ForMember(dest => dest.action_value, opt => opt.MapFrom(src => src.ActionValue));
     }
 }
