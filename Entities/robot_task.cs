@@ -1,7 +1,7 @@
 using RMSPrivateServerAPI.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-#pragma warning disable CS1591
+#pragma warning disable CS1591, IDE1006
 
 namespace RMSPrivateServerAPI.Entities;
 
@@ -14,17 +14,17 @@ public class robot_task
     /// ”никальный идентификатор задачи в системе RMS.
     /// </summary>
     [Key]
-    public string task_id { get; set; }
+    public string? task_id { get; set; }
 
     /// <summary>
     /// ”никальный идентификатор робота, которому назначена задача.
     /// </summary>
     [ForeignKey("robotid")]
-    public string robot_id { get; set; }
+    public string? robot_id { get; set; }
     
     /// <summary>
     /// „еловекочитаемое название задачи.
     /// </summary>
-    public string title { get; set; }
+    public string? title { get; set; }
     
 }

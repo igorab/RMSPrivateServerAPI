@@ -12,7 +12,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<ppmtask> PPMTasks { get; set; }
     public DbSet<FaultInfoDto> Faults { get; set; }
     public DbSet<robot_task> Tasks { get; set; }
-    public DbSet<robot_task_actions_flat> RobotTaskActions { get; set; }
+    public DbSet<RobotTaskFlat> RobotTaskActions { get; set; }
 
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -29,7 +29,7 @@ public class ApplicationDbContext : DbContext
 
         modelBuilder.Entity<robot_task>().ToTable("RobotTask");
 
-        modelBuilder.Entity<robot_task_actions_flat>().ToTable("RobotTaskActions");
+        modelBuilder.Entity<RobotTaskFlat>().ToTable("RobotTaskActions");
 
         modelBuilder.Entity<FaultInfoDto>().ToTable("FaultInfo");
     }

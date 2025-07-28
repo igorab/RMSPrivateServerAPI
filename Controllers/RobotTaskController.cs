@@ -110,17 +110,25 @@ namespace RMSPrivateServerAPI.Controllers
         [HttpPost("{robotID}/tasks/action-done")]
         public IActionResult ActionDone(string robotID, [FromBody] ActionDoneRequest request)
         {
-            //// Обработка завершения операции
-            //robot_task? task = _context.Tasks.Find(request.TaskId);
+            try
+            {
+                // Обработка завершения операции
+                robot_task? task = _context.Tasks.Find(request.TaskId);
 
-            //if (task.actions[request.ActionIndex].ActionType == 0)
-            //{
-            //    // Логика обработки ошибки
-            //    return Ok(new { command = "abort" });
-            //}
-            //return Ok(new { command = "next", action = task.actions[request.ActionIndex + 1] });
-            //
-            return Ok(request);
+                //if (task.actions[request.ActionIndex].ActionType == 0)
+                //{
+                //    // Логика обработки ошибки
+                //    return Ok(new { command = "abort" });
+                //}
+
+                //return Ok(new { command = "next", action = task.actions[request.ActionIndex + 1] });
+                //
+                return Ok(request);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            };
         }      
 
         /// <summary>

@@ -6,7 +6,7 @@ namespace RMSPrivateServerAPI.Entities;
 #pragma warning disable CS1591, IDE1006
 
 [Table("robot_actions")]
-public class robot_task_actions_flat : robot_task
+public class RobotTaskFlat : robot_task
 {
     [Key]
     public string? action_id { get; set; }
