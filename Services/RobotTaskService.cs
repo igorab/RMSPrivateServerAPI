@@ -73,14 +73,13 @@ namespace RMSPrivateServerAPI.Services
 
         public async Task Delete(string taskId)
         {
-            var task = await _robotTaskRepository.Get(taskId);
+            var r_task = await _robotTaskRepository.Get(taskId);
 
-            if (task == null)
-                throw new Exception("Robot task not found");
-
-            await _robotTaskRepository.DeleteAsync(taskId);
-
-            return;
+            if (r_task != null)
+            {
+                await _robotTaskRepository.DeleteAsync(taskId);
+            }
+            return ;
         }
     }
 }

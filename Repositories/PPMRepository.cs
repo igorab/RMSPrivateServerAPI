@@ -19,8 +19,8 @@ public class PPMRepository : IPPMRepository
         var builder = new SqlBuilder();
 
         var sqlTemplate = builder.AddTemplate(
-            "SELECT * FROM PPMTask " +
-            "/**where**/ ");
+            "SELECT * FROM ppmtask " 
+            );
         
         using var db = _databaseConnectionFactory.GetConnection();
 

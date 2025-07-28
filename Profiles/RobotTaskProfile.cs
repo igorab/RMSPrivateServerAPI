@@ -20,14 +20,21 @@ public class RobotTaskProfile : Profile
             .ReverseMap();
 
         CreateMap<List<robot_task_actions_flat>, RobotTaskDto>()
-            .ForPath(dest => dest.TaskId, ac => ac.MapFrom(src => src.First().task_id))
+            .ForPath(dest => dest.TaskId, ac => ac.MapFrom(src => src.First().robot_task_id))
             .ForPath(dest => dest.RobotId, ac => ac.MapFrom(src => src.First().robot_id))
             .ForPath(dest => dest.RobotActions, ac => ac.MapFrom(src => src));
 
         CreateMap<RobotActionsDto, robot_task_actions_flat>()
             .ForMember(dest => dest.action_id, opt => opt.MapFrom(src => src.ActionId))
-            .ForMember(dest => dest.action_name, opt => opt.MapFrom(src => src.ActionName))
+            .ForMember(dest => dest.title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.action_type, opt => opt.MapFrom(src => src.ActionType))
-            .ForMember(dest => dest.action_value, opt => opt.MapFrom(src => src.ActionValue));
+            .ForMember(dest => dest.pose_X, opt => opt.MapFrom(src => src.Pose_X))
+            .ForMember(dest => dest.pose_Y, opt => opt.MapFrom(src => src.Pose_Y))
+            .ForMember(dest => dest.heading, opt => opt.MapFrom(src => src.Heading))
+            .ForMember(dest => dest.direction, opt => opt.MapFrom(src => src.Direction))
+            .ForMember(dest => dest.distance, opt => opt.MapFrom(src => src.Distance))
+            .ForMember(dest => dest.angle, opt => opt.MapFrom(src => src.Angle))
+            .ForMember(dest => dest.radius, opt => opt.MapFrom(src => src.Radius));
+            
     }
 }

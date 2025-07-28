@@ -2,7 +2,7 @@
 using RMSPrivateServerAPI.Interfaces;
 using Dapper;
 using RMSPrivateServerAPI.Data;
-
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Repositories;
 
 public class RobotRepository : IRobotRepository

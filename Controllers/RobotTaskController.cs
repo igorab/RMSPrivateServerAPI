@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
+    [ApiController]    
+    [Route("api/v1.0/[controller]/")]
     public class RobotTaskController : ControllerBase
     {       
         private readonly ILogger<RobotTaskController> _logger;
@@ -25,12 +25,15 @@ namespace RMSPrivateServerAPI.Controllers
         public RobotTaskController(ILogger<RobotTaskController> logger, 
                                    IRobotTaskRepository repository, 
                                    IRobotTaskService service, 
-                                   IMapper mapper)
+                                   IMapper mapper,
+                                   ApplicationDbContext context
+                                   )
         {
             _logger = logger;
             _robotTaskRepository = repository;
             _robotTaskService = service;
             _mapper = mapper;
+            _context = context;
         }
 
 
@@ -58,7 +61,12 @@ namespace RMSPrivateServerAPI.Controllers
         }
 
 
-        [HttpGet("{taskId}")]
+        /// <summary>
+        /// Получить задачу по ее уникальному коду
+        /// </summary>
+        /// <param name="taskId">Id задачи</param>
+        /// <returns></returns>
+        [HttpGet("{taskId}/")]
         public async Task<ActionResult<RobotTaskDto>> Get(string taskId)
         {
             var robotTask = await _robotTaskService.Get(taskId);
@@ -91,7 +99,14 @@ namespace RMSPrivateServerAPI.Controllers
             return robotTask;
         }
 
-
+        /// <summary>
+        /// Робот кидает событие в момент завершения текущей операции (подзадачи), 
+        /// сервер должен принять это к сведению и ответить, двигаться ли роботу дальше или подождать, 
+	    /// а может, вообще, планы кардинально изменились и нужно заново запрашивать весь список
+        /// </summary>
+        /// <param name="robotID">Id робота</param>
+        /// <param name="request">Результат выполнения текущей операции</param>
+        /// <returns>Робот завершил текущую операцию</returns>
         [HttpPost("{robotID}/tasks/action-done")]
         public IActionResult ActionDone(string robotID, [FromBody] ActionDoneRequest request)
         {

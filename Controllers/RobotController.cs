@@ -1,18 +1,17 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
-using RMSPrivateServerAPI.Services;
-using System.ComponentModel;
 
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Controllers;
-
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/[controller]/v1.0/Common/")]
+[Route("api/v1.0/Common/[controller]/")]
 //[Description("Ведение справочника роботов")]
 public class RobotController : ControllerBase
 {

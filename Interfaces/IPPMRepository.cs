@@ -1,5 +1,5 @@
 ﻿using RMSPrivateServerAPI.Entities;
-
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Interfaces
 {
     public interface IPPMRepository

@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using RMSPrivateServerAPI.Data;
-using RMSPrivateServerAPI.Interfaces;
-using RMSPrivateServerAPI.Models.Lib;
-using RMSPrivateServerAPI.Repositories;
 using System.Diagnostics;
 using System.Reflection;
+
+#pragma warning disable CS1591
+using RMSPrivateServerAPI.Data;
+using RMSPrivateServerAPI.Interfaces;
+using RMSPrivateServerAPI.Repositories;
 
 public partial class Program
 { 
@@ -13,7 +14,7 @@ public partial class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        Debug.Assert(RMSData.ConnectionTest());
+        //Debug.Assert(RMSData.ConnectionTest());
 
         // Add services to the container.
         builder.Services.AddControllers();
@@ -68,6 +69,13 @@ public partial class Program
         app.UseAuthorization();
 
         app.MapControllers();
+
+        // Определение маршрута
+        app.MapGet("/api/v1/test", () =>
+        {
+            return Results.Ok("OK");
+        });
+
 
         app.Run();
     }

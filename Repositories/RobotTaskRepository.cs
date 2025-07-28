@@ -20,18 +20,13 @@ public class RobotTaskRepository : IRobotTaskRepository
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var sql =
-                $@"SELECT * 
-               FROM  
-                    RobotTask t 
-               WHERE 
-                    t.robotid = @{nameof(taskId)}";
+        var sql = $@"SELECT * FROM robot_task t WHERE t.task_id = @{nameof(taskId)}";
                 
         var param = new { taskId };
 
-        var car = await db.QueryFirstOrDefaultAsync<robot_task>(sql, param);
+        var r_task = await db.QueryFirstOrDefaultAsync<robot_task>(sql, param);
 
-        return car;
+        return r_task;
     }
 
 
@@ -39,12 +34,7 @@ public class RobotTaskRepository : IRobotTaskRepository
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var sql =
-                $@"SELECT * 
-               FROM  
-                    RobotTask t 
-               WHERE 
-                    t.robotid = @{nameof(robotId)}";
+        var sql = $@"SELECT * FROM robot_task t WHERE t.robot_id = @{nameof(robotId)}";
 
         var param = new { robotId };
 
@@ -58,8 +48,8 @@ public class RobotTaskRepository : IRobotTaskRepository
     {
         var builder = new SqlBuilder();
         var sqlTemplate = builder.AddTemplate(
-            $@"SELECT * FROM RobotTask t 
-               WHERE   t.robotid = @{nameof(robotId)}   ");
+            $@"SELECT * FROM robot_task t 
+               WHERE   t.robot_id = @{nameof(robotId)}   ");
              
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -70,22 +60,14 @@ public class RobotTaskRepository : IRobotTaskRepository
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var sql = @"
-                DECLARE @InsertedRows AS TABLE (Id string);
-
-                MERGE INTO robot_task AS target
-                USING (SELECT @robot_id AS RobotId, @task_id AS TaskId, @title as Title) AS source                 
-                ON target.Id = source.Id
-                WHEN MATCHED THEN 
-                    UPDATE SET                         
-                        robotId   = source.robot_id,
-                        title     = source.title,                        
-                WHEN NOT MATCHED THEN
-                    INSERT (robot_id, title)
-                    VALUES (source.RobotId, source.Title)                     
-                    OUTPUT inserted.Id INTO @InsertedRows;
-                
-                SELECT Id FROM @InsertedRows;";
+        var sql = @"                
+                INSERT INTO robot_task (task_id, robot_id, title)
+                VALUES (@task_id, @robot_id, @title)
+                ON CONFLICT (task_id) DO UPDATE 
+                SET                                      
+                    robot_id   = EXCLUDED.robot_id,
+                    title      = EXCLUDED.title                                                        
+                RETURNING task_id;";
         
         var newTaskId  = await db.QuerySingleOrDefaultAsync<string>(sql, robotTask);
 
@@ -96,7 +78,7 @@ public class RobotTaskRepository : IRobotTaskRepository
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var query = "DELETE FROM RobotTask WHERE TaskId = @TaskId";
+        var query = "DELETE FROM robot_task WHERE task_id = @TaskId";
 
         return await db.ExecuteAsync(query, new { TaskId = robotTaskId });
     }
