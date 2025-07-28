@@ -34,7 +34,6 @@ public class RobotTaskProfile : Profile
             .ForMember(dest => dest.direction, opt => opt.MapFrom(src => src.Direction))
             .ForMember(dest => dest.distance, opt => opt.MapFrom(src => src.Distance))
             .ForMember(dest => dest.angle, opt => opt.MapFrom(src => src.Angle))
-            .ForMember(dest => dest.radius, opt => opt.MapFrom(src => src.Radius)).ReverseMap();
-            
+            .ForMember(dest => dest.radius, opt => opt.MapFrom(src => src.Radius)).ReverseMap();            
     }
 }
