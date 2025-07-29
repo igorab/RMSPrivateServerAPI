@@ -25,7 +25,7 @@ namespace RMSPrivateServerAPI.Services
             return await _robotTaskRepository.GetByTaskId(taskId);
         }
 
-        public async Task<robot_task> GetCurrent(string robotId)
+        public async Task<List<RobotTaskFlat?>> GetCurrent(string robotId)
         {
             if (string.IsNullOrEmpty(robotId))
             {

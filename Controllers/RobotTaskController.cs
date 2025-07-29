@@ -89,14 +89,18 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="robotId">Id робота</param>
         /// <returns></returns>
         [HttpGet("{robotId}/tasks/current/")]
-        public async Task<ActionResult<robot_task>> GetCurrentTask(string robotId)
+        public async Task<ActionResult<RobotTaskDto>> GetCurrentTask(string robotId)
         {
             var robotTask = await _robotTaskService.GetCurrent(robotId);
+
             if (robotTask == null)
             {
                 return NotFound();
             }
-            return robotTask;
+
+            var robotTaskDto = _mapper.Map<RobotTaskDto>(robotTask);
+
+            return robotTaskDto;
         }
 
         /// <summary>
@@ -145,9 +149,6 @@ namespace RMSPrivateServerAPI.Controllers
                 {
                     return BadRequest("No Robot Task was provided");
                 }
-
-
-
 
                 var robotTaskToInsert = _mapper.Map<robot_task>(robotTaskAsDto);
 

@@ -20,7 +20,7 @@ public class robot_task
     /// <summary>
     /// ”никальный идентификатор робота, которому назначена задача.
     /// </summary>
-    [ForeignKey("robotid")]
+    [ForeignKey("robot_id")]
     public string? robot_id { get; set; }
     
     /// <summary>

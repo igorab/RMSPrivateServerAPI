@@ -30,30 +30,26 @@ public class RobotTaskRepository : IRobotTaskRepository
     }
 
 
-    public async Task<robot_task?> GetCurrent(string robotId)
+    public async Task<List<RobotTaskFlat?>> GetCurrent(string robotId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var sql = $@"SELECT * FROM robot_task t WHERE t.robot_id = @{nameof(robotId)}";
+        var sql = $@"SELECT * FROM robot_task t left join robot_actions ra on ra.task_id = t.task_id  WHERE t.robot_id = @robotId";
 
         var param = new { robotId };
 
-        var car = await db.QueryFirstOrDefaultAsync<robot_task>(sql, param);
-
-        return car;
+        return (await db.QueryAsync<RobotTaskFlat?>(sql, param )).ToList();        
     }
 
 
-    public async Task<IEnumerable<robot_task>> GetAll(string robotId)
+    public async Task<IEnumerable<robot_task>> GetAll(string robot_id)
     {
         var builder = new SqlBuilder();
-        var sqlTemplate = builder.AddTemplate(
-            $@"SELECT * FROM robot_task t 
-               WHERE   t.robot_id = @{nameof(robotId)}   ");
+        var sqlTemplate = builder.AddTemplate($@"SELECT * FROM robot_task t  WHERE t.robot_id = @robot_id");
              
         using var db = _databaseConnectionFactory.GetConnection();
 
-        return await db.QueryAsync<robot_task>(sqlTemplate.RawSql, sqlTemplate.Parameters);
+        return await db.QueryAsync<robot_task>(sqlTemplate.RawSql, new {robot_id} );
     }
 
     public async Task<string> UpsertAsync(robot_task robotTask)

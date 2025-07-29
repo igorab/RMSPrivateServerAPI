@@ -11,7 +11,7 @@ public interface IRobotTaskRepository
 
     Task<robot_task?> GetByTaskId(string taskId);
 
-    Task<robot_task?> GetCurrent(string robotId);
+    Task <List<RobotTaskFlat?>> GetCurrent(string robotId);
 
     Task<string> UpsertAsync(robot_task robot);
 
