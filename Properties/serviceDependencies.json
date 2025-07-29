@@ -1,10 +1,5 @@
 {
   "dependencies": {
-    "postgresql1": {
-      "type": "postgresql",
-      "connectionId": "ConnectionStrings:DefaultConnection",
-      "dynamicId": null
-    },
     "mssql1": {
       "ignored": "true",
       "type": "mssql"
@@ -12,6 +7,10 @@
     "secrets1": {
       "type": "secrets",
       "dynamicId": null
+    },
+    "postgresql1": {
+      "type": "postgresql",
+      "connectionId": "ConnectionStrings:DefaultConnection"
     }
   }
 }

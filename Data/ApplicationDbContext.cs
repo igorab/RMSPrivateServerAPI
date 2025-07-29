@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Entities;
-
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Data;
 
 /// <summary>

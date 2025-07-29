@@ -8,6 +8,7 @@ namespace RMSPrivateServerAPI.Entities;
 /// <summary>
 /// Представляет задачу, назначенную роботу, включая её идентификатор и список операций.
 /// </summary>
+[Table("robot_task")]
 public class robot_task
 {
     /// <summary>

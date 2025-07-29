@@ -67,9 +67,9 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="taskId">Id задачи</param>
         /// <returns></returns>
         [HttpGet("{taskId}/")]
-        public async Task<ActionResult<RobotTaskDto>> Get(string taskId)
+        public async Task<ActionResult<RobotTaskDto>> GetById(string taskId)
         {
-            var robotTask = await _robotTaskService.Get(taskId);
+            var robotTask = await _robotTaskService.GetById(taskId);
 
             if (robotTask == null)
             {
@@ -143,8 +143,11 @@ namespace RMSPrivateServerAPI.Controllers
             {
                 if (robotTaskAsDto == null)
                 {
-                    return BadRequest("No Task was provided");
+                    return BadRequest("No Robot Task was provided");
                 }
+
+
+
 
                 var robotTaskToInsert = _mapper.Map<robot_task>(robotTaskAsDto);
 
@@ -192,7 +195,7 @@ namespace RMSPrivateServerAPI.Controllers
         {
             try
             {
-                await _robotTaskService.Delete(id);
+                await _robotTaskService.DeleteTask(id);
             }
             catch (Exception e)
             {

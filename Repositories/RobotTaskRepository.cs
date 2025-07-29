@@ -16,7 +16,7 @@ public class RobotTaskRepository : IRobotTaskRepository
         _databaseConnectionFactory = databaseConnectionFactory;
     }
 
-    public async Task<robot_task?> Get(string taskId)
+    public async Task<robot_task?> GetByTaskId(string taskId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 

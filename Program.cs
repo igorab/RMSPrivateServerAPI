@@ -7,6 +7,7 @@ using System.Reflection;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Repositories;
+using RMSPrivateServerAPI.Models.Lib;
 
 public partial class Program
 { 
@@ -14,7 +15,7 @@ public partial class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        //Debug.Assert(RMSData.ConnectionTest());
+        Debug.Assert(RMSData.ConnectionTest());
 
         // Add services to the container.
         builder.Services.AddControllers();

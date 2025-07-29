@@ -2,7 +2,7 @@
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
-
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Repositories;
 
 public class PPMRepository : IPPMRepository
@@ -19,9 +19,9 @@ public class PPMRepository : IPPMRepository
         var builder = new SqlBuilder();
 
         var sqlTemplate = builder.AddTemplate(
-            "SELECT * FROM ppmtask " 
-            );
-        
+            @"SELECT * FROM ""PPMTask"" " 
+            ); //@"SELECT * FROM ppmtask " 
+
         using var db = _databaseConnectionFactory.GetConnection();
 
         return await db.QueryAsync<ppmtask>(sqlTemplate.RawSql, sqlTemplate.Parameters);
@@ -70,7 +70,7 @@ public class PPMRepository : IPPMRepository
 
         var newTaskId = await db.QuerySingleOrDefaultAsync<int>(sql, ppmTask);
 
-        return newTaskId == 0 ? ppmTask.id : newTaskId;
+        return newTaskId; // == 0 ? ppmTask.id : newTaskId;
     }
 
     public async Task<int> DeleteAsync(int id)

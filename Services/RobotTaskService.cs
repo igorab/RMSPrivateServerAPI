@@ -15,14 +15,14 @@ namespace RMSPrivateServerAPI.Services
             _robotTaskRepository = robotTaskRepository;
         }
         
-        public async Task<robot_task> Get(string taskId)
+        public async Task<robot_task> GetById(string taskId)
         {
             if (String.IsNullOrEmpty(taskId))
             {
                 throw new Exception("Invalid task Id");
             }
 
-            return await _robotTaskRepository.Get(taskId);
+            return await _robotTaskRepository.GetByTaskId(taskId);
         }
 
         public async Task<robot_task> GetCurrent(string robotId)
@@ -71,9 +71,9 @@ namespace RMSPrivateServerAPI.Services
             return task;
         }
 
-        public async Task Delete(string taskId)
+        public async Task DeleteTask(string taskId)
         {
-            var r_task = await _robotTaskRepository.Get(taskId);
+            var r_task = await _robotTaskRepository.GetByTaskId(taskId);
 
             if (r_task != null)
             {

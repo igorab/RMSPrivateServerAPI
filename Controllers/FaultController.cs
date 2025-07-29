@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Entities;
-
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Controllers;
 
 
@@ -11,6 +11,11 @@ namespace RMSPrivateServerAPI.Controllers;
 public class FaultController : ControllerBase
 {
     private readonly ApplicationDbContext? _context;
+
+    public FaultController(ApplicationDbContext context)
+    {
+        _context = context;
+    }
 
     /// <summary>
     /// Сообщение о возникшей неисправности/ошибке
@@ -24,6 +29,7 @@ public class FaultController : ControllerBase
         foreach (var fault in faults)
         {
             _context?.Faults.Add(fault);
+            _context?.SaveChanges();
         }
         return Ok();
     }

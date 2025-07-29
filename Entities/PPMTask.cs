@@ -3,19 +3,20 @@ using System.ComponentModel.DataAnnotations.Schema;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Entities;
 
+[Table("\"PPMTask\"")]
 public class ppmtask
 {
     [Key]
-    public int id { get; set; }
+    [Column("Id")]
+    public Guid id { get; set; }
+    
+    [Column("RobotId")]
+    public Guid robotid { get; set; }
 
-    [ForeignKey("robotid")]
-    [Column("robotid")]
-    public string robotid { get; set; }
-
-    [Column("taskdescription")]
+    [Column("TaskDescription")]
     public string? taskdescription { get; set; }
 
-    [Column("scheduleddate")]
+    [Column("ScheduledDate")]
     public DateTime scheduleddate { get; set; }
 
     // Другие свойства для задач ППР >>

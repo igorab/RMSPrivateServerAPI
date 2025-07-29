@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.DTOs;
 
 /// <summary>
@@ -10,7 +10,7 @@ public class RobotInfoDto
     /// <summary>
     /// "Уникальный идентификатор робота (PRIMARY KEY)"
     /// </summary>
-    public string RobotId { get; set; }
+    public string? RobotId { get; set; }
 
     /// <summary>
     /// Аппаратный идентификатор робота
@@ -25,27 +25,27 @@ public class RobotInfoDto
     /// <summary>
     /// "Наименование модели робота"
     /// </summary>
-    public string RobotModel { get; set; }
+    public string? RobotModel { get; set; }
 
     /// <summary>
     /// "Человекочитаемое имя робота"
     /// </summary>
-    public string RobotName { get; set; }
+    public string? RobotName { get; set; }
 
     /// <summary>
     /// "IP-адрес робота"
     /// </summary>
-    public string IP { get; set; }
+    public string? IP { get; set; }
 
     /// <summary>
     /// "Версия программного обеспечения робота (RCS)"
     /// </summary>
-    public string SwVersion { get; set; }
+    public string? SwVersion { get; set; }
 
     /// <summary>
     /// "Версия конструктивного исполнения робота"
     /// </summary>
-    public string HwVersion { get; set; }
+    public string? HwVersion { get; set; }
 
     /// <summary>
     /// признак - удален

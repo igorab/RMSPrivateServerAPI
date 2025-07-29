@@ -1,4 +1,6 @@
-﻿namespace RMSPrivateServerAPI.Entities
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RMSPrivateServerAPI.Entities
 {
     /// <summary>
     /// Представляет информацию о неисправности или ошибке, возникшей в системе.
@@ -8,6 +10,7 @@
         /// <summary>
         /// Код ошибки
         /// </summary>
+        [Key]
         public Guid FaultId { get; set; }
 
         /// <summary>

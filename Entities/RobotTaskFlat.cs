@@ -7,8 +7,7 @@ namespace RMSPrivateServerAPI.Entities;
 
 [Table("robot_actions")]
 public class RobotTaskFlat : robot_task
-{
-    [Key]
+{    
     public string? action_id { get; set; }
 
     [ForeignKey("taskid")]
@@ -19,9 +18,9 @@ public class RobotTaskFlat : robot_task
     
     public int  action_type { get; set; }
 
-    public float? pose_X { get; set; }
+    public float? pose_x { get; set; }
 
-    public float? pose_Y { get; set; }
+    public float? pose_y { get; set; }
 
     public float? heading { get; set; }
 

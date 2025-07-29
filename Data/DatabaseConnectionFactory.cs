@@ -1,7 +1,7 @@
 using System.Data;
 using Microsoft.Extensions.Options;
 using Npgsql;
-
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Data;
 
 public class DatabaseConnectionFactory
