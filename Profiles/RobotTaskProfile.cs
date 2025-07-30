@@ -23,7 +23,7 @@ public class RobotTaskProfile : Profile
             .ForPath(dest => dest.TaskId, ac => ac.MapFrom(src => src.First().robot_task_id))
             .ForPath(dest => dest.RobotId, ac => ac.MapFrom(src => src.First().robot_id))
             .ForPath(dest => dest.Title, ac => ac.MapFrom(src => src.First().title))
-            .ForPath(dest => dest.RobotActions, ac => ac.MapFrom(src => src));
+            .ForPath(dest => dest.RobotActionsDto, ac => ac.MapFrom(src => src));
 
         CreateMap<RobotActionsDto, RobotTaskFlat>()
             .ForMember(dest => dest.action_id, opt => opt.MapFrom(src => src.ActionId))

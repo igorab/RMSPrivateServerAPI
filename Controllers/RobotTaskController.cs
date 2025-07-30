@@ -21,7 +21,6 @@ namespace RMSPrivateServerAPI.Controllers
         private readonly IMapper _mapper;
         private readonly ApplicationDbContext _context;
 
-
         public RobotTaskController(ILogger<RobotTaskController> logger, 
                                    IRobotTaskRepository repository, 
                                    IRobotTaskService service, 
@@ -34,6 +33,83 @@ namespace RMSPrivateServerAPI.Controllers
             _robotTaskService = service;
             _mapper = mapper;
             _context = context;
+        }
+
+        /// <summary>
+        /// ѕолучение текущей задачи дл€ робота
+        /// </summary>
+        /// <param name="robotId">Id робота</param>
+        /// <returns></returns>
+        [HttpGet("{robotId}/tasks/current/")]
+        public async Task<ActionResult<RobotTaskDto?>> GeCurrentTask(string robotId)
+        {
+            List<RobotTaskFlat?> robotTask = await _robotTaskService.GetCurrent(robotId);
+
+            Queue<RobotAction?> robotActions = await _robotTaskService.GetRobotActions(robotId);
+
+            if (robotActions == null)            
+                return NotFound();
+            
+
+            RobotTaskDto robotTaskDto = _mapper.Map<RobotTaskDto>(robotTask);
+
+            robotTaskDto.RobotActions = robotActions.ToList();
+
+            return robotTaskDto;
+        }
+
+
+        /// <summary>
+        /// ѕолучение текущей задачи дл€ робота
+        /// </summary>
+        /// <param name="robotId">Id робота</param>
+        /// <returns></returns>
+        [HttpGet("{robotId}/current/")]
+        public async Task<ActionResult<RobotTaskDto>> GetRobotTaskCurrent(string robotId)
+        {
+            List<RobotTaskFlat?> robotTask = await _robotTaskService.GetCurrent(robotId);
+
+            if (robotTask == null)
+            {
+                return NotFound();
+            }
+
+            RobotTaskDto robotTaskDto = _mapper.Map<RobotTaskDto>(robotTask);
+
+            return robotTaskDto;
+        }
+
+        /// <summary>
+        /// –обот кидает событие в момент завершени€ текущей операции (подзадачи), 
+        /// сервер должен прин€ть это к сведению и ответить, двигатьс€ ли роботу дальше или подождать, 
+	    /// а может, вообще, планы кардинально изменились и нужно заново запрашивать весь список
+        /// </summary>
+        /// <param name="robotID">Id робота</param>
+        /// <param name="request">–езультат выполнени€ текущей операции</param>
+        /// <returns>–обот завершил текущую операцию</returns>
+        [HttpPost("{robotID}/tasks/action-done")]
+        public IActionResult ActionDone(string robotID, [FromBody] ActionDoneRequest request)
+        {
+            try
+            {
+                // ќбработка завершени€ операции
+                robot_task? task = _context.Tasks.Find(request.TaskId);
+
+                //if (task.actions[request.ActionIndex].ActionType == 0)
+                //{
+                //    // Ћогика обработки ошибки
+                //    return Ok(new { command = "abort" });
+                //}
+
+                //return Ok(new { command = "next", action = task.actions[request.ActionIndex + 1] });
+                //
+                return Ok(request);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            ;
         }
 
 
@@ -83,57 +159,7 @@ namespace RMSPrivateServerAPI.Controllers
 
 
         
-        /// <summary>
-        /// ѕолучение текущей задачи дл€ робота
-        /// </summary>
-        /// <param name="robotId">Id робота</param>
-        /// <returns></returns>
-        [HttpGet("{robotId}/tasks/current/")]
-        public async Task<ActionResult<RobotTaskDto>> GetCurrentTask(string robotId)
-        {
-            var robotTask = await _robotTaskService.GetCurrent(robotId);
-
-            if (robotTask == null)
-            {
-                return NotFound();
-            }
-
-            var robotTaskDto = _mapper.Map<RobotTaskDto>(robotTask);
-
-            return robotTaskDto;
-        }
-
-        /// <summary>
-        /// –обот кидает событие в момент завершени€ текущей операции (подзадачи), 
-        /// сервер должен прин€ть это к сведению и ответить, двигатьс€ ли роботу дальше или подождать, 
-	    /// а может, вообще, планы кардинально изменились и нужно заново запрашивать весь список
-        /// </summary>
-        /// <param name="robotID">Id робота</param>
-        /// <param name="request">–езультат выполнени€ текущей операции</param>
-        /// <returns>–обот завершил текущую операцию</returns>
-        [HttpPost("{robotID}/tasks/action-done")]
-        public IActionResult ActionDone(string robotID, [FromBody] ActionDoneRequest request)
-        {
-            try
-            {
-                // ќбработка завершени€ операции
-                robot_task? task = _context.Tasks.Find(request.TaskId);
-
-                //if (task.actions[request.ActionIndex].ActionType == 0)
-                //{
-                //    // Ћогика обработки ошибки
-                //    return Ok(new { command = "abort" });
-                //}
-
-                //return Ok(new { command = "next", action = task.actions[request.ActionIndex + 1] });
-                //
-                return Ok(request);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            };
-        }      
+              
 
         /// <summary>
         /// ƒобавить задачу

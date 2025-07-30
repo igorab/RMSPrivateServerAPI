@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RMSPrivateServerAPI.Entities;
+using RMSPrivateServerAPI.Enums;
 using RMSPrivateServerAPI.Interfaces;
+using RMSPrivateServerAPI.Models;
 using RMSPrivateServerAPI.Repositories;
 #pragma warning disable CS1591, CS8603
 
@@ -14,7 +16,24 @@ namespace RMSPrivateServerAPI.Services
         {
             _robotTaskRepository = robotTaskRepository;
         }
+
         
+        public async Task<Queue<RobotAction?>> GetRobotActions(string taskId)
+        {
+            if (String.IsNullOrEmpty(taskId)) throw new Exception("Invalid task Id");
+            
+            return await Task.Run(() => InitRobotActions());
+        }
+
+        private static Queue<RobotAction?> InitRobotActions()
+        {
+            Queue<RobotAction?> robotActions = new Queue<RobotAction?>();
+
+            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });
+            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });
+            return robotActions;
+        }
+
         public async Task<robot_task> GetById(string taskId)
         {
             if (String.IsNullOrEmpty(taskId))
@@ -81,5 +100,7 @@ namespace RMSPrivateServerAPI.Services
             }
             return ;
         }
+
+       
     }
 }
