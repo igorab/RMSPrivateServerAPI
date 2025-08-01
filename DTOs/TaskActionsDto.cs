@@ -1,15 +1,17 @@
-﻿namespace RMSPrivateServerAPI.Entities;
+﻿namespace RMSPrivateServerAPI.DTOs;
 
 using System;
+using System.ComponentModel.DataAnnotations;
 
 /// <summary>
 /// Класс для работы с таблицей TaskActions
 /// </summary>
-public class TaskActions
+public class TaskActionsDto
 {
     /// <summary>
     /// Уникальный идентификатор действия
     /// </summary>
+    [Key]
     public int Id { get; set; }
     /// <summary>
     /// Идентификатор связанной задачи
@@ -38,5 +40,5 @@ public class TaskActions
     /// <summary>
     /// Навигационное свойство для связи с задачей (если необходимо)
     /// </summary>
-    public virtual Task Task { get; set; } // Связь с классом Task
+    //public virtual Task Task { get; set; } // Связь с классом Task
 }

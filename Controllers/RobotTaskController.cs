@@ -93,7 +93,7 @@ namespace RMSPrivateServerAPI.Controllers
             try
             {
                 // Обработка завершения операции
-                robot_task? task = _context.Tasks.Find(request.TaskId);
+                TasksDto? tasks = _context.Tasks.Find(request.TaskId);
 
                 //if (task.actions[request.ActionIndex].ActionType == 0)
                 //{

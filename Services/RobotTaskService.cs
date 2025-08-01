@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Enums;
 using RMSPrivateServerAPI.Interfaces;
@@ -12,9 +13,12 @@ namespace RMSPrivateServerAPI.Services
     {
         private readonly IRobotTaskRepository _robotTaskRepository;
 
-        public RobotTaskService(IRobotTaskRepository robotTaskRepository)
+        private readonly ApplicationDbContext _context;
+
+        public RobotTaskService(IRobotTaskRepository robotTaskRepository, ApplicationDbContext context)
         {
             _robotTaskRepository = robotTaskRepository;
+            _context = context;
         }
 
         
@@ -25,9 +29,31 @@ namespace RMSPrivateServerAPI.Services
             return await Task.Run(() => InitRobotActions());
         }
 
-        private static Queue<RobotAction?> InitRobotActions()
+        private  Queue<RobotAction?> InitRobotActions()
         {
             Queue<RobotAction?> robotActions = new Queue<RobotAction?>();
+
+            //var tasksWithLastAction = _context.Tasks
+            //    .Select(task => new 
+            //    {
+            //        Task = task,
+            //        LastAction = task.TaskActions
+            //            .OrderByDescending(a => a.CreatedAt)
+            //            .FirstOrDefault()
+            //    })
+            //    .Where(x => x.LastAction?.Status == "Received")
+            //    .ToList();
+
+            var joinedData = from task in _context.Tasks
+                             join action in _context.TaskActions
+                                 on task.TaskId equals action.TaskId
+                             where action.Status == "Received"  // Пример фильтра
+                             select new
+                             {
+                                 Task = task,
+                                 Action = action
+                             };
+
 
             robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });
             robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });

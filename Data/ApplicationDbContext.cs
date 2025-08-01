@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Data;
@@ -11,7 +12,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<robotinfo> Robots { get; set; }
     public DbSet<ppmtask> PPMTasks { get; set; }
     public DbSet<FaultInfoDto> Faults { get; set; }
-    public DbSet<robot_task> Tasks { get; set; }
+    public DbSet<TasksDto> Tasks { get; set; }
+    public DbSet<TaskActionsDto> TaskActions { get; set; }
+
+    public DbSet<robot_task> RobotTask { get; set; }
+
     public DbSet<RobotTaskFlat> RobotTaskActions { get; set; }
 
 
@@ -32,6 +37,8 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<RobotTaskFlat>().ToTable("RobotTaskActions");
 
         modelBuilder.Entity<FaultInfoDto>().ToTable("FaultInfo");
+
+        modelBuilder.Entity<TasksDto>().ToTable("Tasks");
     }
     
 }

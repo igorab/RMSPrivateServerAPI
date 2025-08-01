@@ -1,13 +1,18 @@
-﻿namespace RMSPrivateServerAPI.Entities;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace RMSPrivateServerAPI.DTOs;
 
 /// <summary>
 /// таблица, которая хранит информацию о задачах в приложении
 /// </summary>
-public class Tasks
+[Table("Tasks")]
+public class TasksDto
 {
     /// <summary>
     /// Unique identifier for each task.
     /// </summary>
+    [Key]
     public Guid TaskId { get; set; }
     /// <summary>
     /// Timestamp when the task was created.
@@ -20,17 +25,17 @@ public class Tasks
     /// <summary>
     /// Current status of the task.
     /// </summary>
-    public string Status { get; set; }
+    public string? Status { get; set; }
     /// <summary>
     /// Identifier for the store in WMS.
     /// </summary>
-    public string StoreWmsId { get; set; }
+    public string? StoreWmsId { get; set; }
     /// <summary>
     /// Identifier for the area in WMS.
     /// </summary>
-    public string AreaWmsId { get; set; }
+    public string? AreaWmsId { get; set; }
     /// <summary>
     /// Priority level of the task.
     /// </summary>
-    public int Priority { get; set; }
+    public int Priority { get; set; }    
 }
