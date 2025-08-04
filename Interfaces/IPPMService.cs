@@ -6,9 +6,9 @@ namespace RMSPrivateServerAPI.Interfaces;
 
 public interface IPPMService
 {
-    public IEnumerable<PPMTaskDto> GetTasksByRobotId(string RobotId);
+    public IEnumerable<PPMTaskDto> GetTasksByRobotId(Guid RobotId);
 
     public void AddPPMTask(PPMTaskDto ppmTaskDto);
 
-    public void EditPPMTask(int ppmTaskId, PPMTaskDto ppmTaskDto);        
+    public void EditPPMTask(Guid ppmTaskId, PPMTaskDto ppmTaskDto);        
 }

@@ -16,7 +16,7 @@ public class RobotTaskRepository : IRobotTaskRepository
         _databaseConnectionFactory = databaseConnectionFactory;
     }
 
-    public async Task<robot_task?> GetByTaskId(string taskId)
+    public async Task<robot_task?> GetByTaskId(Guid taskId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -30,22 +30,22 @@ public class RobotTaskRepository : IRobotTaskRepository
     }
 
 
-    public async Task<List<RobotTaskFlat?>> GetCurrent(string srobotId)
+    public async Task<List<RobotTaskFlat?>> GetCurrent(Guid robotId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var sql = $@"SELECT * FROM ""RobotTask"" t left join ""RobotActions"" ra on ra.""TaskId"" = t.""TaskId""
-                    WHERE t.""RobotId"" = @robotId";
-
-        Guid robotId = Guid.Empty;
-
+        var sql = $@"SELECT * FROM ""RobotTask"" t 
+                        left join ""RobotActions"" ra 
+                        on ra.""TaskId"" = t.""TaskId""
+                        WHERE t.""RobotId"" = @robotId";
+        
         var param = new { robotId };
 
         return (await db.QueryAsync<RobotTaskFlat?>(sql, param )).ToList();        
     }
 
 
-    public async Task<IEnumerable<robot_task>> GetAll(string robot_id)
+    public async Task<IEnumerable<robot_task>> GetAll(Guid robot_id)
     {
         var builder = new SqlBuilder();
         var sqlTemplate = builder.AddTemplate($@"SELECT * FROM ""RobotTask"" t  WHERE t.""RobotId"" = @robot_id");
@@ -55,7 +55,7 @@ public class RobotTaskRepository : IRobotTaskRepository
         return await db.QueryAsync<robot_task>(sqlTemplate.RawSql, new {robot_id} );
     }
 
-    public async Task<string> UpsertAsync(robot_task robotTask)
+    public async Task<Guid> UpsertAsync(robot_task robotTask)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -68,12 +68,12 @@ public class RobotTaskRepository : IRobotTaskRepository
                     ""Title""      = EXCLUDED.title                                                        
                 RETURNING task_id;";
         
-        var newTaskId  = await db.QuerySingleOrDefaultAsync<string>(sql, robotTask);
+        var newTaskId  = await db.QuerySingleOrDefaultAsync<Guid>(sql, robotTask);
 
-        return  string.IsNullOrEmpty(newTaskId) ? robotTask.TaskId : newTaskId ;
+        return  newTaskId == Guid.Empty ? robotTask.TaskId : newTaskId ;
     }
 
-    public async Task<int> DeleteAsync(string robotTaskId)
+    public async Task<int> DeleteAsync(Guid robotTaskId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 

@@ -22,49 +22,50 @@ namespace RMSPrivateServerAPI.Services
         }
 
         
-        public async Task<Queue<RobotAction?>> GetRobotActions(string taskId)
+        public async Task<Queue<RobotAction?>> GetRobotActions(Guid taskId)
         {
-            if (String.IsNullOrEmpty(taskId)) throw new Exception("Invalid task Id");
+            if (Guid.Empty == taskId) throw new Exception("Invalid task Id");
             
-            return await Task.Run(() => InitRobotActions());
+            return await Task.Run(() => RobotActionsQueue());
         }
 
-        private  Queue<RobotAction?> InitRobotActions()
+        private  Queue<RobotAction?> RobotActionsQueue()
         {
             Queue<RobotAction?> robotActions = new Queue<RobotAction?>();
-
-            //var tasksWithLastAction = _context.Tasks
-            //    .Select(task => new 
-            //    {
-            //        Task = task,
-            //        LastAction = task.TaskActions
-            //            .OrderByDescending(a => a.CreatedAt)
-            //            .FirstOrDefault()
-            //    })
-            //    .Where(x => x.LastAction?.Status == "Received")
-            //    .ToList();
-
+            
             var joinedData = from task in _context.Tasks
                              join action in _context.TaskActions
                                  on task.TaskId equals action.TaskId
-                             where action.Status == "Received"  // Пример фильтра
+                             where action.Status == "Received" 
+                             orderby action.CreatedAt descending
                              select new
                              {
                                  Task = task,
                                  Action = action
                              };
 
-            var data = joinedData.ToList();            
+            var data = joinedData.ToList();
+
+            foreach (var item in data)
+            {
+                var curAction = item.Action;
+
+                var curTask = item.Task;
+            }
 
 
             robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });
+            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.load });
             robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });
+            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.unload });
+
+
             return robotActions;
         }
 
-        public async Task<robot_task> GetById(string taskId)
+        public async Task<robot_task> GetById(Guid taskId)
         {
-            if (String.IsNullOrEmpty(taskId))
+            if (Guid.Empty == taskId)
             {
                 throw new Exception("Invalid task Id");
             }
@@ -72,9 +73,9 @@ namespace RMSPrivateServerAPI.Services
             return await _robotTaskRepository.GetByTaskId(taskId);
         }
 
-        public async Task<List<RobotTaskFlat?>> GetCurrent(string robotId)
+        public async Task<List<RobotTaskFlat?>> GetCurrent(Guid robotId)
         {
-            if (string.IsNullOrEmpty(robotId))
+            if (Guid.Empty == robotId)
             {
                 throw new Exception("Invalid robot Id");
             }
@@ -87,7 +88,7 @@ namespace RMSPrivateServerAPI.Services
         {
             var newId = await _robotTaskRepository.UpsertAsync(task);
 
-            if (newId != String.Empty)
+            if (newId != Guid.Empty)
             {
                 task.TaskId = newId;
             }
@@ -101,7 +102,7 @@ namespace RMSPrivateServerAPI.Services
 
         public async Task<robot_task> Update(robot_task task)
         {
-            if (task.TaskId == String.Empty)
+            if (task.TaskId == Guid.Empty)
             {
                 throw new Exception("Task id must be set");
             }
@@ -118,7 +119,7 @@ namespace RMSPrivateServerAPI.Services
             return task;
         }
 
-        public async Task DeleteTask(string taskId)
+        public async Task DeleteTask(Guid taskId)
         {
             var r_task = await _robotTaskRepository.GetByTaskId(taskId);
 
@@ -127,8 +128,6 @@ namespace RMSPrivateServerAPI.Services
                 await _robotTaskRepository.DeleteAsync(taskId);
             }
             return ;
-        }
-
-       
+        }       
     }
 }

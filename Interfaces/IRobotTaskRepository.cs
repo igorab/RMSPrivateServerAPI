@@ -7,13 +7,13 @@ namespace RMSPrivateServerAPI.Interfaces;
 /// </summary>
 public interface IRobotTaskRepository
 {
-    Task<IEnumerable<robot_task>> GetAll(string robotId);
+    Task<IEnumerable<robot_task>> GetAll(Guid robotId);
 
-    Task<robot_task?> GetByTaskId(string taskId);
+    Task<robot_task?> GetByTaskId(Guid taskId);
 
-    Task <List<RobotTaskFlat?>> GetCurrent(string robotId);
+    Task <List<RobotTaskFlat?>> GetCurrent(Guid robotId);
 
-    Task<string> UpsertAsync(robot_task robot);
+    Task<Guid> UpsertAsync(robot_task robot);
 
-    Task<int> DeleteAsync(string id);
+    Task<int> DeleteAsync(Guid id);
 }

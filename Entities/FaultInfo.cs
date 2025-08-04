@@ -3,7 +3,7 @@
     /// <summary>
     /// Представляет информацию о неисправности или ошибке, возникшей в системе.
     /// </summary>
-    public class FaultInfo
+    class FaultInfo
     {
         /// <summary>
         /// Код ошибки

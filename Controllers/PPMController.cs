@@ -34,7 +34,7 @@ public class PPMController : ControllerBase
     }
 
     [HttpGet("List")]
-    public ActionResult<IEnumerable<PPMTaskDto>> GetPPMTasks(string robotId)
+    public ActionResult<IEnumerable<PPMTaskDto>> GetPPMTasks(Guid robotId)
     {
         var tasks = _ppmService.GetTasksByRobotId(robotId);
 
@@ -52,7 +52,7 @@ public class PPMController : ControllerBase
     [HttpPost("Edit")]
     public ActionResult EditPPMTask([FromBody]  PPMTaskDto ppmTaskDto)
     {
-        _ppmService.EditPPMTask(0, ppmTaskDto);
+        _ppmService.EditPPMTask(Guid.Empty, ppmTaskDto);
 
         return NoContent();
     }

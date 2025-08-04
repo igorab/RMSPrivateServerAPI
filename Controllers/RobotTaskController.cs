@@ -41,18 +41,23 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="robotId">Id робота</param>
         /// <returns></returns>
         [HttpGet("{robotId}/tasks/current/")]
-        public async Task<ActionResult<RobotTaskDto?>> GeCurrentTask(string robotId)
+        public async Task<ActionResult<RobotTaskDto?>> GeCurrentTask(Guid robotId)
         {
-            List<RobotTaskFlat?> robotTask = await _robotTaskService.GetCurrent(robotId);
+            //List<RobotTaskFlat?> robotTask = await _robotTaskService.GetCurrent(robotId);
 
             Queue<RobotAction?> robotActions = await _robotTaskService.GetRobotActions(robotId);
 
             if (robotActions == null)            
                 return NotFound();
+
+
+            RobotTaskDto robotTaskDto = new RobotTaskDto()
+            {
+                TaskId = Guid.NewGuid(),
+                RobotId = robotId,
+                Title   = "Go ahead!"
+            };
             
-
-            RobotTaskDto robotTaskDto = _mapper.Map<RobotTaskDto>(robotTask);
-
             robotTaskDto.RobotActions = robotActions.ToList();
 
             return robotTaskDto;
@@ -65,7 +70,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="robotId">Id робота</param>
         /// <returns></returns>
         [HttpGet("{robotId}/current/")]
-        public async Task<ActionResult<RobotTaskDto>> GetRobotTaskCurrent(string robotId)
+        public async Task<ActionResult<RobotTaskDto>> GetRobotTaskCurrent(Guid robotId)
         {
             List<RobotTaskFlat?> robotTask = await _robotTaskService.GetCurrent(robotId);
 
@@ -131,7 +136,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="robotId">Id робота</param>
         /// <returns></returns>
         [HttpGet("{robotId}/tasks/all/")]
-        public async Task<IEnumerable<robot_task>> GetAll(string robotId)
+        public async Task<IEnumerable<robot_task>> GetAll(Guid robotId)
         {
             return await _robotTaskRepository.GetAll(robotId);
         }
@@ -143,7 +148,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="taskId">Id задачи</param>
         /// <returns></returns>
         [HttpGet("{taskId}/")]
-        public async Task<ActionResult<RobotTaskDto>> GetById(string taskId)
+        public async Task<ActionResult<RobotTaskDto>> GetById(Guid taskId)
         {
             var robotTask = await _robotTaskService.GetById(taskId);
 
@@ -218,7 +223,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("Delete/{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             try
             {

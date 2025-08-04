@@ -15,13 +15,13 @@ public class robot_task
     /// ”никальный идентификатор задачи в системе RMS.
     /// </summary>
     [Key]
-    public string? TaskId { get; set; }
+    public Guid TaskId { get; set; }
 
     /// <summary>
     /// ”никальный идентификатор робота, которому назначена задача.
     /// </summary>
     [ForeignKey("RobotId")]
-    public string? RobotId { get; set; }
+    public Guid RobotId { get; set; }
     
     /// <summary>
     /// „еловекочитаемое название задачи.
