@@ -32,9 +32,9 @@ public class PPMRepository : IPPMRepository
         var sql =
                 $@"SELECT * 
                     FROM  
-                PPMTask  T 
+                ""PPMTask""  T 
                     WHERE 
-                T.Id = @{nameof(id)}";
+                T.""Id"" = @{nameof(id)}";
 
         var param = new {id};
 
@@ -53,7 +53,7 @@ public class PPMRepository : IPPMRepository
         var sql = @"
                 DECLARE @InsertedRows AS TABLE (Id int);
 
-                MERGE INTO PPMTask AS target
+                MERGE INTO ""PPMTask"" AS target
                 USING (SELECT @RobotId AS RobotId, @TaskDescription AS TaskDescription, @ScheduledDate as ScheduledDate) AS source                 
                 ON target.Id = source.Id
                 WHEN MATCHED THEN 
@@ -77,7 +77,7 @@ public class PPMRepository : IPPMRepository
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var query = @"DELETE FROM PPMTask WHERE Id = @id";
+        var query = @"DELETE FROM ""PPMTask"" WHERE ""Id"" = @id";
 
         return await db.ExecuteAsync(query, new { Id = id }); 
     }

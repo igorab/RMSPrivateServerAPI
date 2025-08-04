@@ -26,12 +26,11 @@ public class RobotRepository : IRobotRepository
         var builder = new SqlBuilder();
 
         var sqlTemplate = builder.AddTemplate(
-            "SELECT * FROM robotinfo " +
-            "/**where**/ ");
-
+            @"SELECT * FROM ""RobotInfo""");
+            
         if (!returnDeletedRecords)
         {
-            builder.Where("is_deleted=0");
+            builder.Where(@"""Is_Deleted"" = 0");
         }
 
         using var db = _databaseConnectionFactory.GetConnection();
@@ -39,17 +38,14 @@ public class RobotRepository : IRobotRepository
         return await db.QueryAsync<robotinfo>(sqlTemplate.RawSql, sqlTemplate.Parameters);
     }
 
-    public async Task<robotinfo?> Get(string robotId)
-    {
+    public async Task<robotinfo?> Get(Guid robotId)
+    {        
         using var db = _databaseConnectionFactory.GetConnection();
 
         var sql =
-            $@"SELECT * 
-                    FROM  
-                robotinfo RI 
-                    WHERE 
-                RI.robotid = @{nameof(robotId)}
-                AND RI.is_deleted = 0";
+            $@"SELECT * FROM ""RobotInfo"" RI WHERE 
+                RI.""RobotId"" = @{nameof(robotId)}
+                AND RI.""Is_Deleted"" = 0";
 
         var param = new {robotId};
 
@@ -58,35 +54,36 @@ public class RobotRepository : IRobotRepository
         return robot;
     }
     
-    public async Task<string> UpsertAsync(robotinfo robot)
+    public async Task<Guid> UpsertAsync(robotinfo robot)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
         var sql = @"
-                INSERT INTO robotinfo (robotid, robothardwareid, robottype, robotmodel, robotname, ip, swversion, hwversion, is_deleted)
-                    VALUES (@robotid, @robothardwareid, @robottype, @robotmodel, @robotname, @ip, @swversion, @hwversion, @is_deleted)
-                    ON CONFLICT (robotid) DO UPDATE
+                INSERT INTO ""RobotInfo"" (""RobotId"", ""RobotHardwareId"", ""RobotType"", ""RobotModel"", ""RobotName"", ""IP"", ""SwVersion"", ""HwVersion"", ""Is_Deleted"")
+                    VALUES (@RobotId, @robothardwareid, @robottype, @robotmodel, @robotname, @ip, @swversion, @hwversion, @is_deleted)
+                    ON CONFLICT (""RobotId"") DO UPDATE
                     SET                         
-                        robothardwareid = EXCLUDED.robothardwareid,
-                        robottype       = EXCLUDED.robottype,
-                        robotmodel      = EXCLUDED.robotmodel,
-                        robotname       = EXCLUDED.robotname,
-                        ip              = EXCLUDED.ip,
-                        swversion       = EXCLUDED.swversion,
-                        hwversion       = EXCLUDED.hwversion,
-                        is_deleted      = EXCLUDED.is_deleted
-                    RETURNING robotid;
+                        ""RobotHardwareId"" = EXCLUDED.""RobotHardwareId"",
+                        ""RobotType""       = EXCLUDED.""RobotType"",
+                        ""RobotModel""      = EXCLUDED.""RobotModel"",
+                        ""RobotName""       = EXCLUDED.""RobotName"",
+                        ""IP""              = EXCLUDED.""IP"",
+                        ""SwVersion""       = EXCLUDED.""SwVersion"",
+                        ""HwVersion""       = EXCLUDED.""HwVersion"",
+                        ""Is_Deleted""      = EXCLUDED.""Is_Deleted""
+                    RETURNING ""RobotId"";
             ";
 
-        var newId = await db.QuerySingleOrDefaultAsync<string>(sql, robot);
-        return newId == String.Empty ? robot.robotid : newId;
+        var newId = await db.QuerySingleOrDefaultAsync<Guid>(sql, robot);
+
+        return newId == Guid.Empty ? robot.RobotId : newId;
     }
 
-    public async Task<int> DeleteAsync(string robot_id)
+    public async Task<int> DeleteAsync(Guid robot_id)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var query = "Update robotinfo SET is_deleted = 1 WHERE robotid = @id";
+        var query = @"Update ""RobotInfo"" SET ""Is_Deleted"" = 1 WHERE ""RobotId"" = @id";
 
         return await db.ExecuteAsync(query, new { id = robot_id });
     }

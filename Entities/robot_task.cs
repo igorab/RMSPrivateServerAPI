@@ -8,24 +8,24 @@ namespace RMSPrivateServerAPI.Entities;
 /// <summary>
 /// Представляет задачу, назначенную роботу, включая её идентификатор и список операций.
 /// </summary>
-[Table("robot_task")]
+[Table("RobotTask")]
 public class robot_task
 {
     /// <summary>
     /// Уникальный идентификатор задачи в системе RMS.
     /// </summary>
     [Key]
-    public string? task_id { get; set; }
+    public string? TaskId { get; set; }
 
     /// <summary>
     /// Уникальный идентификатор робота, которому назначена задача.
     /// </summary>
-    [ForeignKey("robot_id")]
-    public string? robot_id { get; set; }
+    [ForeignKey("RobotId")]
+    public string? RobotId { get; set; }
     
     /// <summary>
     /// Человекочитаемое название задачи.
     /// </summary>
-    public string? title { get; set; }
+    public string? Title { get; set; }
     
 }

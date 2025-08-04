@@ -61,7 +61,7 @@ namespace RMSPrivateServerAPI.Models.Lib
             {
                 using (var cnn = new NpgsqlConnection(ConnectionString))
                 {
-                    var output = cnn.Query<ppmtask>("select * from PPMTask", new ppmtask());
+                    var output = cnn.Query<ppmtask>(@"select * from ""PPMTask""", new ppmtask());
                     return output.ToList();
                 }
             }

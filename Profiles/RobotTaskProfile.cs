@@ -14,14 +14,14 @@ public class RobotTaskProfile : Profile
     public RobotTaskProfile()
     {
         CreateMap<RobotTaskDto, robot_task>()
-            .ForMember(tsk => tsk.task_id, task => task.MapFrom(robotDto => robotDto.TaskId))
-            .ForMember(tsk => tsk.robot_id, task => task.MapFrom(robotDto => robotDto.RobotId))
-            .ForMember(tsk => tsk.title, task => task.MapFrom(robotDto => robotDto.Title))            
+            .ForMember(tsk => tsk.TaskId, task => task.MapFrom(robotDto => robotDto.TaskId))
+            .ForMember(tsk => tsk.RobotId, task => task.MapFrom(robotDto => robotDto.RobotId))
+            .ForMember(tsk => tsk.Title, task => task.MapFrom(robotDto => robotDto.Title))            
             .ReverseMap();
 
         CreateMap<List<RobotTaskFlat>, RobotTaskDto>()
             .ForPath(dest => dest.TaskId, ac => ac.MapFrom(src => src.First().robot_task_id))
-            .ForPath(dest => dest.RobotId, ac => ac.MapFrom(src => src.First().robot_id))
+            .ForPath(dest => dest.RobotId, ac => ac.MapFrom(src => src.First().RobotId))
             .ForPath(dest => dest.Title, ac => ac.MapFrom(src => src.First().title))
             .ForPath(dest => dest.RobotActionsDto, ac => ac.MapFrom(src => src));
 

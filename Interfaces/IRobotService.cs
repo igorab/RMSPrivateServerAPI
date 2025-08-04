@@ -5,6 +5,6 @@ public interface IRobotService
 {
     Task<robotinfo> Insert(robotinfo robot);
     Task<robotinfo> Update(robotinfo robot);
-    Task Delete(string id);
-    Task<robotinfo> Get(string id); 
+    Task Delete(Guid id);
+    Task<robotinfo> Get(Guid id); 
 }

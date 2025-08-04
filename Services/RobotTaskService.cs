@@ -54,6 +54,8 @@ namespace RMSPrivateServerAPI.Services
                                  Action = action
                              };
 
+            var data = joinedData.ToList();            
+
 
             robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });
             robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });
@@ -87,7 +89,7 @@ namespace RMSPrivateServerAPI.Services
 
             if (newId != String.Empty)
             {
-                task.task_id = newId;
+                task.TaskId = newId;
             }
             else
             {
@@ -99,12 +101,12 @@ namespace RMSPrivateServerAPI.Services
 
         public async Task<robot_task> Update(robot_task task)
         {
-            if (task.task_id == String.Empty)
+            if (task.TaskId == String.Empty)
             {
                 throw new Exception("Task id must be set");
             }
 
-            var oldId = task.task_id;
+            var oldId = task.TaskId;
 
             var newId = await _robotTaskRepository.UpsertAsync(task);
 

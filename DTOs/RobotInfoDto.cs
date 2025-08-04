@@ -10,7 +10,7 @@ public class RobotInfoDto
     /// <summary>
     /// "Уникальный идентификатор робота (PRIMARY KEY)"
     /// </summary>
-    public string? RobotId { get; set; }
+    public Guid? RobotId { get; set; }
 
     /// <summary>
     /// Аппаратный идентификатор робота

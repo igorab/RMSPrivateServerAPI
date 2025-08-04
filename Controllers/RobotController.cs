@@ -50,7 +50,7 @@ public class RobotController : ControllerBase
     /// <param name="id">Id робота</param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<robotinfo>> Get(string id)
+    public async Task<ActionResult<robotinfo>> Get(Guid id)
     {
         var robot = await _robotService.Get(id);
         if (robot == null)
@@ -118,7 +118,7 @@ public class RobotController : ControllerBase
     /// <param name="id"> Id робота </param>
     /// <returns></returns>
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(string id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {

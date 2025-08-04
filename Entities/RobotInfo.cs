@@ -15,7 +15,7 @@ public class robotinfo
     /// "Уникальный идентификатор робота (PRIMARY KEY)"
     /// </summary>
     [Key]
-    public string robotid { get; set; }
+    public Guid RobotId { get; set; }
 
     /// <summary>
     /// Аппаратный идентификатор робота

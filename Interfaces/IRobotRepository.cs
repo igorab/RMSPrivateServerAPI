@@ -5,9 +5,9 @@ public interface IRobotRepository
 {
     Task<IEnumerable<robotinfo>> GetAll(bool returnDeletedRecords = false);
 
-    Task<robotinfo?> Get(string id);
+    Task<robotinfo?> Get(Guid id);
     
-    Task<string> UpsertAsync(robotinfo robot);
+    Task<Guid> UpsertAsync(robotinfo robot);
     
-    Task<int> DeleteAsync(string id);
+    Task<int> DeleteAsync(Guid id);
 }

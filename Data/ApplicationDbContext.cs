@@ -12,11 +12,11 @@ public class ApplicationDbContext : DbContext
     public DbSet<robotinfo> Robots { get; set; }
     public DbSet<ppmtask> PPMTasks { get; set; }
     public DbSet<FaultInfoDto> Faults { get; set; }
+    // common task from WMS >>
     public DbSet<TasksDto> Tasks { get; set; }
     public DbSet<TaskActionsDto> TaskActions { get; set; }
-
+    // common task from WMS <<
     public DbSet<robot_task> RobotTask { get; set; }
-
     public DbSet<RobotTaskFlat> RobotTaskActions { get; set; }
 
 
