@@ -11,12 +11,12 @@ namespace RMSPrivateServerAPI.DTOs
         /// <summary>
         /// Уникальный идентификатор задачи в системе RMS.
         /// </summary>
-        public Guid? TaskId { get; set; }
+        public Guid TaskId { get; set; }
 
         /// <summary>
         /// Уникальный идентификатор робота, которому назначена задача.
         /// </summary>
-        public Guid? RobotId { get; set; }
+        public Guid RobotId { get; set; }
         
         /// <summary>
         /// Человекочитаемое название задачи.

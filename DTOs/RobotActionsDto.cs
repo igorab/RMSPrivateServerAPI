@@ -1,10 +1,13 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.DTOs;
 
 public class RobotActionsDto
 {
-    public string? ActionId { get; set; }
+    [Key]
+    public Guid ActionId { get; set; }
+    public Guid TaskId { get; set; }
     public string? Title { get; set; }
     public int ActionType { get; set; }
     public float? Pose_X { get; set; }

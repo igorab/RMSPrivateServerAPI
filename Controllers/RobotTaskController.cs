@@ -162,10 +162,7 @@ namespace RMSPrivateServerAPI.Controllers
             return robotTaskDto;
         }
 
-
-        
-              
-
+                      
         /// <summary>
         /// Добавить задачу
         /// </summary>
@@ -181,7 +178,7 @@ namespace RMSPrivateServerAPI.Controllers
                     return BadRequest("No Robot Task was provided");
                 }
 
-                var robotTaskToInsert = _mapper.Map<robot_task>(robotTaskAsDto);
+                robot_task robotTaskToInsert = _mapper.Map<robot_task>(robotTaskAsDto);
 
                 var insertedRobotTask = await _robotTaskService.Insert(robotTaskToInsert);
 
@@ -202,7 +199,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// </summary>
         /// <param name="robotTask"></param>
         /// <returns></returns>
-        [HttpPut(("Edit"))]
+        [HttpPut("Edit")]
         public async Task<IActionResult> Put([FromBody] robot_task robotTask)
         {
             try
@@ -234,6 +231,36 @@ namespace RMSPrivateServerAPI.Controllers
                 return BadRequest(e);
             }
             return NoContent();
+        }
+
+
+        [HttpPost("AddRobotAction/{taskId}")]
+        public async Task<IActionResult> AddRobotAction(Guid taskId, [FromBody] RobotActionsDto robotActionDto)
+        {
+            if (robotActionDto == null)
+            {
+                return BadRequest("Invalid data.");
+            }
+
+            var robotAction = new RobotActionsDto
+            {
+                ActionId = Guid.NewGuid(),
+                TaskId   = taskId,
+                Title    = robotActionDto.Title,
+                ActionType = robotActionDto.ActionType,
+                Pose_X = robotActionDto.Pose_X,
+                Pose_Y = robotActionDto.Pose_Y,
+                Heading = robotActionDto.Heading,
+                Direction = robotActionDto.Direction,
+                Distance = robotActionDto.Distance,
+                Angle = robotActionDto.Angle,
+                Radius = robotActionDto.Radius
+            };
+
+            _context.RobotActions.Add(robotAction);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(AddRobotAction), new { id = robotAction.ActionId }, robotAction);
         }
     }
 }

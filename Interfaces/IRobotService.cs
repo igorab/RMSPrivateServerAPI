@@ -1,10 +1,13 @@
 ﻿using RMSPrivateServerAPI.Entities;
+
+#pragma warning disable CS1591
+
 namespace RMSPrivateServerAPI.Interfaces;
 
 public interface IRobotService
 {
-    Task<robotinfo> Insert(robotinfo robot);
-    Task<robotinfo> Update(robotinfo robot);
+    Task<robot_info> Insert(robot_info robot);
+    Task<robot_info> Update(robot_info robot);
     Task Delete(Guid id);
-    Task<robotinfo> Get(Guid id); 
+    Task<robot_info?> Get(Guid robotId); 
 }

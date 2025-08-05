@@ -24,11 +24,11 @@ public class TaskActionsDto
     /// <summary>
     /// Текущий статус действия
     /// </summary>
-    public string Status { get; set; }
+    public string? Status { get; set; }
     /// <summary>
     /// Местоположение, где выполнено действие
     /// </summary>
-    public string Location { get; set; }
+    public string? Location { get; set; }
     /// <summary>
     /// Тип действия
     /// </summary>

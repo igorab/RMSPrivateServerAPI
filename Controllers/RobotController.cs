@@ -1,10 +1,12 @@
 ﻿using Asp.Versioning;
 using AutoMapper;
+using Azure;
 using Microsoft.AspNetCore.Mvc;
 
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
+using System;
 
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Controllers;
@@ -39,7 +41,7 @@ public class RobotController : ControllerBase
     /// </summary>
     /// <param name="returnDeletedRecords">в т.ч. удаленные</param>     
     [HttpGet("List")]
-    public async Task<IEnumerable<robotinfo>> GetAll([FromRoute] bool returnDeletedRecords = false)
+    public async Task<IEnumerable<robot_info>> GetAll([FromRoute] bool returnDeletedRecords = false)
     {        
         return await _robotRepository.GetAll(returnDeletedRecords);
     }
@@ -50,7 +52,7 @@ public class RobotController : ControllerBase
     /// <param name="id">Id робота</param>
     /// <returns></returns>
     [HttpGet("{id}")]
-    public async Task<ActionResult<robotinfo>> Get(Guid id)
+    public async Task<ActionResult<robot_info>> Get(Guid id)
     {
         var robot = await _robotService.Get(id);
         if (robot == null)
@@ -66,7 +68,7 @@ public class RobotController : ControllerBase
     /// <param name="robotAsDto"></param>
     /// <returns></returns>
     [HttpPost("Register")]
-    public async Task<ActionResult<robotinfo>> Insert([FromBody] RobotInfoDto robotAsDto)
+    public async Task<ActionResult<robot_info>> RegisterRobot([FromBody] RobotInfoDto robotAsDto)
     {
         try
         {
@@ -75,15 +77,32 @@ public class RobotController : ControllerBase
                 return BadRequest("No Robot was provided");
             }
 
-            var robotToInsert = _mapper.Map<robotinfo>(robotAsDto);
+            if (robotAsDto.RobotId == Guid.Empty)
+            {
+                robotAsDto.RobotId = Guid.NewGuid();
+            }
+            else
+            {
+                var robot_exist = await _robotService.Get(robotAsDto.RobotId);
+                if (robot_exist != null)
+                {
+                    return Ok("Робот с таким RobotId уже был зарегистрирован.");
+                }
+            }
 
-            var insertedRobot = await _robotService.Insert(robotToInsert);
+            robot_info robotToInsert = _mapper.Map<robot_info>(robotAsDto);
 
-            var insertedRobotDto = _mapper.Map<RobotInfoDto>(insertedRobot);
+            robot_info insertedRobot = await _robotService.Insert(robotToInsert);
 
-            var location = $"https://localhost/RobotInfo/{insertedRobotDto.RobotId}"; ;
+            RobotInfoDto insertedRobotDto = _mapper.Map<RobotInfoDto>(insertedRobot);
+                        
+            var res = CreatedAtAction(nameof(RegisterRobot), new
+                            {
+                                message = "Робот успешно зарегистрирован в системе (добавлен в БД)",
+                                insertedRobotDto.RobotId
+                            });
 
-            return Created(location, insertedRobotDto);
+            return res;
 
         }
         catch (Exception ex)
@@ -98,7 +117,7 @@ public class RobotController : ControllerBase
     /// <param name="robot"></param>
     /// <returns></returns>
     [HttpPut("Edit")]
-    public async Task<IActionResult> Put([FromBody] robotinfo robot)
+    public async Task<IActionResult> Put([FromBody] robot_info robot)
     {
         try
         {

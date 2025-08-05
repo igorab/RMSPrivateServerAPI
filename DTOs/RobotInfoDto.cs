@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.DTOs;
 
@@ -6,11 +7,12 @@ namespace RMSPrivateServerAPI.DTOs;
 /// Представляет информацию о роботе, включая его характеристики и идентификаторы.
 /// </summary>
 public class RobotInfoDto
-{        
+{
     /// <summary>
     /// "Уникальный идентификатор робота (PRIMARY KEY)"
-    /// </summary>
-    public Guid? RobotId { get; set; }
+    /// </summary>  
+    [DefaultValue("00000000-0000-0000-0000-000000000000")]
+    public Guid RobotId { get; set; }
 
     /// <summary>
     /// Аппаратный идентификатор робота
@@ -50,6 +52,7 @@ public class RobotInfoDto
     /// <summary>
     /// признак - удален
     /// </summary>
-    public bool? is_deleted { get; set; }
+    [DefaultValue(false)]
+    public bool? Is_Deleted { get; set; }
 
 }

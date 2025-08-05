@@ -1,13 +1,36 @@
 ﻿using RMSPrivateServerAPI.Entities;
 namespace RMSPrivateServerAPI.Interfaces;
 
+/// <summary>
+/// Роботы
+/// </summary>
 public interface IRobotRepository
 {
-    Task<IEnumerable<robotinfo>> GetAll(bool returnDeletedRecords = false);
+    /// <summary>
+    /// Все
+    /// </summary>
+    /// <param name="returnDeletedRecords">удаленные</param>
+    /// <returns></returns>
+    Task<IEnumerable<robot_info>> GetAll(bool returnDeletedRecords = false);
 
-    Task<robotinfo?> Get(Guid id);
+    /// <summary>
+    /// Робот
+    /// </summary>
+    /// <param name="robotId">Id</param>
+    /// <returns></returns>
+    Task<robot_info?> Get(Guid robotId);
     
-    Task<Guid> UpsertAsync(robotinfo robot);
+    /// <summary>
+    ///  добавить или обновить
+    /// </summary>
+    /// <param name="robot"></param>
+    /// <returns></returns>
+    Task<Guid> UpsertAsync(robot_info robot);
     
+    /// <summary>
+    /// удалить
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     Task<int> DeleteAsync(Guid id);
 }

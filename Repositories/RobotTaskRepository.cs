@@ -60,13 +60,13 @@ public class RobotTaskRepository : IRobotTaskRepository
         using var db = _databaseConnectionFactory.GetConnection();
 
         var sql = @"                
-                INSERT INTO ""RobotTask"" (task_id, robot_id, title)
-                VALUES (@task_id, @robot_id, @title)
-                ON CONFLICT (task_id) DO UPDATE 
+                INSERT INTO ""RobotTask"" (""TaskId"", ""RobotId"", ""Title"")
+                VALUES (@TaskId, @RobotId, @Title)
+                ON CONFLICT (""TaskId"") DO UPDATE 
                 SET                                      
-                    ""RobotId""   = EXCLUDED.robot_id,
-                    ""Title""      = EXCLUDED.title                                                        
-                RETURNING task_id;";
+                    ""RobotId""   = EXCLUDED.""RobotId"",
+                    ""Title""     = EXCLUDED.""Title""                                                        
+                RETURNING ""TaskId"";";
         
         var newTaskId  = await db.QuerySingleOrDefaultAsync<Guid>(sql, robotTask);
 

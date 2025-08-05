@@ -27,6 +27,7 @@ public class RobotTaskProfile : Profile
 
         CreateMap<RobotActionsDto, RobotTaskFlat>()
             .ForMember(dest => dest.action_id, opt => opt.MapFrom(src => src.ActionId))
+            .ForMember(dest => dest.robot_task_id, opt => opt.MapFrom(src => src.TaskId))
             .ForMember(dest => dest.title, opt => opt.MapFrom(src => src.Title))
             .ForMember(dest => dest.action_type, opt => opt.MapFrom(src => src.ActionType))
             .ForMember(dest => dest.pose_x, opt => opt.MapFrom(src => src.Pose_X))

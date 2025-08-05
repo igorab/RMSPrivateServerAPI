@@ -21,7 +21,7 @@ public class RobotRepository : IRobotRepository
         return await db.QueryFirstOrDefaultAsync<T>(sql, param);
     }
 
-    public async Task<IEnumerable<robotinfo>> GetAll(bool returnDeletedRecords)
+    public async Task<IEnumerable<robot_info>> GetAll(bool returnDeletedRecords)
     {
         var builder = new SqlBuilder();
 
@@ -35,10 +35,10 @@ public class RobotRepository : IRobotRepository
 
         using var db = _databaseConnectionFactory.GetConnection();
 
-        return await db.QueryAsync<robotinfo>(sqlTemplate.RawSql, sqlTemplate.Parameters);
+        return await db.QueryAsync<robot_info>(sqlTemplate.RawSql, sqlTemplate.Parameters);
     }
 
-    public async Task<robotinfo?> Get(Guid robotId)
+    public async Task<robot_info?> Get(Guid robotId)
     {        
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -49,12 +49,12 @@ public class RobotRepository : IRobotRepository
 
         var param = new {robotId};
 
-        var robot = await db.QueryFirstOrDefaultAsync<robotinfo>(sql, param);
+        var robot = await db.QueryFirstOrDefaultAsync<robot_info>(sql, param);
 
         return robot;
     }
     
-    public async Task<Guid> UpsertAsync(robotinfo robot)
+    public async Task<Guid> UpsertAsync(robot_info robot)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Entities;
 
-[Table("\"PPMTask\"")]
+[Table("PPMTask")]
 public class ppmtask
 {
     [Key]
@@ -11,13 +11,13 @@ public class ppmtask
     public Guid id { get; set; }
     
     [Column("RobotId")]
-    public Guid robotid { get; set; }
+    public Guid RobotId { get; set; }
 
     [Column("TaskDescription")]
-    public string? taskdescription { get; set; }
+    public string? TaskDescription { get; set; }
 
     [Column("ScheduledDate")]
-    public DateTime scheduleddate { get; set; }
+    public DateTime ScheduledDate { get; set; }
 
     // Другие свойства для задач ППР >>
 

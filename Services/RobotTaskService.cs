@@ -33,10 +33,13 @@ namespace RMSPrivateServerAPI.Services
         {
             Queue<RobotAction?> robotActions = new Queue<RobotAction?>();
             
+            var statusReceived = nameof(RobotTaskStatus.Received);
+
             var joinedData = from task in _context.Tasks
+                             orderby task.Priority ascending
                              join action in _context.TaskActions
                                  on task.TaskId equals action.TaskId
-                             where action.Status == "Received" 
+                             where action.Status == statusReceived
                              orderby action.CreatedAt descending
                              select new
                              {

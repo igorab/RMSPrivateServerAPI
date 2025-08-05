@@ -9,7 +9,7 @@ namespace RMSPrivateServerAPI.Entities;
 /// <summary>
 /// Справочник роботов (id и прочие данные, характеризующие конкретный экземпляр робота)
 /// </summary>
-public class robotinfo
+public class robot_info
 {
     /// <summary>
     /// "Уникальный идентификатор робота (PRIMARY KEY)"
@@ -52,5 +52,8 @@ public class robotinfo
     /// </summary>
     public string hwversion { get; set; }
 
-    public int? is_deleted { get; set; }    
+    /// <summary>
+    /// признак - удален
+    /// </summary>
+    public int? is_deleted { get; set; } = 0;   
 }

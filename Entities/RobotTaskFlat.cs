@@ -8,10 +8,11 @@ namespace RMSPrivateServerAPI.Entities;
 [Table("robot_actions")]
 public class RobotTaskFlat : robot_task
 {    
-    public string? action_id { get; set; }
+    public Guid action_id { get; set; }
 
-    [ForeignKey("taskid")]
-    public string? robot_task_id { get; set; }
+    [ForeignKey("TaskId")]
+    [Column("TaskId")]
+    public Guid robot_task_id { get; set; }
 
     [Column("title")]       
     public string? title { get; set; }

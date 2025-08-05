@@ -10,8 +10,8 @@ public class PPMTaskProfile : Profile
     {
         CreateMap<PPMTaskDto, ppmtask>()
             .ForMember(tsk => tsk.id, task => task.MapFrom(robotDto => robotDto.Id))
-            .ForMember(tsk => tsk.robotid, task => task.MapFrom(robotDto => robotDto.RobotId))                
-            .ForMember(tsk => tsk.taskdescription, task => task.MapFrom(robotDto => robotDto.TaskDescription))
+            .ForMember(tsk => tsk.RobotId, task => task.MapFrom(robotDto => robotDto.RobotId))                
+            .ForMember(tsk => tsk.TaskDescription, task => task.MapFrom(robotDto => robotDto.TaskDescription))
             .ReverseMap();
     }
 
