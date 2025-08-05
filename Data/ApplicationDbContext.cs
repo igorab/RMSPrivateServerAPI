@@ -11,7 +11,7 @@ namespace RMSPrivateServerAPI.Data;
 public class ApplicationDbContext : DbContext
 {
     public DbSet<robot_info> Robots { get; set; }
-    public DbSet<ppmtask> PPMTasks { get; set; }
+    public DbSet<ppm_task> PPMTasks { get; set; }
     public DbSet<FaultInfoDto> Faults { get; set; }
     // common task from WMS >>
     public DbSet<TasksDto> Tasks { get; set; }
@@ -32,7 +32,7 @@ public class ApplicationDbContext : DbContext
     {
         modelBuilder.Entity<robot_info>().ToTable("RobotInfo");
 
-        modelBuilder.Entity<ppmtask>().ToTable("PPMTask");
+        modelBuilder.Entity<ppm_task>().ToTable("PPMTask");
 
         modelBuilder.Entity<robot_task>().ToTable("RobotTask");
 

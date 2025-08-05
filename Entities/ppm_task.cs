@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace RMSPrivateServerAPI.Entities;
 
 [Table("PPMTask")]
-public class ppmtask
+public class ppm_task
 {
     [Key]
     [Column("Id")]

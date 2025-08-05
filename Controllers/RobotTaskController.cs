@@ -43,24 +43,29 @@ namespace RMSPrivateServerAPI.Controllers
         [HttpGet("{robotId}/tasks/current/")]
         public async Task<ActionResult<RobotTaskDto?>> GeCurrentTask(Guid robotId)
         {
-            //List<RobotTaskFlat?> robotTask = await _robotTaskService.GetCurrent(robotId);
+            var (wmsTask, wmsAction) = _robotTaskService.RobotTaskActions(robotId);
 
-            Queue<RobotAction?> robotActions = await _robotTaskService.GetRobotActions(robotId);
+            Queue<RobotAction> robotActions = await _robotTaskService.GetRobotActions(robotId);
 
             if (robotActions == null)            
                 return NotFound();
 
+            if (wmsTask == null)
+                return NotFound();
+
+            if (wmsAction == null)
+                return NotFound();
 
             RobotTaskDto robotTaskDto = new RobotTaskDto()
             {
-                TaskId = Guid.NewGuid(),
+                TaskId = wmsTask.TaskId,
                 RobotId = robotId,
-                Title   = "Go ahead!"
-            };
+                Title = $"Area: {wmsTask.AreaWmsId}, Location: {wmsAction.Location}"
+            }; 
             
             robotTaskDto.RobotActions = robotActions.ToList();
 
-            return robotTaskDto;
+            return Ok(robotTaskDto);
         }
 
 
@@ -108,13 +113,12 @@ namespace RMSPrivateServerAPI.Controllers
 
                 //return Ok(new { command = "next", action = task.actions[request.ActionIndex + 1] });
                 //
-                return Ok(request);
+                return Ok( new { command = "next" });
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
-            }
-            ;
+            }            
         }
 
 

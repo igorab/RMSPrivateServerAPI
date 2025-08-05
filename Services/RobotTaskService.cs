@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Enums;
@@ -21,18 +21,16 @@ namespace RMSPrivateServerAPI.Services
             _context = context;
         }
 
-        
-        public async Task<Queue<RobotAction?>> GetRobotActions(Guid taskId)
+        //Получение текущей задачи для робота
+        public async Task<Queue<RobotAction>> GetRobotActions(Guid robotId)
         {
-            if (Guid.Empty == taskId) throw new Exception("Invalid task Id");
+            if (Guid.Empty == robotId) throw new Exception("Invalid robot Id");
             
-            return await Task.Run(() => RobotActionsQueue());
+            return await Task.Run(() => RobotActionsQueue(robotId));
         }
 
-        private  Queue<RobotAction?> RobotActionsQueue()
+        public (TasksDto? curTask, TaskActionsDto? curAction) RobotTaskActions(Guid robotId)
         {
-            Queue<RobotAction?> robotActions = new Queue<RobotAction?>();
-            
             var statusReceived = nameof(RobotTaskStatus.Received);
 
             var joinedData = from task in _context.Tasks
@@ -47,21 +45,32 @@ namespace RMSPrivateServerAPI.Services
                                  Action = action
                              };
 
-            var data = joinedData.ToList();
+            var data = joinedData.FirstOrDefault();
 
-            foreach (var item in data)
-            {
-                var curAction = item.Action;
+            var curAction = data?.Action;
 
-                var curTask = item.Task;
-            }
+            var curTask = data?.Task;
+
+            return (curTask, curAction);
+        }
 
 
-            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });
-            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.load });
-            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo });
-            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.unload });
+        /// <summary>
+        /// очередь действий по заданию
+        /// </summary>
+        /// <returns></returns>
+        private  Queue<RobotAction> RobotActionsQueue(Guid robotId)
+        {
+            Queue<RobotAction> robotActions = new Queue<RobotAction>();
+                                    
+            var (curTask, curAction) = RobotTaskActions(robotId);
+            
+            //TODO Логика привязки очереди к Task 
 
+            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo, ActionName = nameof(ActionType.moveTo) });
+            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.load, ActionName = nameof(ActionType.load) });
+            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo, ActionName = nameof(ActionType.moveTo) });
+            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.unload, ActionName = nameof(ActionType.unload) });
 
             return robotActions;
         }

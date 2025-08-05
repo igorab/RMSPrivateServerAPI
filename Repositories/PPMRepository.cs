@@ -14,7 +14,7 @@ public class PPMRepository : IPPMRepository
         _databaseConnectionFactory = databaseConnectionFactory;
     }
     
-    public async Task<IEnumerable<ppmtask>> GetAll()
+    public async Task<IEnumerable<ppm_task>> GetAll()
     {
         var builder = new SqlBuilder();
 
@@ -24,10 +24,10 @@ public class PPMRepository : IPPMRepository
 
         using var db = _databaseConnectionFactory.GetConnection();
 
-        return await db.QueryAsync<ppmtask>(sqlTemplate.RawSql, sqlTemplate.Parameters);
+        return await db.QueryAsync<ppm_task>(sqlTemplate.RawSql, sqlTemplate.Parameters);
     }
 
-    public async Task<ppmtask?> Get(int id)
+    public async Task<ppm_task?> Get(int id)
     {
         var sql =
                 $@"SELECT * 
@@ -40,13 +40,13 @@ public class PPMRepository : IPPMRepository
 
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var ppmTask = await db.QueryFirstOrDefaultAsync<ppmtask>(sql, param);
+        var ppmTask = await db.QueryFirstOrDefaultAsync<ppm_task>(sql, param);
 
         return ppmTask;
     }
 
 
-    public async Task<int> UpsertAsync(ppmtask ppmTask)
+    public async Task<int> UpsertAsync(ppm_task ppmTask)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 

@@ -5,6 +5,10 @@ using System.Text.Json.Serialization;
 namespace RMSPrivateServerAPI.Models;
 
 public class RobotAction
-{    
+{
+    [JsonIgnore]
     public ActionType ActionType { get; set; }
+
+    [JsonPropertyName("actionType")]
+    public string? ActionName { get; set; }
 }

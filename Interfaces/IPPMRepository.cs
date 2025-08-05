@@ -4,11 +4,11 @@ namespace RMSPrivateServerAPI.Interfaces
 {
     public interface IPPMRepository
     {
-        Task<IEnumerable<ppmtask>> GetAll();
+        Task<IEnumerable<ppm_task>> GetAll();
 
-        Task<ppmtask?> Get(int id);
+        Task<ppm_task?> Get(int id);
         
-        Task<int> UpsertAsync(ppmtask ppmTask);
+        Task<int> UpsertAsync(ppm_task ppmTask);
         
         Task<int> DeleteAsync(int id);
     }

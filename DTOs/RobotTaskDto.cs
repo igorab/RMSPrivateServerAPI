@@ -32,7 +32,7 @@ namespace RMSPrivateServerAPI.DTOs
         /// <summary>
         /// Список операций, которые должны быть выполнены в рамках этой задачи.
         /// </summary>
-        public List<RobotAction?>? RobotActions { get; set; }
+        public List<RobotAction>? RobotActions { get; set; }
 
     }
 }

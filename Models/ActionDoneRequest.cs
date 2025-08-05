@@ -17,6 +17,6 @@ public class ActionDoneRequest
     [JsonPropertyName("result")]
     public string? Result { get; set; } // "success" или "failed"
 
-    [JsonPropertyName("Reason")]
+    [JsonPropertyName("reason")]
     public string? Reason { get; set; } 
 }
