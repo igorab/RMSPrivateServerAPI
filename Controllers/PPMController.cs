@@ -8,7 +8,7 @@ using RMSPrivateServerAPI.Interfaces;
 namespace RMSPrivateServerAPI.Controllers;
 
 [ApiController]
-[Route("api/v1.0/PPM")]
+[Route("api/v1/PPM")]
 public class PPMController : ControllerBase
 {
     private readonly ILogger<PPMController> _logger;

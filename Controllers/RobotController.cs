@@ -13,7 +13,7 @@ namespace RMSPrivateServerAPI.Controllers;
 
 [ApiController]
 [ApiVersion("1.0")]
-[Route("api/v1.0/Common/[controller]/")]
+[Route("api/v1/[controller]/")]
 //[Description("Ведение справочника роботов")]
 public class RobotController : ControllerBase
 {

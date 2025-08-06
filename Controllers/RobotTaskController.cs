@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace RMSPrivateServerAPI.Controllers
 {
     [ApiController]    
-    [Route("api/v1.0/[controller]/")]
+    [Route("api/v1/[controller]/")]
     public class RobotTaskController : ControllerBase
     {       
         private readonly ILogger<RobotTaskController> _logger;
@@ -40,7 +40,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// </summary>
         /// <param name="robotId">Id робота</param>
         /// <returns></returns>
-        [HttpGet("{robotId}/tasks/current/")]
+        [HttpGet("{robotId}/current/")]
         public async Task<ActionResult<RobotTaskDto?>> GeCurrentTask(Guid robotId)
         {
             var (wmsTask, wmsAction) = _robotTaskService.RobotTaskActions(robotId);
@@ -74,7 +74,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// </summary>
         /// <param name="robotId">Id робота</param>
         /// <returns></returns>
-        [HttpGet("{robotId}/current/")]
+        [HttpGet("{robotId}/cur/")]
         public async Task<ActionResult<RobotTaskDto>> GetRobotTaskCurrent(Guid robotId)
         {
             List<RobotTaskFlat?> robotTask = await _robotTaskService.GetCurrent(robotId);
@@ -97,7 +97,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="robotID">Id робота</param>
         /// <param name="request">Результат выполнения текущей операции</param>
         /// <returns>Робот завершил текущую операцию</returns>
-        [HttpPost("{robotID}/tasks/action-done")]
+        [HttpPost("{robotID}/action-done")]
         public IActionResult ActionDone(string robotID, [FromBody] ActionDoneRequest request)
         {
             try
