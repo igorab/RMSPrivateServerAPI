@@ -25,7 +25,7 @@ public class robot_info
     /// <summary>
     /// "Тип робота (например, APR, AMR и т.д.)"
     /// </summary>
-    public int robottype { get; set; }
+    public string robottype { get; set; }
 
     /// <summary>
     /// "Наименование модели робота"

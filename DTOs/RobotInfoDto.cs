@@ -22,7 +22,7 @@ public class RobotInfoDto
     /// <summary>
     /// "Тип робота (например, APR, AMR и т.д.)"
     /// </summary>
-    public int RobotType { get; set; }
+    public string RobotType { get; set; }
 
     /// <summary>
     /// "Наименование модели робота"
