@@ -53,7 +53,7 @@ public class robot_info
     public string hwversion { get; set; }
 
     /// <summary>
-    /// признак - удален
+    /// состояние робота
     /// </summary>
-    public int? is_deleted { get; set; } = 0;   
+    public int? robot_state { get; set; } = 0;   
 }

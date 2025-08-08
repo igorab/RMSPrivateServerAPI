@@ -2,6 +2,7 @@
 using RMSPrivateServerAPI.Interfaces;
 using Dapper;
 using RMSPrivateServerAPI.Data;
+using RMSPrivateServerAPI.Enums;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Repositories;
 
@@ -13,14 +14,7 @@ public class RobotRepository : IRobotRepository
     {
         _databaseConnectionFactory = databaseConnectionFactory;
     }
-
-    private async Task<T> QueryFirstOrDefaultAsync<T>(string sql, params object[] param )
-    {
-        using var db = _databaseConnectionFactory.GetConnection();
-
-        return await db.QueryFirstOrDefaultAsync<T>(sql, param);
-    }
-
+    
     public async Task<IEnumerable<robot_info>> GetAll(bool returnDeletedRecords)
     {
         var builder = new SqlBuilder();
@@ -30,7 +24,7 @@ public class RobotRepository : IRobotRepository
             
         if (!returnDeletedRecords)
         {
-            builder.Where(@"""Is_Deleted"" = 0");
+            builder.Where(@"""RobotState"" = 0");
         }
 
         using var db = _databaseConnectionFactory.GetConnection();
@@ -45,7 +39,7 @@ public class RobotRepository : IRobotRepository
         var sql =
             $@"SELECT * FROM ""RobotInfo"" RI WHERE 
                 RI.""RobotId"" = @{nameof(robotId)}
-                AND RI.""Is_Deleted"" = 0";
+                AND RI.""RobotState"" = {(int)RobotState.online}";
 
         var param = new {robotId};
 
@@ -53,14 +47,31 @@ public class RobotRepository : IRobotRepository
 
         return robot;
     }
-    
+
+    public async Task<robot_info?> GetByHardwareId(int hardId)
+    {
+        using var db = _databaseConnectionFactory.GetConnection();
+
+        var sql =
+            $@"SELECT * FROM ""RobotInfo"" RI WHERE 
+                RI.""RobotHardwareId"" = @{nameof(hardId)}
+                AND RI.""RobotState"" = {(int)RobotState.online}";
+
+        var param = new { hardId };
+
+        var robot = await db.QueryFirstOrDefaultAsync<robot_info>(sql, param);
+
+        return robot;
+
+    }
+
     public async Task<Guid> UpsertAsync(robot_info robot)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
         var sql = @"
-                INSERT INTO ""RobotInfo"" (""RobotId"", ""RobotHardwareId"", ""RobotType"", ""RobotModel"", ""RobotName"", ""IP"", ""SwVersion"", ""HwVersion"", ""Is_Deleted"")
-                    VALUES (@RobotId, @robothardwareid, @robottype, @robotmodel, @robotname, @ip, @swversion, @hwversion, @is_deleted)
+                INSERT INTO ""RobotInfo"" (""RobotId"", ""RobotHardwareId"", ""RobotType"", ""RobotModel"", ""RobotName"", ""IP"", ""SwVersion"", ""HwVersion"", ""RobotState"")
+                    VALUES (@RobotId, @robothardwareid, @robottype, @robotmodel, @robotname, @ip, @swversion, @hwversion, @robot_state)
                     ON CONFLICT (""RobotId"") DO UPDATE
                     SET                         
                         ""RobotHardwareId"" = EXCLUDED.""RobotHardwareId"",
@@ -70,7 +81,7 @@ public class RobotRepository : IRobotRepository
                         ""IP""              = EXCLUDED.""IP"",
                         ""SwVersion""       = EXCLUDED.""SwVersion"",
                         ""HwVersion""       = EXCLUDED.""HwVersion"",
-                        ""Is_Deleted""      = EXCLUDED.""Is_Deleted""
+                        ""RobotState""      = EXCLUDED.""RobotState""
                     RETURNING ""RobotId"";
             ";
 
@@ -79,12 +90,19 @@ public class RobotRepository : IRobotRepository
         return newId == Guid.Empty ? robot.RobotId : newId;
     }
 
+    /// <summary>
+    /// Need refactoring! сделать смену состояния
+    /// </summary>
+    /// <param name="robot_id"></param>
+    /// <returns></returns>
     public async Task<int> DeleteAsync(Guid robot_id)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
-        var query = @"Update ""RobotInfo"" SET ""Is_Deleted"" = 1 WHERE ""RobotId"" = @id";
+        var query = $@"Update ""RobotInfo"" SET ""RobotState"" = {(int)RobotState.offline} WHERE ""RobotId"" = @id";
 
         return await db.ExecuteAsync(query, new { id = robot_id });
     }
+
+   
 }

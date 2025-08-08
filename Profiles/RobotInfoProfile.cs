@@ -18,7 +18,7 @@ public class RobotInfoProfile : Profile
             .ForMember(robot => robot.ip, robot => robot.MapFrom(robotDto => robotDto.IP))
             .ForMember(robot => robot.swversion, robot => robot.MapFrom(robotDto => robotDto.SwVersion))
             .ForMember(robot => robot.hwversion, robot => robot.MapFrom(robotDto => robotDto.HwVersion))
-            .ForMember(robot => robot.is_deleted, robot => robot.MapFrom(robotDto => robotDto.Is_Deleted))
+            .ForMember(robot => robot.robot_state, robot => robot.MapFrom(robotDto => robotDto.RobotState))
 
             .ReverseMap();
     }

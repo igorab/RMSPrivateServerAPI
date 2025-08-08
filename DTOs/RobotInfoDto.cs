@@ -1,5 +1,5 @@
-﻿using System.ComponentModel;
-using System.Text.Json.Serialization;
+﻿using RMSPrivateServerAPI.Enums;
+using System.ComponentModel;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.DTOs;
 
@@ -22,7 +22,7 @@ public class RobotInfoDto
     /// <summary>
     /// "Тип робота (например, APR, AMR и т.д.)"
     /// </summary>
-    public string RobotType { get; set; }
+    public string? RobotType { get; set; }
 
     /// <summary>
     /// "Наименование модели робота"
@@ -50,9 +50,9 @@ public class RobotInfoDto
     public string? HwVersion { get; set; }
 
     /// <summary>
-    /// признак - удален
+    /// признак - состояние робота
     /// </summary>
-    [DefaultValue(false)]
-    public bool? Is_Deleted { get; set; }
+    [DefaultValue(0)]
+    public RobotState RobotState { get; set; }
 
 }

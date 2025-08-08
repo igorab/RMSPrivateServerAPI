@@ -7,7 +7,13 @@ namespace RMSPrivateServerAPI.Interfaces;
 public interface IRobotService
 {
     Task<robot_info> Insert(robot_info robot);
+
     Task<robot_info> Update(robot_info robot);
+
     Task Delete(Guid id);
-    Task<robot_info?> Get(Guid robotId); 
+
+    Task<robot_info?> Get(Guid robotId);
+
+    Task<robot_info?> GetByHardwareId(int hardId);
+
 }

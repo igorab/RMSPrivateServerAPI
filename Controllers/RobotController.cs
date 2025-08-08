@@ -84,10 +84,12 @@ public class RobotController : ControllerBase
             else
             {
                 var robot_exist = await _robotService.Get(robotAsDto.RobotId);
-                if (robot_exist != null)
-                {
+                if (robot_exist != null)                
                     return Ok("Робот с таким RobotId уже был зарегистрирован.");
-                }
+                            
+                robot_exist = await _robotService.GetByHardwareId(robotAsDto.RobotHardwareId);
+                if (robot_exist != null)                
+                    return Ok("Робот с таким RobotHardwareId уже был зарегистрирован.");                
             }
 
             robot_info robotToInsert = _mapper.Map<robot_info>(robotAsDto);
