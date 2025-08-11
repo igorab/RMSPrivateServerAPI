@@ -8,8 +8,13 @@ using System.Runtime.InteropServices;
 /// </summary>
 [Serializable]
 [StructLayout(LayoutKind.Sequential, Pack = 1)]
-public class Header
+public class RobotHeader
 {
+    /// <summary>
+    /// Уникальный идентификатор
+    /// </summary>
+    public int Id { get; set; }
+
     /// <summary>
     /// Тип сообщения (команда, состояние, ошибка и т.д.).
     /// </summary>
@@ -23,7 +28,7 @@ public class Header
     /// <summary>
     /// Зарезервировано для будущего расширения.
     /// </summary>
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+    //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
     public byte[] Reserve { get; set; }
 
     /// <summary>
@@ -39,7 +44,7 @@ public class Header
     /// <summary>
     /// Конструктор класса Header.
     /// </summary>
-    public Header(byte msgType, byte version, Guid robotId, ulong timestamp)
+    public RobotHeader(byte msgType, byte version, Guid robotId, ulong timestamp)
     {
         MsgType = msgType;
         Version = version;

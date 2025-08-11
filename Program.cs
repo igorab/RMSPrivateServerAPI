@@ -47,6 +47,9 @@ public partial class Program
         // Добавление контекста базы данных
         builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
+        // Добавление контекста базы данных
+        builder.Services.AddDbContext<RmsDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+
 
         IConfigurationSection configSection = configuration.GetSection("ConnectionStrings");
         builder.Services.Configure<DbSettings>(configSection);

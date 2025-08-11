@@ -6,6 +6,10 @@
 public class Pose
 {
     /// <summary>
+    /// Уникальный идентификатор
+    /// </summary>
+    public int Id { get; set; }
+    /// <summary>
     /// Координата X в метрах.
     /// </summary>
     public float X { get; set; }
