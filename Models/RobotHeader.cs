@@ -29,7 +29,7 @@ public class RobotHeader
     /// Зарезервировано для будущего расширения.
     /// </summary>
     //[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-    public byte[] Reserve { get; set; }
+    public byte Reserve { get; set; }
 
     /// <summary>
     /// Уникальный идентификатор робота в системе.
@@ -48,7 +48,7 @@ public class RobotHeader
     {
         MsgType = msgType;
         Version = version;
-        Reserve = new byte[2]; // Инициализация зарезервированного поля
+        Reserve = 0; // Инициализация зарезервированного поля
         RobotId = robotId;
         Timestamp = timestamp;
     }
