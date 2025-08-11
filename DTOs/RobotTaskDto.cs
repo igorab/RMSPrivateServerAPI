@@ -1,4 +1,5 @@
-﻿using RMSPrivateServerAPI.Models;
+﻿using RMSPrivateServerAPI.Interfaces;
+using RMSPrivateServerAPI.Models;
 using System.Text.Json.Serialization;
 
 namespace RMSPrivateServerAPI.DTOs
@@ -32,7 +33,8 @@ namespace RMSPrivateServerAPI.DTOs
         /// <summary>
         /// Список операций, которые должны быть выполнены в рамках этой задачи.
         /// </summary>
-        public List<RobotAction>? RobotActions { get; set; }
+        [JsonPropertyName("actions")]
+        public Queue<RobotAction>? RobotActions { get; set; }
 
     }
 }

@@ -3,14 +3,18 @@ using System.Text.Json.Serialization;
 namespace RMSPrivateServerAPI.Models;
 #pragma warning disable CS1591
 
-
 public class CommonAction : RobotAction
 {
     // Основной класс без дополнительных параметров
 }
 
-public class MoveToAction : RobotAction
+public class StopAction : RobotAction
 {
+ 
+}
+
+public class MoveToAction : RobotAction
+{    
     public Pose? Pose { get; set; }
 }
 

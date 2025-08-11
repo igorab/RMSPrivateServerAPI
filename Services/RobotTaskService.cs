@@ -59,18 +59,31 @@ namespace RMSPrivateServerAPI.Services
         /// очередь действий по заданию
         /// </summary>
         /// <returns></returns>
-        private  Queue<RobotAction> RobotActionsQueue(Guid robotId)
+        private Queue<RobotAction> RobotActionsQueue(Guid robotId)
         {
             Queue<RobotAction> robotActions = new Queue<RobotAction>();
-                                    
+
             var (curTask, curAction) = RobotTaskActions(robotId);
-            
+
             //TODO Логика привязки очереди к Task 
 
-            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo, ActionName = nameof(ActionType.moveTo) });
-            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.load, ActionName = nameof(ActionType.load) });
-            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.moveTo, ActionName = nameof(ActionType.moveTo) });
-            robotActions.Enqueue(new RobotAction() { ActionType = ActionType.unload, ActionName = nameof(ActionType.unload) });
+            robotActions.Enqueue(new MoveToAction() { 
+                ActionTypeId = ActionType.moveTo, 
+                ActionName = nameof(ActionType.moveTo), 
+                Pose = new Pose { X = 0, Y = 0, Heading = 0 }
+            });
+            robotActions.Enqueue(new CommonAction() {
+                ActionTypeId = ActionType.load, ActionName = nameof(ActionType.load)
+            });
+            robotActions.Enqueue(new MoveToAction() {
+                ActionTypeId = ActionType.moveTo, 
+                ActionName = nameof(ActionType.moveTo),
+                Pose = new Pose { X = 100, Y = 80, Heading = 40 }
+            });
+            robotActions.Enqueue(new CommonAction() 
+            { 
+                ActionTypeId = ActionType.unload, ActionName = nameof(ActionType.unload) 
+            });
 
             return robotActions;
         }

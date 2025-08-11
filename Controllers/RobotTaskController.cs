@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
+using RMSPrivateServerAPI.Enums;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Models;
 using System.Net.Mime;
@@ -41,7 +42,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="robotId">Id робота</param>
         /// <returns></returns>
         [HttpGet("{robotId}/current/")]
-        public async Task<ActionResult<RobotTaskDto?>> GeCurrentTask(Guid robotId)
+        public async Task<ActionResult<RobotTaskDto?>> GetCurrentTask(Guid robotId)
         {
             var (wmsTask, wmsAction) = _robotTaskService.RobotTaskActions(robotId);
 
@@ -60,10 +61,13 @@ namespace RMSPrivateServerAPI.Controllers
             {
                 TaskId = wmsTask.TaskId,
                 RobotId = robotId,
-                Title = $"Area: {wmsTask.AreaWmsId}, Location: {wmsAction.Location}"
-            }; 
-            
-            robotTaskDto.RobotActions = robotActions.ToList();
+                Title = $"Area: {wmsTask.AreaWmsId}, Location: {wmsAction.Location}",
+                RobotActions = new Queue<RobotAction>()
+            };
+
+            robotTaskDto.RobotActions = robotActions;
+
+            //robotTaskDto.RobotActions.Enqueue(new MoveToAction () { ActionTypeId = ActionType.moveTo, ActionName = "Go", Pose = new Pose() {X=0, Y=0, Heading = 1 } }) ;
 
             return Ok(robotTaskDto);
         }

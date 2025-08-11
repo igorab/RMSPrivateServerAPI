@@ -8,6 +8,7 @@ using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Repositories;
 using RMSPrivateServerAPI.Models.Lib;
+using RMSPrivateServerAPI.Models;
 
 public partial class Program
 { 
@@ -27,8 +28,12 @@ public partial class Program
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
                 options.UseInlineDefinitionsForEnums();
-            }   
+
+                //options.MapType<RobotAction>
+            }            
         );
+
+
         builder.Services.AddApiVersioning(options =>
         {
             options.ReportApiVersions = true;
@@ -54,7 +59,13 @@ public partial class Program
         builder.Services.AddTransient<RobotTaskRepository>();
         
         builder.Services.RegisterDataAccessDependencies();
-               
+
+        builder.Services.AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new RobotActionConverter());
+            });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -70,7 +81,7 @@ public partial class Program
         app.UseAuthorization();
 
         app.MapControllers();
-
+        
         // Определение маршрута
         app.MapGet("/api/v1/test", () =>
         {
