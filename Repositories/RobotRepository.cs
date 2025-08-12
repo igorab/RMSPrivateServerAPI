@@ -54,8 +54,8 @@ public class RobotRepository : IRobotRepository
 
         var sql =
             $@"SELECT * FROM ""RobotInfo"" RI WHERE 
-                RI.""RobotHardwareId"" = @{nameof(hardId)}
-                AND RI.""RobotState"" = {(int)RobotState.online}";
+                RI.""RobotHardwareId"" = @{nameof(hardId)}";
+                //AND RI.""RobotState"" = @{(int)RobotState.online}";
 
         var param = new { hardId };
 

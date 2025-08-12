@@ -1,4 +1,6 @@
-﻿namespace RMSPrivateServerAPI.Models;
+﻿using System.Text.Json.Serialization;
+
+namespace RMSPrivateServerAPI.Models;
         
 /// <summary>
 /// Представляет положение робота или объекта на плоскости.
@@ -8,6 +10,7 @@ public class Pose
     /// <summary>
     /// Уникальный идентификатор
     /// </summary>
+    [JsonIgnore]
     public int Id { get; set; }
     /// <summary>
     /// Координата X в метрах.
