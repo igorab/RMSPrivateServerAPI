@@ -5,7 +5,9 @@ using System.Text.Json.Serialization;
 
 namespace RMSPrivateServerAPI.Models;
 
-
+/// <summary>
+/// Операция, которую должен совершить робот
+/// </summary>
 public abstract class RobotAction 
 {
     [JsonIgnore]

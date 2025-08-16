@@ -102,7 +102,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="request">Результат выполнения текущей операции</param>
         /// <returns>Робот завершил текущую операцию</returns>
         [HttpPost("{robotID}/action-done")]
-        public IActionResult ActionDone(string robotID, [FromBody] ActionDoneRequest request)
+        public IActionResult ActionDone(Guid robotID, [FromBody] ActionDoneRequest request)
         {
             try
             {

@@ -3,16 +3,16 @@
 /// <summary>
 /// Направление движения
 /// </summary>
-public enum Direction
+public enum TurnDirection
 {
     /// <summary>
-    /// вперед
+    /// влево - против часовой стрелки
     /// </summary>
-    forward,
+    left,
     /// <summary>
-    /// назад
+    /// вправо - по часовой
     /// </summary>
-    backward
+    right
 }
 
 
