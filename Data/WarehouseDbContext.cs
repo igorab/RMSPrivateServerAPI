@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.StoreMapDto;
 
+#pragma warning disable CS1591
 public class WarehouseDbContext : DbContext
 {
     public WarehouseDbContext(DbContextOptions<WarehouseDbContext> options) : base(options)

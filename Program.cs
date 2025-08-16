@@ -43,13 +43,16 @@ public partial class Program
         builder.Services.AddAutoMapper(typeof(Program));
 
         var configuration = builder.Configuration;
+        string? connectionString = configuration.GetConnectionString("DefaultConnection");
 
         // Добавление контекста базы данных
-        builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseNpgsql(connectionString));
 
         // Добавление контекста базы данных
-        builder.Services.AddDbContext<RmsDbContext>(options => options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        builder.Services.AddDbContext<RmsDbContext>(options => options.UseNpgsql(connectionString));
 
+        // Добавление контекста базы данных
+        builder.Services.AddDbContext<WarehouseDbContext>(options => options.UseNpgsql(connectionString));
 
         IConfigurationSection configSection = configuration.GetSection("ConnectionStrings");
         builder.Services.Configure<DbSettings>(configSection);

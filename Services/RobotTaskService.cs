@@ -73,7 +73,8 @@ namespace RMSPrivateServerAPI.Services
                 Pose = new Pose { X = 0, Y = 0, Heading = 0 }
             });
             robotActions.Enqueue(new CommonAction() {
-                ActionTypeId = ActionType.load, ActionName = nameof(ActionType.load)
+                ActionTypeId = ActionType.load, 
+                ActionName = nameof(ActionType.load)
             });
             robotActions.Enqueue(new MoveToAction() {
                 ActionTypeId = ActionType.moveTo, 
