@@ -9,6 +9,7 @@ using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Repositories;
 using RMSPrivateServerAPI.Models.Lib;
 using RMSPrivateServerAPI.Models;
+using RMSPrivateServerAPI.Services;
 
 public partial class Program
 { 
@@ -46,14 +47,11 @@ public partial class Program
         string? connectionString = configuration.GetConnectionString("DefaultConnection");
 
         // Добавление контекста базы данных
-        builder.Services.AddDbContext<ApplicationDbContext>(op => op.UseNpgsql(connectionString));
+        builder.Services.AddDbContext<WmsDbContext>(op => op.UseNpgsql(connectionString));
 
         // Добавление контекста базы данных
         builder.Services.AddDbContext<RmsDbContext>(options => options.UseNpgsql(connectionString));
-
-        // Добавление контекста базы данных
-        builder.Services.AddDbContext<WarehouseDbContext>(options => options.UseNpgsql(connectionString));
-
+        
         IConfigurationSection configSection = configuration.GetSection("ConnectionStrings");
         builder.Services.Configure<DbSettings>(configSection);
                         
@@ -65,6 +63,8 @@ public partial class Program
         builder.Services.AddTransient<RobotTaskRepository>();
         
         builder.Services.RegisterDataAccessDependencies();
+
+        builder.Services.AddTransient<PointService>(); 
 
         builder.Services.AddControllers()
             .AddJsonOptions(options =>

@@ -10,9 +10,9 @@ namespace RMSPrivateServerAPI.Controllers;
 [Route("api/[controller]")]
 public class FaultController : ControllerBase
 {
-    private readonly ApplicationDbContext? _context;
+    private readonly WmsDbContext? _context;
 
-    public FaultController(ApplicationDbContext context)
+    public FaultController(WmsDbContext context)
     {
         _context = context;
     }

@@ -7,6 +7,15 @@ namespace RMSPrivateServerAPI.Models;
 public class MoveArcAction : RobotAction
 {
     /// <summary>
+    /// конструктор 
+    /// </summary>
+    public MoveArcAction()
+    {
+        ActionTypeId = ActionType.moveArc;
+        ActionName = nameof(ActionType.moveArc);
+    }
+
+    /// <summary>
     /// Направление движения
     /// </summary>
     public ArcDirection Direction { get; set; } // forward-left/forward-right/backward-left/backward-right

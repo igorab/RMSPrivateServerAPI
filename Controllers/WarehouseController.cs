@@ -13,9 +13,9 @@ namespace RMSPrivateServerAPI.Controllers;
 [ApiController]
 public class WarehouseController : ControllerBase
 {
-    private readonly WarehouseDbContext _context;
+    private readonly WmsDbContext _context;
 
-    public WarehouseController(WarehouseDbContext context)
+    public WarehouseController(WmsDbContext context)
     {
         _context = context;
     }

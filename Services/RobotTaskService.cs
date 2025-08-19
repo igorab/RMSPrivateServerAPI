@@ -13,9 +13,9 @@ namespace RMSPrivateServerAPI.Services
     {
         private readonly IRobotTaskRepository _robotTaskRepository;
 
-        private readonly ApplicationDbContext _context;
+        private readonly WmsDbContext _context;
 
-        public RobotTaskService(IRobotTaskRepository robotTaskRepository, ApplicationDbContext context)
+        public RobotTaskService(IRobotTaskRepository robotTaskRepository, WmsDbContext context)
         {
             _robotTaskRepository = robotTaskRepository;
             _context = context;

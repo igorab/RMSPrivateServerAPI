@@ -6,6 +6,12 @@ namespace RMSPrivateServerAPI.Models;
 /// </summary>
 public class MoveLinearAction : RobotAction
 {
+    public MoveLinearAction()
+    {
+        ActionTypeId = ActionType.moveLinear;
+        ActionName = nameof(ActionType.moveLinear);
+    }
+
     /// <summary>
     /// Направление движения (вперёд или назад)
     /// </summary>

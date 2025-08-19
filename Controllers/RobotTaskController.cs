@@ -7,6 +7,7 @@ using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Enums;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Models;
+using RMSPrivateServerAPI.Services;
 using System.Net.Mime;
 using System.Threading.Tasks;
 #pragma warning disable CS1591
@@ -19,14 +20,17 @@ namespace RMSPrivateServerAPI.Controllers
         private readonly ILogger<RobotTaskController> _logger;
         private readonly IRobotTaskRepository _robotTaskRepository;
         private readonly IRobotTaskService _robotTaskService;
+
+        private readonly PointService _pointService;
         private readonly IMapper _mapper;
-        private readonly ApplicationDbContext _context;
+        private readonly WmsDbContext _context;
 
         public RobotTaskController(ILogger<RobotTaskController> logger, 
                                    IRobotTaskRepository repository, 
-                                   IRobotTaskService service, 
+                                   IRobotTaskService service,
+                                   PointService pointService,
                                    IMapper mapper,
-                                   ApplicationDbContext context
+                                   WmsDbContext context
                                    )
         {
             _logger = logger;
@@ -34,6 +38,7 @@ namespace RMSPrivateServerAPI.Controllers
             _robotTaskService = service;
             _mapper = mapper;
             _context = context;
+            _pointService = pointService;
         }
 
         /// <summary>
@@ -50,7 +55,32 @@ namespace RMSPrivateServerAPI.Controllers
 
             if (robotActions == null || wmsTask == null || wmsAction == null)            
                 return NotFound();
-            
+
+
+            List<PathDto> paths = await _pointService.GetPathElementsWithTypesAndPathsAsync();
+
+            foreach (PathDto path in paths)
+            {
+                var pt_from =  _context.Points.FirstOrDefault(q => q.Id == path.StartId);
+
+                var pt_to = _context.Points.FirstOrDefault(q => q.Id == path.FinishId); ;
+            }
+
+            List<PointDto> points = await _pointService.GetPointsWithTypesAsync();
+
+            MoveArcAction moveArcAction = new MoveArcAction();
+            robotActions.Enqueue(moveArcAction);
+
+            MoveLinearAction moveLinearAction = new MoveLinearAction();
+            robotActions.Enqueue(moveArcAction);
+
+            TurnAction turnAction = new TurnAction();
+            robotActions.Enqueue(turnAction);
+
+            StopAction stopAction = new StopAction();
+            robotActions.Enqueue(stopAction);
+
+
 
             RobotTaskDto robotTaskDto = new RobotTaskDto()
             {
