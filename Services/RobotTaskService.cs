@@ -5,6 +5,7 @@ using RMSPrivateServerAPI.Enums;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Models;
 using RMSPrivateServerAPI.Repositories;
+using RMSPrivateServerAPI.Models.Lib;
 #pragma warning disable CS1591, CS8603
 
 namespace RMSPrivateServerAPI.Services
@@ -14,7 +15,7 @@ namespace RMSPrivateServerAPI.Services
         private readonly IRobotTaskRepository _robotTaskRepository;
 
         private readonly WmsDbContext _context;
-
+        
         public RobotTaskService(IRobotTaskRepository robotTaskRepository, WmsDbContext context)
         {
             _robotTaskRepository = robotTaskRepository;
@@ -34,11 +35,12 @@ namespace RMSPrivateServerAPI.Services
             var statusReceived = nameof(RobotTaskStatus.Received);
 
             var joinedData = from task in _context.Tasks
+                             where task.StoreWmsId == RMSSetup.DefaultStoreWmsId
                              orderby task.Priority ascending
                              join action in _context.TaskActions
                                  on task.TaskId equals action.TaskId
                              where action.Status == statusReceived
-                             orderby action.CreatedAt descending
+                             orderby action.CreatedAt ascending
                              select new
                              {
                                  Task = task,

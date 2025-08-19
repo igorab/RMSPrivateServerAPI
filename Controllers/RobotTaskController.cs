@@ -66,7 +66,11 @@ namespace RMSPrivateServerAPI.Controllers
             {
                 var pt_from =  _context.Points.FirstOrDefault(q => q.Id == path.StartId);
 
-                var pt_to = _context.Points.FirstOrDefault(q => q.Id == path.FinishId); ;
+                Pose pose_from = new Pose () {X = pt_from?.X??0, Y = pt_from?.Y??0, Heading = pt_from?.RotationAngle??0};
+
+                var pt_to = _context.Points.FirstOrDefault(q => q.Id == path.FinishId);
+
+                Pose pose_to = new Pose() { X = pt_to?.X ?? 0, Y = pt_to?.Y ?? 0, Heading = pt_to?.RotationAngle ?? 0 };
             }
 
             List<PointDto> points = await _pointService.GetPointsWithTypesAsync();
@@ -82,8 +86,6 @@ namespace RMSPrivateServerAPI.Controllers
 
             StopAction stopAction = new StopAction();
             robotActions.Enqueue(stopAction);
-
-
 
             RobotTaskDto robotTaskDto = new RobotTaskDto()
             {

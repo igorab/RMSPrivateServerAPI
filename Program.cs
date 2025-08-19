@@ -29,17 +29,13 @@ public partial class Program
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
                 options.UseInlineDefinitionsForEnums();
-
-                //options.MapType<RobotAction>
             }            
         );
-
 
         builder.Services.AddApiVersioning(options =>
         {
             options.ReportApiVersions = true;
         });
-
 
         builder.Services.AddAutoMapper(typeof(Program));
 
@@ -77,7 +73,6 @@ public partial class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            //app.MapOpenApi();
             app.UseSwagger();
             app.UseSwaggerUI();
         }
@@ -93,7 +88,6 @@ public partial class Program
         {
             return Results.Ok("OK");
         });
-
 
         app.Run();
     }
