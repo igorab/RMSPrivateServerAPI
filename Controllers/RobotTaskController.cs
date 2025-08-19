@@ -48,14 +48,9 @@ namespace RMSPrivateServerAPI.Controllers
 
             Queue<RobotAction> robotActions = await _robotTaskService.GetRobotActions(robotId);
 
-            if (robotActions == null)            
+            if (robotActions == null || wmsTask == null || wmsAction == null)            
                 return NotFound();
-
-            if (wmsTask == null)
-                return NotFound();
-
-            if (wmsAction == null)
-                return NotFound();
+            
 
             RobotTaskDto robotTaskDto = new RobotTaskDto()
             {
@@ -117,7 +112,7 @@ namespace RMSPrivateServerAPI.Controllers
 
                 //return Ok(new { command = "next", action = task.actions[request.ActionIndex + 1] });
                 //
-                return Ok( new { command = "next" });
+                return Ok( new { command = nameof(RobotCommand.next) });
             }
             catch (Exception ex)
             {
