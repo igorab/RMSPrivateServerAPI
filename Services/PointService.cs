@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Data;
+using RMSPrivateServerAPI.StoreMapDto;
+using System.Collections.Generic;
+using System.Linq;
 #pragma warning disable CS1591
 
 namespace RMSPrivateServerAPI.Services;
@@ -14,11 +15,12 @@ public class PointService
         _context = context;
     }
 
-    public async Task<List<PathDto>> GetPathElementsWithTypesAndPathsAsync()
+    public async Task<List<PathDto>> GetPathElementsWithTypesAndPathsAsync(Guid areaId)
     {        
         var query = from path in _context.Paths
                     join pathElement in _context.PathElements on path.Id equals pathElement.PathId
                     join pathElementType in _context.PathElementTypes on pathElement.TypeId equals pathElementType.Id
+                    where pathElement.AreaId == areaId // Add the condition here
                     select new PathDto
                     {
                         PathId = path.Id,

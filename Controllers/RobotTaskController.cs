@@ -56,8 +56,11 @@ namespace RMSPrivateServerAPI.Controllers
             if (robotActions == null || wmsTask == null || wmsAction == null)            
                 return NotFound();
 
+            var area = _context.Areas.FirstOrDefault(q => q.WmsID == wmsTask.AreaWmsId);
+            if (area == null )
+                return NotFound();
 
-            List<PathDto> paths = await _pointService.GetPathElementsWithTypesAndPathsAsync();
+            List<PathDto> paths = await _pointService.GetPathElementsWithTypesAndPathsAsync(area.Id);
 
             foreach (PathDto path in paths)
             {
