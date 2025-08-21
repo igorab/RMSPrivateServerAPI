@@ -8,6 +8,7 @@ using RMSPrivateServerAPI.Enums;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Models;
 using RMSPrivateServerAPI.Services;
+using RMSPrivateServerAPI.StoreMapDto;
 using System.Net.Mime;
 using System.Threading.Tasks;
 #pragma warning disable CS1591
@@ -49,15 +50,19 @@ namespace RMSPrivateServerAPI.Controllers
         [HttpGet("{robotId}/current/")]
         public async Task<ActionResult<RobotTaskDto?>> GetCurrentTask(Guid robotId)
         {
-            var (wmsTask, wmsAction) = _robotTaskService.RobotTaskActions(robotId);
+            (TasksDto? wmsTask, TaskActionsDto? wmsTaskAction) = _robotTaskService.RobotTaskActions(robotId);
 
             Queue<RobotAction> robotActions = await _robotTaskService.GetRobotActions(robotId);
 
-            if (robotActions == null || wmsTask == null || wmsAction == null)            
+            if (robotActions == null || wmsTask == null || wmsTaskAction == null)            
                 return NotFound();
 
             var area = _context.Areas.FirstOrDefault(q => q.WmsID == wmsTask.AreaWmsId);
             if (area == null )
+                return NotFound();
+
+            var location_point = _context.Points.FirstOrDefault(q => q.IdInWMS == wmsTaskAction.Location);
+            if (location_point == null)
                 return NotFound();
 
             List<PathDto> paths = await _pointService.GetPathElementsWithTypesAndPathsAsync(area.Id);
@@ -91,7 +96,7 @@ namespace RMSPrivateServerAPI.Controllers
             {
                 TaskId = wmsTask.TaskId,
                 RobotId = robotId,
-                Title = $"Area: {wmsTask.AreaWmsId}, Location: {wmsAction.Location}",
+                Title = $"Area: {wmsTask.AreaWmsId}, Location: {wmsTaskAction.Location}",
                 RobotActions = new Queue<RobotAction>()
             };
 

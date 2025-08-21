@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace RMSPrivateServerAPI.StoreMapDto;
+namespace RMSPrivateServerAPI.StoreMapPOCO;
 
 /// <summary>
 /// Представляет точку на складе.
@@ -30,7 +30,7 @@ public class Point
     /// <summary>
     /// Идентификатор WMS.
     /// </summary>
-    public string WmsId { get; set; }
+    public string? IdInWMS { get; set; }
 
     /// <summary>
     /// X координата точки.

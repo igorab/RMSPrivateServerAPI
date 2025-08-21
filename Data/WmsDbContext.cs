@@ -2,7 +2,7 @@
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Models;
-using RMSPrivateServerAPI.StoreMapDto;
+using RMSPrivateServerAPI.StoreMapPOCO;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Data;
 
@@ -36,7 +36,7 @@ public class WmsDbContext : DbContext
     public DbSet<Point> Points { get; set; }
 
     // DbSet для таблицы Path
-    public DbSet<StoreMapDto.Path> Paths { get; set; }
+    public DbSet<StoreMapPOCO.Path> Paths { get; set; }
 
     // DbSet для таблицы PathElement
     public DbSet<PathElement> PathElements { get; set; }

@@ -15,6 +15,11 @@ public class PointService
         _context = context;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="areaId"></param>
+    /// <returns></returns>
     public async Task<List<PathDto>> GetPathElementsWithTypesAndPathsAsync(Guid areaId)
     {        
         var query = from path in _context.Paths
@@ -57,7 +62,7 @@ public class PointService
                     select new PointDto
                     {
                         Id = point.Id,
-                        WmsId = point.WmsId,
+                        IdInWMS = point.IdInWMS,
                         X = point.X,
                         Y = point.Y,
                         TypeName = pointType.Name
@@ -66,32 +71,4 @@ public class PointService
         var res = await query.ToListAsync();
         return res;
     }
-}
-
-public class PathDto
-{
-    public Guid PathId { get; set; }
-    public string? PathName { get; set; }
-    public string? PathDesc { get; set; }
-    public DateTime CreatedOn { get; set; }
-    public DateTime ModifiedOn { get; set; }
-    public Guid PathElementId { get; set; }
-    public int Order { get; set; }
-    public Guid AreaId { get; set; }
-    public Guid StartId { get; set; }
-    public Guid FinishId { get; set; }
-    public Guid TypeId { get; set; }
-    public string? Geometry { get; set; }
-    public string? ElementTypeDesc { get; set; }
-    public string? ElementTypeScheme { get; set; }
-}
-
-
-public class PointDto
-{
-    public Guid Id { get; set; }
-    public string? WmsId { get; set; }
-    public float X { get; set; }
-    public float Y { get; set; }
-    public string? TypeName { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿namespace RMSPrivateServerAPI.StoreMapDto;
+﻿namespace RMSPrivateServerAPI.StoreMapPOCO;
 
 /// <summary>
 /// Представляет тип точки.

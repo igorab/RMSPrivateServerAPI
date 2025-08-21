@@ -1,13 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-namespace RMSPrivateServerAPI.StoreMapDto;
+﻿namespace RMSPrivateServerAPI.StoreMapPOCO;
 
 /// <summary>
-/// Представляет зону на складе.
+/// Представляет маршрут на складе.
 /// </summary>
-public class Zone
+public class Path
 {
     /// <summary>
-    /// Идентификатор зоны.
+    /// Идентификатор маршрута.
     /// </summary>
     public Guid Id { get; set; }
 
@@ -22,23 +21,12 @@ public class Zone
     public Guid AreaId { get; set; }
 
     /// <summary>
-    /// Идентификатор WMS.
+    /// Наименование маршрута.
     /// </summary>
-    public string? WmsId { get; set; }
+    public string? Name { get; set; }
 
     /// <summary>
-    /// Тип зоны.
-    /// </summary>
-    public Guid TypeId { get; set; }
-
-    /// <summary>
-    /// Описание геометрии зоны (GeoJSON).
-    /// </summary>
-    [Column(TypeName = "jsonb")]
-    public string? Geometry { get; set; } // GeoJSON as string
-
-    /// <summary>
-    /// Описание зоны (по необходимости).
+    /// Описание маршрута (по необходимости).
     /// </summary>
     public string? Desc { get; set; }
 

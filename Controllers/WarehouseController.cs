@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Data;
-using RMSPrivateServerAPI.StoreMapDto;
+using RMSPrivateServerAPI.StoreMapPOCO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,7 +50,7 @@ public class WarehouseController : ControllerBase
 
     // GET: api/warehouse/paths
     [HttpGet("paths")]
-    public async Task<ActionResult<IEnumerable<StoreMapDto.Path>>> GetPaths()
+    public async Task<ActionResult<IEnumerable<StoreMapPOCO.Path>>> GetPaths()
     {
         return await _context.Paths.ToListAsync();
     }

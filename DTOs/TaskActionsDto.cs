@@ -26,7 +26,7 @@ public class TaskActionsDto
     /// </summary>
     public string? Status { get; set; }
     /// <summary>
-    /// Местоположение, где выполнено действие
+    /// Местоположение, где выполнено действие (ссылка на Point.IdInWMS )
     /// </summary>
     public string? Location { get; set; }
     /// <summary>

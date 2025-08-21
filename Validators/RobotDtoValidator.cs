@@ -8,6 +8,9 @@ public class RobotDtoValidator : AbstractValidator<RobotInfoDto>
 {
     public RobotDtoValidator()
     {
-        RuleFor(robot => robot.RobotState).Must(state => state == RobotState.online).WithSeverity(Severity.Warning).WithMessage("Robot must have value zero");
+        RuleFor(robot => robot.RobotState).
+        Must(state => state == RobotState.online).
+        WithSeverity(Severity.Warning).
+        WithMessage("Robot must have value zero");
     }    
 }
