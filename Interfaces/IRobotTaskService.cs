@@ -15,7 +15,7 @@ public interface IRobotTaskService
 
     Task<Queue<RobotAction>> GetRobotActions(Guid robotId);
 
-    (TasksDto? curTask, TaskActionsDto? curAction) RobotTaskActions(Guid robotId);
+    (TasksDto? curTask, List<TaskActionsDto>? taskActions) RobotTaskActions(Guid robotId);
 
     Task<robot_task> Insert(robot_task task);
 

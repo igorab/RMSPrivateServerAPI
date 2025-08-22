@@ -30,7 +30,12 @@ namespace RMSPrivateServerAPI.Services
             return await Task.Run(() => RobotActionsQueue(robotId));
         }
 
-        public (TasksDto? curTask, TaskActionsDto? curAction) RobotTaskActions(Guid robotId)
+        /// <summary>
+        ///  Task and TaskActions from wms
+        /// </summary>
+        /// <param name="robotId">Guid robot id </param>
+        /// <returns></returns>
+        public (TasksDto? curTask, List<TaskActionsDto>? taskActions) RobotTaskActions(Guid robotId)
         {
             var statusReceived = nameof(RobotTaskStatus.Received);
 
@@ -47,13 +52,18 @@ namespace RMSPrivateServerAPI.Services
                                  Action = action
                              };
 
+            List<TaskActionsDto>? taskActionsDtos = new List<TaskActionsDto>();
+            
+            foreach (var task_data in joinedData)
+            {
+                taskActionsDtos.Add(task_data.Action);
+            }
+
             var data = joinedData.FirstOrDefault();
-
-            var curAction = data?.Action;
-
+           
             var curTask = data?.Task;
 
-            return (curTask, curAction);
+            return (curTask, taskActionsDtos);
         }
 
 
@@ -65,28 +75,33 @@ namespace RMSPrivateServerAPI.Services
         {
             Queue<RobotAction> robotActions = new Queue<RobotAction>();
 
-            var (curTask, curAction) = RobotTaskActions(robotId);
+            var (curTask, curTaskAction) = RobotTaskActions(robotId);
+
+            robotActions.Enqueue(new CommonAction() { 
+                ActionTypeId = ActionType.wait, 
+                ActionName = nameof(ActionType.wait)                 
+            });
 
             //TODO Логика привязки очереди к Task 
 
-            robotActions.Enqueue(new MoveToAction() { 
-                ActionTypeId = ActionType.moveTo, 
-                ActionName = nameof(ActionType.moveTo), 
-                Pose = new Pose { X = 0, Y = 0, Heading = 0 }
-            });
-            robotActions.Enqueue(new CommonAction() {
-                ActionTypeId = ActionType.load, 
-                ActionName = nameof(ActionType.load)
-            });
-            robotActions.Enqueue(new MoveToAction() {
-                ActionTypeId = ActionType.moveTo, 
-                ActionName = nameof(ActionType.moveTo),
-                Pose = new Pose { X = 100, Y = 80, Heading = 40 }
-            });
-            robotActions.Enqueue(new CommonAction() 
-            { 
-                ActionTypeId = ActionType.unload, ActionName = nameof(ActionType.unload) 
-            });
+            //robotActions.Enqueue(new MoveToAction() { 
+            //    ActionTypeId = ActionType.moveTo, 
+            //    ActionName = nameof(ActionType.moveTo), 
+            //    Pose = new Pose { X = 0, Y = 0, Heading = 0 }
+            //});
+            //robotActions.Enqueue(new CommonAction() {
+            //    ActionTypeId = ActionType.load, 
+            //    ActionName = nameof(ActionType.load)
+            //});
+            //robotActions.Enqueue(new MoveToAction() {
+            //    ActionTypeId = ActionType.moveTo, 
+            //    ActionName = nameof(ActionType.moveTo),
+            //    Pose = new Pose { X = 100, Y = 80, Heading = 40 }
+            //});
+            //robotActions.Enqueue(new CommonAction() 
+            //{ 
+            //    ActionTypeId = ActionType.unload, ActionName = nameof(ActionType.unload) 
+            //});
 
             return robotActions;
         }

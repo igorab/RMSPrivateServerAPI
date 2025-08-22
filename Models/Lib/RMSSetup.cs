@@ -4,5 +4,9 @@
 
 public static class RMSSetup
 {
-    public const string DefaultStoreWmsId = "WH-4";  
+    public const string DefaultStoreWmsId = "WH-4";
+
+    public const int WmsLoadingId = 0;
+    public const int WmsUnloadingId = 1;
+
 }

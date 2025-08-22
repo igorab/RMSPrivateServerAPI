@@ -7,6 +7,7 @@ using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Enums;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Models;
+using RMSPrivateServerAPI.Models.Lib;
 using RMSPrivateServerAPI.Services;
 using RMSPrivateServerAPI.StoreMapDto;
 using System.Net.Mime;
@@ -50,32 +51,82 @@ namespace RMSPrivateServerAPI.Controllers
         [HttpGet("{robotId}/current/")]
         public async Task<ActionResult<RobotTaskDto?>> GetCurrentTask(Guid robotId)
         {
-            (TasksDto? wmsTask, TaskActionsDto? wmsTaskAction) = _robotTaskService.RobotTaskActions(robotId);
+            (TasksDto? wmsTask, List<TaskActionsDto>? wmsTaskAction) = _robotTaskService.RobotTaskActions(robotId);
 
             Queue<RobotAction> robotActions = await _robotTaskService.GetRobotActions(robotId);
 
-            if (robotActions == null || wmsTask == null || wmsTaskAction == null)            
+            if (robotActions == null || wmsTask == null || wmsTaskAction == null)
                 return NotFound();
 
             var area = _context.Areas.FirstOrDefault(q => q.WmsID == wmsTask.AreaWmsId);
-            if (area == null )
+            if (area == null)
                 return NotFound();
 
-            var location_point = _context.Points.FirstOrDefault(q => q.IdInWMS == wmsTaskAction.Location);
-            if (location_point == null)
-                return NotFound();
+            foreach (var taskAction in wmsTaskAction)
+            {
+                if (taskAction.ActionType == RMSSetup.WmsLoadingId) 
+                {
+                    var pt_from = _context.Points.FirstOrDefault(q => q.IdInWMS == taskAction.Location);
 
+                    Pose pose_from = new Pose() { X = pt_from?.X ?? 0, Y = pt_from?.Y ?? 0, Heading = pt_from?.RotationAngle ?? 0 };
+
+                    MoveToAction moveToAction_from = new MoveToAction() { Pose = pose_from };
+                    robotActions.Enqueue(moveToAction_from);
+
+                    robotActions.Enqueue(new CommonAction()
+                    {
+                        ActionTypeId = ActionType.load,
+                        ActionName = nameof(ActionType.load)
+                    });
+
+                }
+                else if (taskAction.ActionType == RMSSetup.WmsUnloadingId) 
+                {
+                    var pt_to = _context.Points.FirstOrDefault(q => q.IdInWMS == taskAction.Location);
+
+                    Pose pose_to = new Pose() { X = pt_to?.X ?? 0, Y = pt_to?.Y ?? 0, Heading = pt_to?.RotationAngle ?? 0 };
+
+                    MoveToAction moveToAction_to = new MoveToAction() { Pose = pose_to };
+                    robotActions.Enqueue(moveToAction_to);
+
+                    robotActions.Enqueue(new CommonAction()
+                    {
+                        ActionTypeId = ActionType.unload,
+                        ActionName = nameof(ActionType.unload)
+                    });
+                }
+            }
+
+            /*
             List<PathDto> paths = await _pointService.GetPathElementsWithTypesAndPathsAsync(area.Id);
 
             foreach (PathDto path in paths)
             {
-                var pt_from =  _context.Points.FirstOrDefault(q => q.Id == path.StartId);
+                var pt_from = _context.Points.FirstOrDefault(q => q.Id == path.StartId);
 
-                Pose pose_from = new Pose () {X = pt_from?.X??0, Y = pt_from?.Y??0, Heading = pt_from?.RotationAngle??0};
+                Pose pose_from = new Pose() { X = pt_from?.X ?? 0, Y = pt_from?.Y ?? 0, Heading = pt_from?.RotationAngle ?? 0 };
+
+                MoveToAction moveToAction_from = new MoveToAction() { Pose = pose_from };
+                robotActions.Enqueue(moveToAction_from);
+
+                robotActions.Enqueue(new CommonAction()
+                {
+                    ActionTypeId = ActionType.load,
+                    ActionName = nameof(ActionType.load)
+                });
 
                 var pt_to = _context.Points.FirstOrDefault(q => q.Id == path.FinishId);
 
                 Pose pose_to = new Pose() { X = pt_to?.X ?? 0, Y = pt_to?.Y ?? 0, Heading = pt_to?.RotationAngle ?? 0 };
+
+                MoveToAction moveToAction_to = new MoveToAction() { Pose = pose_to };
+                robotActions.Enqueue(moveToAction_to);
+
+                robotActions.Enqueue(new CommonAction()
+                {
+                    ActionTypeId = ActionType.unload,
+                    ActionName = nameof(ActionType.unload)
+                });
             }
 
             List<PointDto> points = await _pointService.GetPointsWithTypesAsync();
@@ -88,6 +139,7 @@ namespace RMSPrivateServerAPI.Controllers
 
             TurnAction turnAction = new TurnAction();
             robotActions.Enqueue(turnAction);
+            */
 
             StopAction stopAction = new StopAction();
             robotActions.Enqueue(stopAction);
@@ -96,14 +148,12 @@ namespace RMSPrivateServerAPI.Controllers
             {
                 TaskId = wmsTask.TaskId,
                 RobotId = robotId,
-                Title = $"Area: {wmsTask.AreaWmsId}, Location: {wmsTaskAction.Location}",
+                Title = $"Area: {wmsTask.AreaWmsId}, Store: {wmsTask.StoreWmsId}",
                 RobotActions = new Queue<RobotAction>()
             };
 
             robotTaskDto.RobotActions = robotActions;
-
-            //robotTaskDto.RobotActions.Enqueue(new MoveToAction () { ActionTypeId = ActionType.moveTo, ActionName = "Go", Pose = new Pose() {X=0, Y=0, Heading = 1 } }) ;
-
+            
             return Ok(robotTaskDto);
         }
 
