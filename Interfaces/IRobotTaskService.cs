@@ -21,5 +21,6 @@ public interface IRobotTaskService
 
     Task<robot_task> Update(robot_task task);
 
-    Task DeleteTask(Guid id);    
+    Task DeleteTask(Guid id);
+    Task<bool> UpdateTaskActionStatusToCompleted(int actionId);
 }

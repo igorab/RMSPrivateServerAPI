@@ -1,11 +1,12 @@
-﻿using RMSPrivateServerAPI.DTOs;
+﻿using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Data;
+using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Enums;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Models;
-using RMSPrivateServerAPI.Repositories;
 using RMSPrivateServerAPI.Models.Lib;
+using RMSPrivateServerAPI.Repositories;
 #pragma warning disable CS1591, CS8603
 
 namespace RMSPrivateServerAPI.Services
@@ -105,6 +106,33 @@ namespace RMSPrivateServerAPI.Services
 
             return robotActions;
         }
+
+        /// <summary>
+        /// обновить статус
+        /// </summary>
+        /// <param name="actionId"></param>
+        /// <returns></returns>
+        public async Task<bool> UpdateTaskActionStatusToCompleted(int actionId)
+        {
+            // Находим действие по идентификатору
+            var taskAction = await _context.TaskActions
+                .FirstOrDefaultAsync(a => a.Id == actionId);
+
+            // Проверяем, найдено ли действие
+            if (taskAction == null)
+            {
+                return false; // Действие не найдено
+            }
+
+            // Обновляем статус
+            taskAction.Status = "Done";
+
+            // Сохраняем изменения в базе данных
+            await _context.SaveChangesAsync();
+
+            return true; // Успешное обновление
+        }
+
 
         public async Task<robot_task> GetById(Guid taskId)
         {

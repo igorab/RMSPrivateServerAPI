@@ -194,6 +194,14 @@ namespace RMSPrivateServerAPI.Controllers
                 // Обработка завершения операции
                 TasksDto? tasks = _context.Tasks.Find(request.TaskId);
 
+                List<TaskActionsDto>? taskActions = _context.TaskActions.
+                    Where( q => q.Id == request.ActionIndex ).ToList();
+
+                foreach (TaskActionsDto taskAction in taskActions)
+                {
+                    _robotTaskService.UpdateTaskActionStatusToCompleted(taskAction.Id);
+                }
+
                 //if (task.actions[request.ActionIndex].ActionType == 0)
                 //{
                 //    // Логика обработки ошибки
