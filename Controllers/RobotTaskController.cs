@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
@@ -51,6 +52,9 @@ namespace RMSPrivateServerAPI.Controllers
         [HttpGet("{robotId}/current/")]
         public async Task<ActionResult<RobotTaskDto?>> GetCurrentTask(Guid robotId)
         {
+            var robot_tasks = _robotTaskService.GetAll(robotId).Result;
+            if (robot_tasks.IsNullOrEmpty()) { return BadRequest("Robot has no tasks");};
+            
             (TasksDto? wmsTask, List<TaskActionsDto>? wmsTaskAction) = _robotTaskService.RobotTaskActions(robotId);
 
             Queue<RobotAction> robotActions = await _robotTaskService.GetRobotActions(robotId);
@@ -265,11 +269,11 @@ namespace RMSPrivateServerAPI.Controllers
 
                       
         /// <summary>
-        /// Добавить задачу
+        /// Добавить задачу c действиями
         /// </summary>
         /// <param name="robotTaskAsDto"></param>
         /// <returns></returns>
-        [HttpPost("Add")]
+        [HttpPost("AddTaskWithActions")]
         public async Task<ActionResult<robot_task>> Insert([FromBody] RobotTaskDto robotTaskAsDto)
         {
             try
@@ -294,6 +298,32 @@ namespace RMSPrivateServerAPI.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+
+        /// <summary>
+        /// Добавить задачу
+        /// </summary>
+        /// <param name="robotId">id робота</param>
+        /// <param name="taskId">id task</param>
+        /// <param name="title">описание</param>
+        /// <returns></returns>
+        [HttpPut("Add")]
+        public async Task<IActionResult> Add(Guid robotId, Guid taskId, string? title)
+        {
+            try
+            {
+                robot_task robotTask = new robot_task() {RobotId = robotId, TaskId = taskId, Title = title };
+
+                await _robotTaskService.Update(robotTask);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+
+            return NoContent();
+        }
+
+
 
         /// <summary>
         /// Редактировать задачу

@@ -41,16 +41,19 @@ namespace RMSPrivateServerAPI.Services
             var statusReceived = nameof(RobotTaskStatus.Received);
 
             var joinedData = from task in _context.Tasks
-                             where task.StoreWmsId == RMSSetup.DefaultStoreWmsId
-                             orderby task.Priority ascending
+                                where task.StoreWmsId == RMSSetup.DefaultStoreWmsId
+                                    orderby task.Priority ascending
                              join action in _context.TaskActions
                                  on task.TaskId equals action.TaskId
-                             where action.Status == statusReceived
-                             orderby action.CreatedAt ascending
+                                 where action.Status == statusReceived
+                                    orderby action.ActionOrder, action.CreatedAt ascending
+                              join robot_task in _context.RobotTask   
+                                on action.TaskId equals robot_task.TaskId
+                                where robot_task.RobotId == robotId
                              select new
                              {
                                  Task = task,
-                                 Action = action
+                                 Action = action                                 
                              };
 
             List<TaskActionsDto>? taskActionsDtos = new List<TaskActionsDto>();
@@ -152,6 +155,16 @@ namespace RMSPrivateServerAPI.Services
             }
 
             return await _robotTaskRepository.GetCurrent(robotId);
+        }
+
+        public async Task<IEnumerable<robot_task>> GetAll(Guid robotId)
+        {
+            if (Guid.Empty == robotId)
+            {
+                throw new Exception("Invalid robot Id");
+            }
+
+            return await _robotTaskRepository.GetAll(robotId);
         }
 
 

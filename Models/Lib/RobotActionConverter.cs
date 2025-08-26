@@ -11,8 +11,12 @@ public class RobotActionConverter : JsonConverter<RobotAction>
 {
     public override RobotAction Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        // Реализовать логику десериализации, если будет необходимо
-        throw new NotImplementedException();
+        //TODO Реализовать логику десериализации, если будет необходимо
+        //RobotAction robotAction = JsonSerializer.Deserialize<RobotAction>(ref reader, options);
+
+        RobotAction robotAction = new CommonAction() ;
+
+        return robotAction;
     }
 
     public override void Write(Utf8JsonWriter writer, RobotAction value, JsonSerializerOptions options)
