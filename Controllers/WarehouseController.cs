@@ -11,6 +11,7 @@ namespace RMSPrivateServerAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class WarehouseController : ControllerBase
 {
     private readonly WmsDbContext _context;

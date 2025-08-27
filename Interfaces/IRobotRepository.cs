@@ -41,4 +41,10 @@ public interface IRobotRepository
     /// <param name="hardId">Id</param>
     /// <returns>Строка</returns>
     Task<robot_info?> GetByHardwareId(int hardId);
+
+    /// <summary>
+    /// Implement this method to get free robots
+    /// </summary>
+    /// <returns></returns>
+    Task<List<robot_info>> GetFreeRobots();
 }

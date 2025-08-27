@@ -53,7 +53,10 @@ namespace RMSPrivateServerAPI.Controllers
         public async Task<ActionResult<RobotTaskDto?>> GetCurrentTask(Guid robotId)
         {
             var robot_tasks = _robotTaskService.GetAll(robotId).Result;
-            if (robot_tasks.IsNullOrEmpty()) { return BadRequest("Robot has no tasks");};
+            if (robot_tasks.IsNullOrEmpty()) 
+            { 
+                return Ok(new RobotTaskDto() {RobotId = robotId  }); 
+            }
             
             (TasksDto? wmsTask, List<TaskActionsDto>? wmsTaskAction) = _robotTaskService.RobotTaskActions(robotId);
 
@@ -168,6 +171,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="robotId">Id робота</param>
         /// <returns></returns>
         [HttpGet("{robotId}/cur/")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<RobotTaskDto>> GetRobotTaskCurrent(Guid robotId)
         {
             List<RobotTaskFlat?> robotTask = await _robotTaskService.GetCurrent(robotId);
@@ -187,11 +191,11 @@ namespace RMSPrivateServerAPI.Controllers
         /// сервер должен принять это к сведению и ответить, двигаться ли роботу дальше или подождать, 
 	    /// а может, вообще, планы кардинально изменились и нужно заново запрашивать весь список
         /// </summary>
-        /// <param name="robotID">Id робота</param>
+        /// <param name="robotId">Id робота</param>
         /// <param name="request">Результат выполнения текущей операции</param>
         /// <returns>Робот завершил текущую операцию</returns>
-        [HttpPost("{robotID}/action-done")]
-        public IActionResult ActionDone(Guid robotID, [FromBody] ActionDoneRequest request)
+        [HttpPost("{robotId}/action-done")]
+        public IActionResult ActionDone(Guid robotId, [FromBody] ActionDoneRequest request)
         {
             try
             {
@@ -274,6 +278,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="robotTaskAsDto"></param>
         /// <returns></returns>
         [HttpPost("AddTaskWithActions")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<robot_task>> Insert([FromBody] RobotTaskDto robotTaskAsDto)
         {
             try
@@ -366,6 +371,7 @@ namespace RMSPrivateServerAPI.Controllers
 
 
         [HttpPost("AddRobotAction/{taskId}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> AddRobotAction(Guid taskId, [FromBody] RobotActionsDto robotActionDto)
         {
             if (robotActionDto == null)

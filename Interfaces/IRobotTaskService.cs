@@ -22,6 +22,13 @@ public interface IRobotTaskService
     Task<robot_task> Update(robot_task task);
 
     Task DeleteTask(Guid id);
+
     Task<bool> UpdateTaskActionStatusToCompleted(int actionId);
+
     Task<IEnumerable<robot_task>> GetAll(Guid robotId);
+
+    /// <summary>
+    /// Implement this method to assign the task
+    /// </summary>    
+    Task AssignTaskToRobot(Guid robotId, Guid taskId);
 }

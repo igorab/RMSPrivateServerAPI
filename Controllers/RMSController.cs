@@ -6,12 +6,20 @@ using Microsoft.AspNetCore.Mvc;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.Models;
 
+/// <summary>
+/// Получение State Report от RCS 
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class RMSController : ControllerBase
 {
     private readonly RmsDbContext _context;
 
+    /// <summary>
+    /// RMS - RCS взаимодействие
+    /// </summary>
+    /// <param name="context"></param>
     public RMSController(RmsDbContext context)
     {
         _context = context;

@@ -16,4 +16,10 @@ public interface IRobotTaskRepository
     Task<Guid> UpsertAsync(robot_task robot);
 
     Task<int> DeleteAsync(Guid id);
+
+    /// <summary>
+    /// Implement this method to get available tasks
+    /// </summary>
+    /// <returns>task list</returns>
+    Task<List<robot_task>> GetAvailableTasks();
 }

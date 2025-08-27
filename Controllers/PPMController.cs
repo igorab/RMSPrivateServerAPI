@@ -9,6 +9,7 @@ namespace RMSPrivateServerAPI.Controllers;
 
 [ApiController]
 [Route("api/v1/PPM")]
+[ApiExplorerSettings(IgnoreApi = true)]
 public class PPMController : ControllerBase
 {
     private readonly ILogger<PPMController> _logger;
