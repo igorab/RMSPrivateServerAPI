@@ -81,4 +81,9 @@ public class RobotTaskRepository : IRobotTaskRepository
 
         return await db.ExecuteAsync(query, new { TaskId = robotTaskId });
     }
+
+    public Task<List<robot_task>> GetAvailableTasks()
+    {
+        throw new NotImplementedException();
+    }
 }

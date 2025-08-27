@@ -88,24 +88,7 @@ namespace RMSPrivateServerAPI.Services
 
             //TODO Логика привязки очереди к Task 
 
-            //robotActions.Enqueue(new MoveToAction() { 
-            //    ActionTypeId = ActionType.moveTo, 
-            //    ActionName = nameof(ActionType.moveTo), 
-            //    Pose = new Pose { X = 0, Y = 0, Heading = 0 }
-            //});
-            //robotActions.Enqueue(new CommonAction() {
-            //    ActionTypeId = ActionType.load, 
-            //    ActionName = nameof(ActionType.load)
-            //});
-            //robotActions.Enqueue(new MoveToAction() {
-            //    ActionTypeId = ActionType.moveTo, 
-            //    ActionName = nameof(ActionType.moveTo),
-            //    Pose = new Pose { X = 100, Y = 80, Heading = 40 }
-            //});
-            //robotActions.Enqueue(new CommonAction() 
-            //{ 
-            //    ActionTypeId = ActionType.unload, ActionName = nameof(ActionType.unload) 
-            //});
+            
 
             return robotActions;
         }
@@ -212,6 +195,11 @@ namespace RMSPrivateServerAPI.Services
                 await _robotTaskRepository.DeleteAsync(taskId);
             }
             return ;
-        }       
+        }
+
+        public Task AssignTaskToRobot(Guid robotId, Guid taskId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

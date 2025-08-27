@@ -104,5 +104,8 @@ public class RobotRepository : IRobotRepository
         return await db.ExecuteAsync(query, new { id = robot_id });
     }
 
-   
+    public Task<List<robot_info>> GetFreeRobots()
+    {
+        throw new NotImplementedException();
+    }
 }
