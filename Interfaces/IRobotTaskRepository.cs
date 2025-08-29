@@ -1,4 +1,5 @@
-﻿using RMSPrivateServerAPI.Entities;
+﻿using RMSPrivateServerAPI.DTOs;
+using RMSPrivateServerAPI.Entities;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Interfaces;
 
@@ -18,8 +19,8 @@ public interface IRobotTaskRepository
     Task<int> DeleteAsync(Guid id);
 
     /// <summary>
-    /// Implement this method to get available tasks
+    /// to get available tasks
     /// </summary>
     /// <returns>task list</returns>
-    Task<List<robot_task>> GetAvailableTasks();
+    Task<List<TasksDto>> GetAvailableTasks();
 }

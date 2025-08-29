@@ -68,6 +68,11 @@ public partial class Program
             });        
     }
 
+    /// <summary>
+    /// Запуск сервиса создания задач
+    /// </summary>
+    /// <param name="args"></param>
+    /// <returns></returns>
     public static IHostBuilder CreateHostBuilder(string[] args)
     {
         return Host.CreateDefaultBuilder(args)
@@ -100,9 +105,7 @@ public partial class Program
         Debug.Assert(RMSData.ConnectionTest());
 
         ConfigureServices(builder.Services, builder.Configuration);
-
-        CreateHostBuilder(args).Build().Run();
-
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -123,7 +126,11 @@ public partial class Program
         {
             return Results.Ok("OK");
         });
-        
-        app.Run();      
+
+        //CreateHostBuilder(args).Build().Run();
+
+        var hostTask = Task.Run(() => CreateHostBuilder(args).Build().Run());
+
+        app.Run();        
     }   
 }

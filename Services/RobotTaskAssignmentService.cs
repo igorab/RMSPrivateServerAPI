@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Interfaces;
 using System;
 using System.Threading;
@@ -53,7 +54,7 @@ public class RobotTaskAssignmentService : BackgroundService
         {
             var freeRobots = await _robotRepository.GetFreeRobots();
 
-            var availableTasks = await _robotTaskRepository.GetAvailableTasks(); 
+            List<TasksDto> availableTasks =  await _robotTaskRepository.GetAvailableTasks(); 
 
             foreach (var robot in freeRobots)
             {
@@ -63,7 +64,7 @@ public class RobotTaskAssignmentService : BackgroundService
 
                     await _robotTaskService.AssignTaskToRobot(robot.RobotId, taskToAssign.TaskId); 
 
-                    _logger.LogInformation($"Assigned task {taskToAssign.RobotId} to robot {robot.RobotId}");
+                    _logger.LogInformation($"Assigned task {taskToAssign.TaskId} to robot {robot.RobotId}");
 
                     availableTasks.RemoveAt(0); // Remove the assigned task from the list
                 }

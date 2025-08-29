@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Microsoft.IdentityModel.Tokens;
 using RMSPrivateServerAPI.Data;
+using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
+using System.Data;
 #pragma warning disable CS1591
 
 namespace RMSPrivateServerAPI.Repositories;
@@ -87,8 +89,21 @@ public class RobotTaskRepository : IRobotTaskRepository
     /// </summary>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public Task<List<robot_task>> GetAvailableTasks()
+    public async Task<List<TasksDto>> GetAvailableTasks()
     {
-        throw new NotImplementedException();
+        using IDbConnection db = _databaseConnectionFactory.GetConnection();
+
+        string sql = @"
+            SELECT * 
+            FROM public.""Tasks"" tsk
+            WHERE tsk.""Status"" = ""Received""
+            AND NOT EXISTS (
+                SELECT 1
+                FROM public.""RobotTask"" t
+                WHERE tsk.""TaskId"" = t.""TaskId""
+            );";
+
+        var res =  await db.QueryAsync<TasksDto>(sql);
+        return res.ToList();
     }
 }
