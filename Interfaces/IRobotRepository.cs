@@ -46,5 +46,5 @@ public interface IRobotRepository
     /// Implement this method to get free robots
     /// </summary>
     /// <returns></returns>
-    Task<List<robot_info>> GetFreeRobots();
+    Task<IEnumerable<robot_info>> GetFreeRobots();
 }

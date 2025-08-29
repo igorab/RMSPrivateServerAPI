@@ -10,6 +10,9 @@ using RMSPrivateServerAPI.Repositories;
 using RMSPrivateServerAPI.Models.Lib;
 using RMSPrivateServerAPI.Models;
 using RMSPrivateServerAPI.Services;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 
 public partial class Program
 {
@@ -45,7 +48,6 @@ public partial class Program
 
         IConfigurationSection configSection = configuration.GetSection("ConnectionStrings");
         services.Configure<DbSettings>(configSection);
-
         services.AddTransient<DatabaseConnectionFactory>();
 
         // Регистрация сервисов
@@ -57,13 +59,38 @@ public partial class Program
 
         services.AddTransient<PointService>();
 
+        //services.AddHostedService<RobotTaskAssignmentService>();
+
         services.AddControllers()
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new RobotActionConverter());
-            });
+            });        
+    }
 
-        services.AddHostedService<RobotTaskAssignmentService>();
+    public static IHostBuilder CreateHostBuilder(string[] args)
+    {
+        return Host.CreateDefaultBuilder(args)
+                .ConfigureServices((hostContext, services) =>
+                {
+                    var config = hostContext.Configuration;
+
+                    string? connectionString = config.GetConnectionString("DefaultConnection");
+
+                    services.AddDbContext<WmsDbContext>(op => op.UseNpgsql(connectionString));
+
+                    IConfigurationSection configSection = config.GetSection("ConnectionStrings");
+                    services.Configure<DbSettings>(configSection);
+                    services.AddSingleton<DatabaseConnectionFactory>();
+
+                    services.AddSingleton<IRobotService, RobotService>();
+                    services.AddSingleton<IRobotRepository, RobotRepository>();
+
+                    services.AddSingleton<IRobotTaskService, RobotTaskService>();
+                    services.AddSingleton<IRobotTaskRepository, RobotTaskRepository>();
+
+                    services.AddHostedService<RobotTaskAssignmentService>();
+                });
     }
 
     public static void Main(string[] args)
@@ -73,7 +100,9 @@ public partial class Program
         Debug.Assert(RMSData.ConnectionTest());
 
         ConfigureServices(builder.Services, builder.Configuration);
-        
+
+        CreateHostBuilder(args).Build().Run();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -94,7 +123,7 @@ public partial class Program
         {
             return Results.Ok("OK");
         });
-
-        app.Run();
-    }
+        
+        app.Run();      
+    }   
 }

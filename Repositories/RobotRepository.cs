@@ -1,8 +1,10 @@
-﻿using RMSPrivateServerAPI.Entities;
-using RMSPrivateServerAPI.Interfaces;
-using Dapper;
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
 using RMSPrivateServerAPI.Data;
+using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Enums;
+using RMSPrivateServerAPI.Interfaces;
+using System.Data;
 #pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Repositories;
 
@@ -104,8 +106,25 @@ public class RobotRepository : IRobotRepository
         return await db.ExecuteAsync(query, new { id = robot_id });
     }
 
-    public Task<List<robot_info>> GetFreeRobots()
+    /// <summary>
+    /// get free robots
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
+    public async Task<IEnumerable<robot_info>> GetFreeRobots()
     {
-        throw new NotImplementedException();
+        using IDbConnection db = _databaseConnectionFactory.GetConnection();
+        
+        string sql = @"
+            SELECT *
+            FROM public.""RobotInfo"" r
+            WHERE r.""RobotState"" = 0
+            AND NOT EXISTS (
+                SELECT 1
+                FROM public.""RobotTask"" t
+                WHERE t.""RobotId"" = r.""RobotId""
+            );";
+
+        return await db.QueryAsync<robot_info>(sql);        
     }
 }

@@ -197,9 +197,16 @@ namespace RMSPrivateServerAPI.Services
             return ;
         }
 
-        public Task AssignTaskToRobot(Guid robotId, Guid taskId)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="robotId"></param>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task AssignTaskToRobot(Guid robotId, Guid taskId)
         {
-            throw new NotImplementedException();
+            await Task.Delay(1);            
         }
     }
 }

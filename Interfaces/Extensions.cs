@@ -23,7 +23,7 @@ public static class Extensions
 
         services.AddTransient<IPPMRepository, PPMRepository>();
         services.AddTransient<IPPMService, PPMService>();
-
+       
         return services;
     }
 }
