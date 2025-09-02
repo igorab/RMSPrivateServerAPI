@@ -206,6 +206,10 @@ namespace RMSPrivateServerAPI.Services
         /// <exception cref="NotImplementedException"></exception>
         public async Task AssignTaskToRobot(Guid robotId, Guid taskId)
         {
+            robot_task rt = new robot_task() { RobotId = robotId, TaskId = taskId, Title = "assign" };
+
+            await Update(rt);
+
             await Task.Delay(1);            
         }
     }
