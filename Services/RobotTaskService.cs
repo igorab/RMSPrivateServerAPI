@@ -87,11 +87,39 @@ namespace RMSPrivateServerAPI.Services
             });
 
             //TODO Логика привязки очереди к Task 
-
             
-
             return robotActions;
         }
+
+        /// <summary>
+        /// обновить статус задачи
+        /// </summary>
+        /// <param name="RobotTaskId">Guid</param>
+        /// <returns>ok?</returns>        
+        public async Task<bool> TaskStatusDone(Guid RobotTaskId)
+        {
+            try
+            {
+                // Находим Task
+                var tsk = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == RobotTaskId);
+
+                // Проверяем, найдено ли действие
+                if (tsk == null) return false; // Действие не найдено
+                
+                // Обновляем статус
+                tsk.Status = RMSSetup.StatusDone;
+
+                // Сохраняем изменения в базе данных
+                await _context.SaveChangesAsync();
+
+                return true; // Успешное обновление
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// обновить статус
@@ -100,23 +128,27 @@ namespace RMSPrivateServerAPI.Services
         /// <returns></returns>
         public async Task<bool> UpdateTaskActionStatusToCompleted(int actionId)
         {
-            // Находим действие по идентификатору
-            var taskAction = await _context.TaskActions
-                .FirstOrDefaultAsync(a => a.Id == actionId);
-
-            // Проверяем, найдено ли действие
-            if (taskAction == null)
+            try
             {
-                return false; // Действие не найдено
+                // Находим действие по идентификатору
+                var taskAction = await _context.TaskActions
+                    .FirstOrDefaultAsync(a => a.Id == actionId);
+
+                // Проверяем, найдено ли действие
+                if (taskAction == null) return false; // Действие не найдено
+               
+                // Обновляем статус
+                taskAction.Status = RMSSetup.StatusDone;
+
+                // Сохраняем изменения в базе данных
+                await _context.SaveChangesAsync();
+
+                return true; // Успешное обновление
             }
-
-            // Обновляем статус
-            taskAction.Status = "Done";
-
-            // Сохраняем изменения в базе данных
-            await _context.SaveChangesAsync();
-
-            return true; // Успешное обновление
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
 

@@ -58,9 +58,7 @@ public partial class Program
         services.RegisterDataAccessDependencies();
 
         services.AddTransient<PointService>();
-
-        //services.AddHostedService<RobotTaskAssignmentService>();
-
+        
         services.AddControllers()
             .AddJsonOptions(options =>
             {
@@ -126,9 +124,7 @@ public partial class Program
         {
             return Results.Ok("OK");
         });
-
-        //CreateHostBuilder(args).Build().Run();
-
+        
         var hostTask = Task.Run(() => CreateHostBuilder(args).Build().Run());
 
         app.Run();        

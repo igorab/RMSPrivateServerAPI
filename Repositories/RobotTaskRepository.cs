@@ -4,6 +4,7 @@ using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
 using RMSPrivateServerAPI.Interfaces;
+using RMSPrivateServerAPI.Models.Lib;
 using System.Data;
 #pragma warning disable CS1591
 
@@ -96,14 +97,14 @@ public class RobotTaskRepository : IRobotTaskRepository
         string sql = @"
             SELECT * 
             FROM public.""Tasks"" tsk
-            WHERE tsk.""Status"" = ""Received""
+            WHERE tsk.""Status"" = @status
             AND NOT EXISTS (
                 SELECT 1
                 FROM public.""RobotTask"" t
                 WHERE tsk.""TaskId"" = t.""TaskId""
             );";
 
-        var res =  await db.QueryAsync<TasksDto>(sql);
+        var res =  await db.QueryAsync<TasksDto>(sql, new {status = RMSSetup.StatusReceived } );
         return res.ToList();
     }
 }

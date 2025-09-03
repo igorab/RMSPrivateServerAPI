@@ -1,4 +1,6 @@
-﻿namespace RMSPrivateServerAPI.Models.Lib;
+﻿using System.Runtime.CompilerServices;
+
+namespace RMSPrivateServerAPI.Models.Lib;
 #pragma warning disable CS1591, CS8603
 
 
@@ -9,4 +11,6 @@ public static class RMSSetup
     public const int WmsLoadingId = 0;
     public const int WmsUnloadingId = 1;
 
+    public const string StatusDone = "Done";
+    public const string StatusReceived = "Received";
 }
