@@ -94,18 +94,20 @@ namespace RMSPrivateServerAPI.Services
         /// <summary>
         /// обновить статус задачи
         /// </summary>
-        /// <param name="RobotTaskId">Guid</param>
+        /// <param name="RTaskId">Task Id Guid</param>
         /// <returns>ok?</returns>        
-        public async Task<bool> TaskStatusDone(Guid RobotTaskId)
+        public async Task<bool> TaskStatusDone(Guid RTaskId)
         {
             try
             {
                 // Находим Task
-                var tsk = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == RobotTaskId);
+                var tsk = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == RTaskId);
 
                 // Проверяем, найдено ли действие
                 if (tsk == null) return false; // Действие не найдено
-                
+
+                await _robotTaskRepository.DeleteAsync(RTaskId);
+
                 // Обновляем статус
                 tsk.Status = RMSSetup.StatusDone;
 
@@ -238,11 +240,9 @@ namespace RMSPrivateServerAPI.Services
         /// <exception cref="NotImplementedException"></exception>
         public async Task AssignTaskToRobot(Guid robotId, Guid taskId)
         {
-            robot_task rt = new robot_task() { RobotId = robotId, TaskId = taskId, Title = "assign" };
+            robot_task rt = new robot_task() { RobotId = robotId, TaskId = taskId, Title = $"assign {DateTime.Now}" };
 
-            await Update(rt);
-
-            await Task.Delay(1);            
+            await Insert(rt);            
         }
     }
 }

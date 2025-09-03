@@ -11,6 +11,7 @@ using RMSPrivateServerAPI.Models;
 using RMSPrivateServerAPI.Models.Lib;
 using RMSPrivateServerAPI.Services;
 using RMSPrivateServerAPI.StoreMapDto;
+using System.Collections;
 using System.Net.Mime;
 using System.Threading.Tasks;
 #pragma warning disable CS1591
@@ -195,19 +196,35 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="request">Результат выполнения текущей операции</param>
         /// <returns>Робот завершил текущую операцию</returns>
         [HttpPost("{robotId}/action-done")]
-        public IActionResult ActionDone(Guid robotId, [FromBody] ActionDoneRequest request)
+        public async Task<IActionResult> ActionDone(Guid robotId, [FromBody] ActionDoneRequest request)
         {
+            bool allActionsDone = true; 
+
             try
             {
-                // Обработка завершения операции
-                TasksDto? tasks = _context.Tasks.Find(request.TaskId);
-
-                List<TaskActionsDto>? taskActions = _context.TaskActions.
-                    Where( q => q.Id == request.ActionIndex ).ToList();
-
-                foreach (TaskActionsDto taskAction in taskActions)
+                if (request.ActionIndex != 0)
                 {
-                    _robotTaskService.UpdateTaskActionStatusToCompleted(taskAction.Id);
+                    // Обработка завершения операции
+                    TasksDto? tasks = _context.Tasks.Find(request.TaskId);
+
+                    List<TaskActionsDto>? taskActions = _context.TaskActions.
+                        Where(q => q.Id == request.ActionIndex).ToList();
+
+                    foreach (TaskActionsDto taskAction in taskActions)
+                    {
+                        //TODO allActionsDone  реализовать
+                        await _robotTaskService.UpdateTaskActionStatusToCompleted(taskAction.Id);
+                    }
+                }
+
+                IEnumerable<robot_task>? robot_tasks = await _robotTaskService.GetAll(robotId);
+
+                if (allActionsDone)
+                {
+                    foreach (robot_task rtask in robot_tasks)
+                    {
+                        await _robotTaskService.TaskStatusDone(rtask.TaskId);
+                    }
                 }
 
                 //if (task.actions[request.ActionIndex].ActionType == 0)

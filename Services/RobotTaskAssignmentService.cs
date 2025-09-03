@@ -41,7 +41,7 @@ public class RobotTaskAssignmentService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             await AssignTasksToFreeRobots();
-            await Task.Delay(1000, stoppingToken); // Wait for 1 second
+            await Task.Delay(5000, stoppingToken); // Wait for 5 seconds
         }
     }
 

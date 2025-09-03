@@ -14,11 +14,14 @@ public class WmsDbContext : DbContext
     public DbSet<robot_info> Robots { get; set; }
     public DbSet<ppm_task> PPMTasks { get; set; }
     public DbSet<FaultInfoDto> Faults { get; set; }
+
+    public DbSet<robot_task> RobotTask { get; set; }
+
     // common task from WMS >>
     public DbSet<TasksDto> Tasks { get; set; }
     public DbSet<TaskActionsDto> TaskActions { get; set; }
     // common task from WMS <<
-    public DbSet<robot_task> RobotTask { get; set; }
+   
     public DbSet<RobotTaskFlat> RobotTaskActions { get; set; }
     public DbSet<RobotActionsDto> RobotActions { get; set; }
 

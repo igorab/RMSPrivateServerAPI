@@ -7,6 +7,9 @@ namespace RMSPrivateServerAPI.Models;
 /// </summary>
 public class MoveToAction : RobotAction
 {
+    /// <summary>
+    /// MoveTo
+    /// </summary>
     public MoveToAction()
     {
         ActionTypeId = ActionType.moveTo;

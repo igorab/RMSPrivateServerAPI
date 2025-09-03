@@ -31,4 +31,9 @@ public interface IRobotTaskService
     /// Implement this method to assign the task
     /// </summary>    
     Task AssignTaskToRobot(Guid robotId, Guid taskId);
+
+    /// <summary>
+    /// set Task status as completed
+    /// </summary>    
+    Task<bool> TaskStatusDone(Guid RobotTaskId);
 }
