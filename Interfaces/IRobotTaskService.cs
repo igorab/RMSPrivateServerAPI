@@ -11,7 +11,7 @@ public interface IRobotTaskService
 {
     Task<robot_task> GetById(Guid taskId);
 
-    Task <List<RobotTaskFlat?>> GetCurrent(Guid robotId);
+    Task <List<RobotActions?>> GetCurrent(Guid robotId);
 
     Task<Queue<RobotAction>> GetRobotActions(Guid robotId);
 

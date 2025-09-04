@@ -33,7 +33,7 @@ public class RobotTaskRepository : IRobotTaskRepository
     }
 
 
-    public async Task<List<RobotTaskFlat?>> GetCurrent(Guid robotId)
+    public async Task<List<RobotActions?>> GetCurrent(Guid robotId)
     {
         using var db = _databaseConnectionFactory.GetConnection();
 
@@ -44,7 +44,7 @@ public class RobotTaskRepository : IRobotTaskRepository
         
         var param = new { robotId };
 
-        return (await db.QueryAsync<RobotTaskFlat?>(sql, param )).ToList();        
+        return (await db.QueryAsync<RobotActions?>(sql, param )).ToList();        
     }
 
 

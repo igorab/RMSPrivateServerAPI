@@ -62,8 +62,8 @@ public class RobotTaskAssignmentService : BackgroundService
                 {
                     var taskToAssign = availableTasks[0]; // Get the first available task
 
-                    await _robotTaskService.AssignTaskToRobot(robot.RobotId, taskToAssign.TaskId); 
-
+                    await _robotTaskService.AssignTaskToRobot(robot.RobotId, taskToAssign.TaskId);
+                    await Task.Delay(1000);
                     _logger.LogInformation($"Assigned task {taskToAssign.TaskId} to robot {robot.RobotId}");
 
                     availableTasks.RemoveAt(0); // Remove the assigned task from the list

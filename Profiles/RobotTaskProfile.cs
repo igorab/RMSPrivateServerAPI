@@ -19,24 +19,24 @@ public class RobotTaskProfile : Profile
             .ForMember(tsk => tsk.Title, task => task.MapFrom(robotDto => robotDto.Title))            
             .ReverseMap();
 
-        CreateMap<List<RobotTaskFlat>, RobotTaskDto>()
-            .ForPath(dest => dest.TaskId, ac => ac.MapFrom(src => src.First().robot_task_id))
+        CreateMap<List<RobotActions>, RobotTaskDto>()
+            .ForPath(dest => dest.TaskId, ac => ac.MapFrom(src => src.First().TaskId))
             .ForPath(dest => dest.RobotId, ac => ac.MapFrom(src => src.First().RobotId))
-            .ForPath(dest => dest.Title, ac => ac.MapFrom(src => src.First().title))
+            .ForPath(dest => dest.Title, ac => ac.MapFrom(src => src.First().Title))
             .ForPath(dest => dest.RobotActionsDto, ac => ac.MapFrom(src => src));
 
-        CreateMap<RobotActionsDto, RobotTaskFlat>()
-            .ForMember(dest => dest.action_id, opt => opt.MapFrom(src => src.ActionId))
-            .ForMember(dest => dest.robot_task_id, opt => opt.MapFrom(src => src.TaskId))
-            .ForMember(dest => dest.title, opt => opt.MapFrom(src => src.Title))
-            .ForMember(dest => dest.action_type, opt => opt.MapFrom(src => src.ActionType))
-            .ForMember(dest => dest.pose_x, opt => opt.MapFrom(src => src.Pose_X))
-            .ForMember(dest => dest.pose_y, opt => opt.MapFrom(src => src.Pose_Y))
-            .ForMember(dest => dest.heading, opt => opt.MapFrom(src => src.Heading))
-            .ForMember(dest => dest.direction, opt => opt.MapFrom(src => src.Direction))
-            .ForMember(dest => dest.distance, opt => opt.MapFrom(src => src.Distance))
-            .ForMember(dest => dest.angle, opt => opt.MapFrom(src => src.Angle))
-            .ForMember(dest => dest.radius, opt => opt.MapFrom(src => src.Radius))
+        CreateMap<RobotActionsDto, RobotActions>()
+            .ForMember(dest => dest.ActionId, opt => opt.MapFrom(src => src.ActionId))
+            .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.TaskId))
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+            .ForMember(dest => dest.ActionType, opt => opt.MapFrom(src => src.ActionType))
+            .ForMember(dest => dest.Pose_X, opt => opt.MapFrom(src => src.Pose_X))
+            .ForMember(dest => dest.Pose_Y, opt => opt.MapFrom(src => src.Pose_Y))
+            .ForMember(dest => dest.Heading, opt => opt.MapFrom(src => src.Heading))
+            .ForMember(dest => dest.Direction, opt => opt.MapFrom(src => src.Direction))
+            .ForMember(dest => dest.Distance, opt => opt.MapFrom(src => src.Distance))
+            .ForMember(dest => dest.Angle, opt => opt.MapFrom(src => src.Angle))
+            .ForMember(dest => dest.Radius, opt => opt.MapFrom(src => src.Radius))
             .ReverseMap();            
     }
 }

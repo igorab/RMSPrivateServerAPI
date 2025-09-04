@@ -22,7 +22,7 @@ public class WmsDbContext : DbContext
     public DbSet<TaskActionsDto> TaskActions { get; set; }
     // common task from WMS <<
    
-    public DbSet<RobotTaskFlat> RobotTaskActions { get; set; }
+    public DbSet<RobotActions> RobotTaskActions { get; set; }
     public DbSet<RobotActionsDto> RobotActions { get; set; }
 
     // wms >>
@@ -68,7 +68,7 @@ public class WmsDbContext : DbContext
 
         modelBuilder.Entity<robot_task>().ToTable("RobotTask");
 
-        modelBuilder.Entity<RobotTaskFlat>().ToTable("RobotTaskActions");
+        modelBuilder.Entity<RobotActions>().ToTable("RobotTaskActions");
 
         modelBuilder.Entity<FaultInfoDto>().ToTable("FaultInfo");
 

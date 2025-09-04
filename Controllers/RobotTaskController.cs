@@ -175,7 +175,7 @@ namespace RMSPrivateServerAPI.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<RobotTaskDto>> GetRobotTaskCurrent(Guid robotId)
         {
-            List<RobotTaskFlat?> robotTask = await _robotTaskService.GetCurrent(robotId);
+            List<RobotActions?> robotTask = await _robotTaskService.GetCurrent(robotId);
 
             if (robotTask == null)
             {
