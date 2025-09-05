@@ -40,7 +40,7 @@ public class RobotTaskRepository : IRobotTaskRepository
         var sql = $@"SELECT * FROM ""RobotTask"" t 
                         left join ""RobotActions"" ra 
                         on ra.""TaskId"" = t.""TaskId""
-                        WHERE t.""RobotId"" = @robotId";
+                            WHERE t.""RobotId"" = @robotId";
         
         var param = new { robotId };
 

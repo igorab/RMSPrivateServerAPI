@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
@@ -128,13 +129,13 @@ namespace RMSPrivateServerAPI.Services
         /// </summary>
         /// <param name="actionId"></param>
         /// <returns></returns>
-        public async Task<bool> UpdateTaskActionStatusToCompleted(int actionId)
+        public async Task<bool> UpdateTaskActionStatusToCompleted(Guid taskId, int actionId)
         {
             try
             {
                 // Находим действие по идентификатору
                 var taskAction = await _context.TaskActions
-                    .FirstOrDefaultAsync(a => a.Id == actionId);
+                    .FirstOrDefaultAsync(a => a.TaskId == taskId && a.Id == actionId);
 
                 // Проверяем, найдено ли действие
                 if (taskAction == null) return false; // Действие не найдено
@@ -244,5 +245,32 @@ namespace RMSPrivateServerAPI.Services
 
             await Insert(rt);            
         }
+
+        public async Task<RobotActionsDto> AddRobotAction(Guid robotId, ActionDoneRequest request)
+        {
+            
+            var robotAction = new RobotActionsDto
+            {
+                ActionId = Guid.NewGuid(),
+                RobotId = robotId,
+                TaskId = request.TaskId,
+                Result = request.Result,
+                Reason = request.Reason,
+                ActionType = 0,
+                Pose_X = 0,
+                Pose_Y = 0,
+                Heading = 0,
+                Direction = 0,
+                Distance = 0,
+                Angle = 0,
+                Radius = 0
+            };
+
+            _context.RobotActions.Add(robotAction);
+            await _context.SaveChangesAsync();
+
+            return robotAction;
+        }
+
     }
 }

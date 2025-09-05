@@ -23,7 +23,7 @@ public interface IRobotTaskService
 
     Task DeleteTask(Guid id);
 
-    Task<bool> UpdateTaskActionStatusToCompleted(int actionId);
+    Task<bool> UpdateTaskActionStatusToCompleted(Guid taskId, int actionId);
 
     Task<IEnumerable<robot_task>> GetAll(Guid robotId);
 
@@ -36,4 +36,6 @@ public interface IRobotTaskService
     /// set Task status as completed
     /// </summary>    
     Task<bool> TaskStatusDone(Guid RobotTaskId);
+
+    Task<RobotActionsDto>  AddRobotAction(Guid robotId, ActionDoneRequest request);
 }

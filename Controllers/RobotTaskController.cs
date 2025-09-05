@@ -196,13 +196,15 @@ namespace RMSPrivateServerAPI.Controllers
         /// <param name="request">Результат выполнения текущей операции</param>
         /// <returns>Робот завершил текущую операцию</returns>
         [HttpPost("{robotId}/action-done")]
-        public async Task<IActionResult> ActionDone(Guid robotId, [FromBody] ActionDoneRequest request)
+        public async Task<IActionResult> ActionDone(Guid robotId, 
+                                                    [FromBody] ActionDoneRequest request)
         {
             bool allActionsDone = true; 
 
             try
             {
-                if (request.ActionIndex != 0)
+                if (request.TaskId != Guid.Empty && 
+                    request.ActionIndex != 0 /* ?? */)
                 {
                     // Обработка завершения операции
                     TasksDto? tasks = _context.Tasks.Find(request.TaskId);
@@ -211,11 +213,12 @@ namespace RMSPrivateServerAPI.Controllers
                         Where(q => q.Id == request.ActionIndex).ToList();
 
                     foreach (TaskActionsDto taskAction in taskActions)
-                    {
-                        //TODO allActionsDone  реализовать
-                        await _robotTaskService.UpdateTaskActionStatusToCompleted(taskAction.Id);
+                    {                        
+                        await _robotTaskService.UpdateTaskActionStatusToCompleted(taskAction.TaskId, taskAction.Id);
                     }
                 }
+
+                await _robotTaskService.AddRobotAction(robotId, request);
 
                 IEnumerable<robot_task>? robot_tasks = await _robotTaskService.GetAll(robotId);
 
@@ -385,36 +388,6 @@ namespace RMSPrivateServerAPI.Controllers
             }
             return NoContent();
         }
-
-
-        [HttpPost("AddRobotAction/{taskId}")]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<IActionResult> AddRobotAction(Guid taskId, [FromBody] RobotActionsDto robotActionDto)
-        {
-            if (robotActionDto == null)
-            {
-                return BadRequest("Invalid data.");
-            }
-
-            var robotAction = new RobotActionsDto
-            {
-                ActionId = Guid.NewGuid(),
-                TaskId   = taskId,
-                Title    = robotActionDto.Title,
-                ActionType = robotActionDto.ActionType,
-                Pose_X = robotActionDto.Pose_X,
-                Pose_Y = robotActionDto.Pose_Y,
-                Heading = robotActionDto.Heading,
-                Direction = robotActionDto.Direction,
-                Distance = robotActionDto.Distance,
-                Angle = robotActionDto.Angle,
-                Radius = robotActionDto.Radius
-            };
-
-            _context.RobotActions.Add(robotAction);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(AddRobotAction), new { id = robotAction.ActionId }, robotAction);
-        }
+        
     }
 }

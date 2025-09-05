@@ -22,13 +22,16 @@ public class RobotTaskProfile : Profile
         CreateMap<List<RobotActions>, RobotTaskDto>()
             .ForPath(dest => dest.TaskId, ac => ac.MapFrom(src => src.First().TaskId))
             .ForPath(dest => dest.RobotId, ac => ac.MapFrom(src => src.First().RobotId))
-            .ForPath(dest => dest.Title, ac => ac.MapFrom(src => src.First().Title))
+            .ForPath(dest => dest.Title, ac => ac.MapFrom(src => src.First().Result))
             .ForPath(dest => dest.RobotActionsDto, ac => ac.MapFrom(src => src));
 
         CreateMap<RobotActionsDto, RobotActions>()
             .ForMember(dest => dest.ActionId, opt => opt.MapFrom(src => src.ActionId))
             .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.TaskId))
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title))
+            .ForMember(dest => dest.RobotId, opt => opt.MapFrom(src => src.RobotId))
+            .ForMember(dest => dest.ActionIndex, opt => opt.MapFrom(src => src.ActionIndex))
+            .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src.Result))
+            .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason)) // << enough  ? 
             .ForMember(dest => dest.ActionType, opt => opt.MapFrom(src => src.ActionType))
             .ForMember(dest => dest.Pose_X, opt => opt.MapFrom(src => src.Pose_X))
             .ForMember(dest => dest.Pose_Y, opt => opt.MapFrom(src => src.Pose_Y))
