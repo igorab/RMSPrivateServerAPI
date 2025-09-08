@@ -4,8 +4,14 @@ using RMSPrivateServerAPI.Entities;
 
 namespace RMSPrivateServerAPI.Profiles;
 
+/// <summary>
+/// PPM Task
+/// </summary>
 public class PPMTaskProfile : Profile
 {
+    /// <summary>
+    /// PPM Task
+    /// </summary>
     public PPMTaskProfile() 
     {
         CreateMap<PPMTaskDto, ppm_task>()

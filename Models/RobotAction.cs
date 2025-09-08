@@ -11,6 +11,9 @@ namespace RMSPrivateServerAPI.Models;
 public abstract class RobotAction 
 {
     [JsonIgnore]
+    public int ActionIndex { get; set; }
+
+    [JsonIgnore]
     public ActionType ActionTypeId { get; set; }
 
     [JsonPropertyName("actionType")]

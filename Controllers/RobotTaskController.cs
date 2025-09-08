@@ -58,109 +58,25 @@ namespace RMSPrivateServerAPI.Controllers
             { 
                 return Ok(new RobotTaskDto() {RobotId = robotId  }); 
             }
-            
+
             (TasksDto? wmsTask, List<TaskActionsDto>? wmsTaskAction) = _robotTaskService.RobotTaskActions(robotId);
 
-            Queue<RobotAction> robotActions = await _robotTaskService.GetRobotActions(robotId);
-
-            if (robotActions == null || wmsTask == null || wmsTaskAction == null)
+            if (wmsTask == null || wmsTaskAction == null)
                 return NotFound();
 
-            var area = _context.Areas.FirstOrDefault(q => q.WmsID == wmsTask.AreaWmsId);
-            if (area == null)
+            Queue<RobotAction> robotActions = await _robotTaskService.RobotTaskActionsQueue(robotId, wmsTask.TaskId);
+            if (robotActions == null)
                 return NotFound();
-
-            foreach (var taskAction in wmsTaskAction)
-            {
-                if (taskAction.ActionType == RMSSetup.WmsLoadingId) 
-                {
-                    var pt_from = _context.Points.FirstOrDefault(q => q.IdInWMS == taskAction.Location);
-
-                    Pose pose_from = new Pose() { X = pt_from?.X ?? 0, Y = pt_from?.Y ?? 0, Heading = pt_from?.RotationAngle ?? 0 };
-
-                    MoveToAction moveToAction_from = new MoveToAction() { Pose = pose_from };
-                    robotActions.Enqueue(moveToAction_from);
-
-                    robotActions.Enqueue(new CommonAction()
-                    {
-                        ActionTypeId = ActionType.load,
-                        ActionName = nameof(ActionType.load)
-                    });
-
-                }
-                else if (taskAction.ActionType == RMSSetup.WmsUnloadingId) 
-                {
-                    var pt_to = _context.Points.FirstOrDefault(q => q.IdInWMS == taskAction.Location);
-
-                    Pose pose_to = new Pose() { X = pt_to?.X ?? 0, Y = pt_to?.Y ?? 0, Heading = pt_to?.RotationAngle ?? 0 };
-
-                    MoveToAction moveToAction_to = new MoveToAction() { Pose = pose_to };
-                    robotActions.Enqueue(moveToAction_to);
-
-                    robotActions.Enqueue(new CommonAction()
-                    {
-                        ActionTypeId = ActionType.unload,
-                        ActionName = nameof(ActionType.unload)
-                    });
-                }
-            }
-
-            /*
-            List<PathDto> paths = await _pointService.GetPathElementsWithTypesAndPathsAsync(area.Id);
-
-            foreach (PathDto path in paths)
-            {
-                var pt_from = _context.Points.FirstOrDefault(q => q.Id == path.StartId);
-
-                Pose pose_from = new Pose() { X = pt_from?.X ?? 0, Y = pt_from?.Y ?? 0, Heading = pt_from?.RotationAngle ?? 0 };
-
-                MoveToAction moveToAction_from = new MoveToAction() { Pose = pose_from };
-                robotActions.Enqueue(moveToAction_from);
-
-                robotActions.Enqueue(new CommonAction()
-                {
-                    ActionTypeId = ActionType.load,
-                    ActionName = nameof(ActionType.load)
-                });
-
-                var pt_to = _context.Points.FirstOrDefault(q => q.Id == path.FinishId);
-
-                Pose pose_to = new Pose() { X = pt_to?.X ?? 0, Y = pt_to?.Y ?? 0, Heading = pt_to?.RotationAngle ?? 0 };
-
-                MoveToAction moveToAction_to = new MoveToAction() { Pose = pose_to };
-                robotActions.Enqueue(moveToAction_to);
-
-                robotActions.Enqueue(new CommonAction()
-                {
-                    ActionTypeId = ActionType.unload,
-                    ActionName = nameof(ActionType.unload)
-                });
-            }
-
-            List<PointDto> points = await _pointService.GetPointsWithTypesAsync();
-
-            MoveArcAction moveArcAction = new MoveArcAction();
-            robotActions.Enqueue(moveArcAction);
-
-            MoveLinearAction moveLinearAction = new MoveLinearAction();
-            robotActions.Enqueue(moveArcAction);
-
-            TurnAction turnAction = new TurnAction();
-            robotActions.Enqueue(turnAction);
-            */
-
-            StopAction stopAction = new StopAction();
-            robotActions.Enqueue(stopAction);
 
             RobotTaskDto robotTaskDto = new RobotTaskDto()
             {
                 TaskId = wmsTask.TaskId,
                 RobotId = robotId,
                 Title = $"Area: {wmsTask.AreaWmsId}, Store: {wmsTask.StoreWmsId}",
-                RobotActions = new Queue<RobotAction>()
+                QueueRobotActions = new Queue<RobotAction>()
             };
 
-            robotTaskDto.RobotActions = robotActions;
+            robotTaskDto.QueueRobotActions = robotActions;
             
             return Ok(robotTaskDto);
         }
@@ -175,7 +91,7 @@ namespace RMSPrivateServerAPI.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<RobotTaskDto>> GetRobotTaskCurrent(Guid robotId)
         {
-            List<RobotActions?> robotTask = await _robotTaskService.GetCurrent(robotId);
+            List<RobotActionsDone?> robotTask = await _robotTaskService.GetCurrent(robotId);
 
             if (robotTask == null)
             {
@@ -199,45 +115,46 @@ namespace RMSPrivateServerAPI.Controllers
         public async Task<IActionResult> ActionDone(Guid robotId, 
                                                     [FromBody] ActionDoneRequest request)
         {
-            bool allActionsDone = true; 
+            bool allActionsDone = false; 
 
             try
             {
+                robot_info? rbt = _context.Robots.Find(robotId);
+                if (rbt == null) return NotFound(new { command = nameof(RobotCommand.abort) });
+
+                TasksDto? tasks = null;
+
                 if (request.TaskId != Guid.Empty && 
-                    request.ActionIndex != 0 /* ?? */)
-                {
-                    // Обработка завершения операции
-                    TasksDto? tasks = _context.Tasks.Find(request.TaskId);
-
-                    List<TaskActionsDto>? taskActions = _context.TaskActions.
-                        Where(q => q.Id == request.ActionIndex).ToList();
-
-                    foreach (TaskActionsDto taskAction in taskActions)
-                    {                        
-                        await _robotTaskService.UpdateTaskActionStatusToCompleted(taskAction.TaskId, taskAction.Id);
-                    }
+                    request.ActionIndex >= 0 )
+                {                   
+                    tasks = _context.Tasks.Find(request.TaskId);                                        
                 }
+
+                if (tasks == null) return NotFound(new { command = nameof(RobotCommand.abort) });
 
                 await _robotTaskService.AddRobotAction(robotId, request);
 
                 IEnumerable<robot_task>? robot_tasks = await _robotTaskService.GetAll(robotId);
 
+                allActionsDone = await _robotTaskService.AllActionsDone(robotId, request.TaskId);
+
                 if (allActionsDone)
                 {
-                    foreach (robot_task rtask in robot_tasks)
+                    foreach (robot_task rtask in robot_tasks.Where(rt => rt.TaskId == request.TaskId) )
                     {
                         await _robotTaskService.TaskStatusDone(rtask.TaskId);
                     }
+
+                    List<TaskActionsDto>? taskActions = _context.TaskActions.
+                        Where(q => q.TaskId == request.TaskId).ToList();
+
+                    foreach (TaskActionsDto taskAction in taskActions)
+                    {
+                        await _robotTaskService.UpdateTaskActionStatusToCompleted(taskAction.TaskId, taskAction.Id);
+                    }
+
                 }
-
-                //if (task.actions[request.ActionIndex].ActionType == 0)
-                //{
-                //    // Логика обработки ошибки
-                //    return Ok(new { command = "abort" });
-                //}
-
-                //return Ok(new { command = "next", action = task.actions[request.ActionIndex + 1] });
-                //
+                
                 return Ok( new { command = nameof(RobotCommand.next) });
             }
             catch (Exception ex)

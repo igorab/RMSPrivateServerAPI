@@ -21,9 +21,8 @@ public class WmsDbContext : DbContext
     public DbSet<TasksDto> Tasks { get; set; }
     public DbSet<TaskActionsDto> TaskActions { get; set; }
     // common task from WMS <<
-   
-    public DbSet<RobotActions> RobotTaskActions { get; set; }
-    public DbSet<RobotActionsDto> RobotActions { get; set; }
+       
+    public DbSet<RobotActionsDone> RobotActions { get; set; }
 
     // wms >>
     // DbSet для таблицы Store
@@ -68,13 +67,11 @@ public class WmsDbContext : DbContext
 
         modelBuilder.Entity<robot_task>().ToTable("RobotTask");
 
-        modelBuilder.Entity<RobotActions>().ToTable("RobotTaskActions");
+        modelBuilder.Entity<RobotActionsDone>().ToTable("RobotActions");
 
         modelBuilder.Entity<FaultInfoDto>().ToTable("FaultInfo");
 
-        modelBuilder.Entity<TasksDto>().ToTable("Tasks");
-
-        modelBuilder.Entity<RobotActionsDto>().ToTable("RobotActions");
+        modelBuilder.Entity<TasksDto>().ToTable("Tasks");       
     }
     
 }

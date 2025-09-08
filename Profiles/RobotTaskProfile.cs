@@ -19,27 +19,19 @@ public class RobotTaskProfile : Profile
             .ForMember(tsk => tsk.Title, task => task.MapFrom(robotDto => robotDto.Title))            
             .ReverseMap();
 
-        CreateMap<List<RobotActions>, RobotTaskDto>()
+        CreateMap<List<RobotActionsDone>, RobotTaskDto>()
             .ForPath(dest => dest.TaskId, ac => ac.MapFrom(src => src.First().TaskId))
             .ForPath(dest => dest.RobotId, ac => ac.MapFrom(src => src.First().RobotId))
             .ForPath(dest => dest.Title, ac => ac.MapFrom(src => src.First().Result))
-            .ForPath(dest => dest.RobotActionsDto, ac => ac.MapFrom(src => src));
+            .ForPath(dest => dest.ListRobotActionsDto, ac => ac.MapFrom(src => src));
 
-        CreateMap<RobotActionsDto, RobotActions>()
+        CreateMap<RobotActionsDoneDto, RobotActionsDone>()
             .ForMember(dest => dest.ActionId, opt => opt.MapFrom(src => src.ActionId))
             .ForMember(dest => dest.TaskId, opt => opt.MapFrom(src => src.TaskId))
             .ForMember(dest => dest.RobotId, opt => opt.MapFrom(src => src.RobotId))
             .ForMember(dest => dest.ActionIndex, opt => opt.MapFrom(src => src.ActionIndex))
             .ForMember(dest => dest.Result, opt => opt.MapFrom(src => src.Result))
-            .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason)) // << enough  ? 
-            .ForMember(dest => dest.ActionType, opt => opt.MapFrom(src => src.ActionType))
-            .ForMember(dest => dest.Pose_X, opt => opt.MapFrom(src => src.Pose_X))
-            .ForMember(dest => dest.Pose_Y, opt => opt.MapFrom(src => src.Pose_Y))
-            .ForMember(dest => dest.Heading, opt => opt.MapFrom(src => src.Heading))
-            .ForMember(dest => dest.Direction, opt => opt.MapFrom(src => src.Direction))
-            .ForMember(dest => dest.Distance, opt => opt.MapFrom(src => src.Distance))
-            .ForMember(dest => dest.Angle, opt => opt.MapFrom(src => src.Angle))
-            .ForMember(dest => dest.Radius, opt => opt.MapFrom(src => src.Radius))
+            .ForMember(dest => dest.Reason, opt => opt.MapFrom(src => src.Reason))       
             .ReverseMap();            
     }
 }

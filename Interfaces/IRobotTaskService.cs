@@ -11,9 +11,11 @@ public interface IRobotTaskService
 {
     Task<robot_task> GetById(Guid taskId);
 
-    Task <List<RobotActions?>> GetCurrent(Guid robotId);
+    Task <List<RobotActionsDone?>> GetCurrent(Guid robotId);
 
-    Task<Queue<RobotAction>> GetRobotActions(Guid robotId);
+    Task<Queue<RobotAction>> RobotTaskActionsQueue(Guid robotId, Guid taskId);
+
+    Task<Queue<RobotAction>> InitRobotActions(Guid robotId);
 
     (TasksDto? curTask, List<TaskActionsDto>? taskActions) RobotTaskActions(Guid robotId);
 
@@ -37,5 +39,13 @@ public interface IRobotTaskService
     /// </summary>    
     Task<bool> TaskStatusDone(Guid RobotTaskId);
 
-    Task<RobotActionsDto>  AddRobotAction(Guid robotId, ActionDoneRequest request);
+    Task<RobotActionsDone>  AddRobotAction(Guid robotId, ActionDoneRequest request);
+
+    /// <summary>
+    /// check if all robot actions by task is done
+    /// </summary>
+    /// <param name="robotId"></param>
+    /// <param name="taskId"></param>
+    /// <returns></returns>
+    Task<bool> AllActionsDone(Guid robotId, Guid taskId);
 }

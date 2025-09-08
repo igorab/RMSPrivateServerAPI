@@ -12,7 +12,7 @@ public interface IRobotTaskRepository
 
     Task<robot_task?> GetByTaskId(Guid taskId);
 
-    Task <List<RobotActions?>> GetCurrent(Guid robotId);
+    Task <List<RobotActionsDone?>> GetCurrent(Guid robotId);
 
     Task<Guid> UpsertAsync(robot_task robot);
 

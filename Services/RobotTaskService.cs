@@ -17,7 +17,7 @@ namespace RMSPrivateServerAPI.Services
         private readonly IRobotTaskRepository _robotTaskRepository;
 
         private readonly WmsDbContext _context;
-        
+
         public RobotTaskService(IRobotTaskRepository robotTaskRepository, WmsDbContext context)
         {
             _robotTaskRepository = robotTaskRepository;
@@ -25,12 +25,70 @@ namespace RMSPrivateServerAPI.Services
         }
 
         //Получение текущей задачи для робота
-        public async Task<Queue<RobotAction>> GetRobotActions(Guid robotId)
+        public async Task<Queue<RobotAction>> InitRobotActions(Guid robotId)
         {
             if (Guid.Empty == robotId) throw new Exception("Invalid robot Id");
-            
-            return await Task.Run(() => RobotActionsQueue(robotId));
+
+            return await Task.Run(() => RobotActionsInitQueue(robotId));
         }
+
+        public async Task<Queue<RobotAction>> RobotTaskActionsQueue(Guid robotId, Guid taskId)
+        {
+            Queue<RobotAction> robotActions = await InitRobotActions(robotId);
+
+            TasksDto? wmsTask = _context.Tasks.Find(taskId);
+
+            List<TaskActionsDto>? wmsTaskAction = _context.TaskActions.Where(t => t.TaskId == taskId).ToList() ;
+
+            if (robotActions == null || wmsTask == null  || wmsTaskAction == null)  return null;
+
+            var area = _context.Areas.FirstOrDefault(q => q.WmsID == wmsTask.AreaWmsId);
+            if (area == null)
+                return null;
+
+            foreach (var taskAction in wmsTaskAction)
+            {
+                if (taskAction.ActionType == RMSSetup.WmsLoadingId)
+                {
+                    var pt_from = _context.Points.FirstOrDefault(q => q.IdInWMS == taskAction.Location);
+
+                    Pose pose_from = new Pose() { X = pt_from?.X ?? 0, Y = pt_from?.Y ?? 0, Heading = pt_from?.RotationAngle ?? 0 };
+
+                    MoveToAction moveToAction_from = new MoveToAction() { Pose = pose_from, ActionIndex = robotActions.Count };
+                    robotActions.Enqueue(moveToAction_from);
+
+                    robotActions.Enqueue(new CommonAction()
+                    {
+                        ActionTypeId = ActionType.load,
+                        ActionName = nameof(ActionType.load),
+                        ActionIndex = robotActions.Count
+                    });
+
+                }
+                else if (taskAction.ActionType == RMSSetup.WmsUnloadingId)
+                {
+                    var pt_to = _context.Points.FirstOrDefault(q => q.IdInWMS == taskAction.Location);
+
+                    Pose pose_to = new Pose() { X = pt_to?.X ?? 0, Y = pt_to?.Y ?? 0, Heading = pt_to?.RotationAngle ?? 0 };
+
+                    MoveToAction moveToAction_to = new MoveToAction() { Pose = pose_to, ActionIndex = robotActions.Count };
+                    robotActions.Enqueue(moveToAction_to);
+
+                    robotActions.Enqueue(new CommonAction()
+                    {
+                        ActionTypeId = ActionType.unload,
+                        ActionName = nameof(ActionType.unload),
+                        ActionIndex = robotActions.Count
+                    });
+                }
+            }
+
+            StopAction stopAction = new StopAction() { ActionIndex = robotActions.Count };
+            robotActions.Enqueue(stopAction);
+            
+            return robotActions;           
+        }
+
 
         /// <summary>
         ///  Task and TaskActions from wms
@@ -76,19 +134,16 @@ namespace RMSPrivateServerAPI.Services
         /// очередь действий по заданию
         /// </summary>
         /// <returns></returns>
-        private Queue<RobotAction> RobotActionsQueue(Guid robotId)
+        private Queue<RobotAction> RobotActionsInitQueue(Guid robotId)
         {
             Queue<RobotAction> robotActions = new Queue<RobotAction>();
-
-            var (curTask, curTaskAction) = RobotTaskActions(robotId);
-
-            robotActions.Enqueue(new CommonAction() { 
+            
+            robotActions.Enqueue(new CommonAction() {
+                ActionIndex  = 0,
                 ActionTypeId = ActionType.wait, 
                 ActionName = nameof(ActionType.wait)                 
             });
-
-            //TODO Логика привязки очереди к Task 
-            
+                        
             return robotActions;
         }
 
@@ -165,7 +220,7 @@ namespace RMSPrivateServerAPI.Services
             return await _robotTaskRepository.GetByTaskId(taskId);
         }
 
-        public async Task<List<RobotActions?>> GetCurrent(Guid robotId)
+        public async Task<List<RobotActionsDone?>> GetCurrent(Guid robotId)
         {
             if (Guid.Empty == robotId)
             {
@@ -246,16 +301,16 @@ namespace RMSPrivateServerAPI.Services
             await Insert(rt);            
         }
 
-        public async Task<RobotActionsDto> AddRobotAction(Guid robotId, ActionDoneRequest request)
-        {
-            
-            var robotAction = new RobotActionsDto
+        public async Task<RobotActionsDone> AddRobotAction(Guid robotId, ActionDoneRequest request)
+        {            
+            var robotAction = new RobotActionsDone
             {
                 ActionId = Guid.NewGuid(),
                 RobotId = robotId,
                 TaskId = request.TaskId,
                 Result = request.Result,
                 Reason = request.Reason,
+                ActionIndex = request.ActionIndex,
                 ActionType = 0,
                 Pose_X = 0,
                 Pose_Y = 0,
@@ -272,5 +327,41 @@ namespace RMSPrivateServerAPI.Services
             return robotAction;
         }
 
+        public async Task<List<int>> GetActionDoneIndexesAsync(Guid taskId, Guid robotId)
+        {
+            return await _context.RobotActions
+                .Where(action => action.TaskId == taskId && action.RobotId == robotId)
+                .OrderBy(action => action.ActionIndex)
+                .Select(action => action.ActionIndex)
+                .ToListAsync();
+        }
+
+
+        /// <summary>
+        /// все действия робота по данному таску выполнены  
+        /// </summary>
+        /// <param name="robotId"></param>
+        /// <param name="taskId"></param>
+        /// <returns></returns>
+        public async Task<bool> AllActionsDone(Guid robotId, Guid taskId)
+        {
+            bool res = false;
+
+            // выполненные действие
+            List<int> listActionDoneIdx = await GetActionDoneIndexesAsync(taskId, robotId);
+
+            // действия, которые необходимо выполнить
+            Queue<RobotAction> robotActions = await RobotTaskActionsQueue(robotId, taskId);
+
+            foreach (RobotAction action in robotActions)
+            {
+                res = listActionDoneIdx.Contains(action.ActionIndex);
+                if (!res) break;                
+            }            
+
+            return res;
+        }
+
+       
     }
 }

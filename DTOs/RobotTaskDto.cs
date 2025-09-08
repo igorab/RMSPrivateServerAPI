@@ -28,13 +28,13 @@ namespace RMSPrivateServerAPI.DTOs
         /// Список операций, которые должны быть выполнены в рамках этой задачи.
         /// </summary>
         [JsonIgnore]
-        public List<RobotActionsDto>? RobotActionsDto { get; set; }
+        public List<RobotActionsDoneDto>? ListRobotActionsDto { get; set; }
 
         /// <summary>
         /// Список операций, которые должны быть выполнены в рамках этой задачи.
         /// </summary>
         [JsonPropertyName("actions")]
-        public Queue<RobotAction>? RobotActions { get; set; }
+        public Queue<RobotAction>? QueueRobotActions { get; set; }
 
     }
 }
