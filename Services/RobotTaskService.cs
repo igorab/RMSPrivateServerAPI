@@ -138,11 +138,11 @@ namespace RMSPrivateServerAPI.Services
         {
             Queue<RobotAction> robotActions = new Queue<RobotAction>();
             
-            robotActions.Enqueue(new CommonAction() {
-                ActionIndex  = 0,
-                ActionTypeId = ActionType.wait, 
-                ActionName = nameof(ActionType.wait)                 
-            });
+            //robotActions.Enqueue(new CommonAction() {
+            //    ActionIndex  = 0,
+            //    ActionTypeId = ActionType.wait, 
+            //    ActionName = nameof(ActionType.wait)                 
+            //});
                         
             return robotActions;
         }
