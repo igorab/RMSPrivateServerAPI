@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Data;
 using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.Entities;
@@ -7,7 +6,6 @@ using RMSPrivateServerAPI.Enums;
 using RMSPrivateServerAPI.Interfaces;
 using RMSPrivateServerAPI.Models;
 using RMSPrivateServerAPI.Models.Lib;
-using RMSPrivateServerAPI.Repositories;
 #pragma warning disable CS1591, CS8603
 
 namespace RMSPrivateServerAPI.Services
@@ -174,6 +172,7 @@ namespace RMSPrivateServerAPI.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
@@ -182,7 +181,8 @@ namespace RMSPrivateServerAPI.Services
         /// <summary>
         /// обновить статус
         /// </summary>
-        /// <param name="actionId"></param>
+        /// <param name="taskId">task id guid</param>
+        /// <param name="actionId">действие, порядковый номер </param>
         /// <returns></returns>
         public async Task<bool> UpdateTaskActionStatusToCompleted(Guid taskId, int actionId)
         {
@@ -205,6 +205,7 @@ namespace RMSPrivateServerAPI.Services
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }

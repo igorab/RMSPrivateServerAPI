@@ -37,8 +37,5 @@ public class TaskActionsDto
     /// Порядок действия
     /// </summary>
     public int ActionOrder { get; set; } 
-    /// <summary>
-    /// Навигационное свойство для связи с задачей (если необходимо)
-    /// </summary>
-    //public virtual Task Task { get; set; } // Связь с классом Task
+   
 }

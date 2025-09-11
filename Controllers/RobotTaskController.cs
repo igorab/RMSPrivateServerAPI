@@ -166,21 +166,17 @@ namespace RMSPrivateServerAPI.Controllers
 
         /// <summary>
         /// Get all the robot tasks in the Database 
-        /// </summary>
-        /// <param name="returnDeletedRecords">If true, the method will return all the records, including the ones that have been deleted</param>
+        /// </summary>        
         /// <response code="200">Robot task returned</response>
         /// <response code="404">Specified task not found</response>
         /// <response code="500">An Internal Server Error prevented the request from being executed.</response>
+        /// <param name="robotId">Id робота</param>
+        /// <returns></returns>
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        /// <summary>
-        /// Получение списка задач робота
-        /// </summary>
-        /// <param name="robotId">Id робота</param>
-        /// <returns></returns>
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]             
         [HttpGet("{robotId}/tasks/all/")]
         public async Task<IEnumerable<robot_task>> GetAll(Guid robotId)
         {
@@ -208,39 +204,7 @@ namespace RMSPrivateServerAPI.Controllers
             return robotTaskDto;
         }
 
-                      
-        /// <summary>
-        /// Добавить задачу c действиями
-        /// </summary>
-        /// <param name="robotTaskAsDto"></param>
-        /// <returns></returns>
-        [HttpPost("AddTaskWithActions")]
-        [ApiExplorerSettings(IgnoreApi = true)]
-        public async Task<ActionResult<robot_task>> Insert([FromBody] RobotTaskDto robotTaskAsDto)
-        {
-            try
-            {
-                if (robotTaskAsDto == null)
-                {
-                    return BadRequest("No Robot Task was provided");
-                }
-
-                robot_task robotTaskToInsert = _mapper.Map<robot_task>(robotTaskAsDto);
-
-                var insertedRobotTask = await _robotTaskService.Insert(robotTaskToInsert);
-
-                var insertedRobotTaskDto = _mapper.Map<RobotTaskDto>(insertedRobotTask);
-
-                var location = $"https://localhost/RobotTask/{insertedRobotTaskDto.TaskId}";
-
-                return Created(location, insertedRobotTaskDto);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError);
-            }
-        }
-
+                              
         /// <summary>
         /// Добавить задачу
         /// </summary>

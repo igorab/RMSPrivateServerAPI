@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using RMSPrivateServerAPI.Entities;
 using Npgsql;
-
+#pragma warning disable CS1591
 namespace RMSPrivateServerAPI.Models.Lib
 {
     public static class RMSData
@@ -48,6 +48,7 @@ namespace RMSPrivateServerAPI.Models.Lib
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
                 ok = false;
             }
 

@@ -6,6 +6,9 @@ namespace RMSPrivateServerAPI.Models;
 /// </summary>
 public class MoveLinearAction : RobotAction
 {
+    /// <summary>
+    /// Прямолинейное движение
+    /// </summary>
     public MoveLinearAction()
     {
         ActionTypeId = ActionType.moveLinear;
