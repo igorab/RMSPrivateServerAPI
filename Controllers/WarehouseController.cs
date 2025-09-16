@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RMSPrivateServerAPI.Data;
+using RMSPrivateServerAPI.DTOs;
 using RMSPrivateServerAPI.StoreMapPOCO;
 using System;
 using System.Collections.Generic;
@@ -20,6 +21,53 @@ public class WarehouseController : ControllerBase
     {
         _context = context;
     }
+
+    [HttpPost("copy/{taskId}")]
+    public async Task<IActionResult> CopyTask(Guid taskId)
+    {
+        var existingTask = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == taskId);
+        if (existingTask == null)
+        {
+            return NotFound("Task not found.");
+        }
+
+        // Копирование задачи
+        var newTask = new TasksDto
+        {
+            TaskId = Guid.NewGuid(), // Генерация нового уникального идентификатора
+            //CreatedAt = DateTimeOffset.UtcNow,
+            Status = "Received", // Установка статуса
+            StoreWmsId = existingTask.StoreWmsId,
+            AreaWmsId = existingTask.AreaWmsId,
+            Priority = existingTask.Priority
+        };
+
+        _context.Tasks.Add(newTask);
+        await _context.SaveChangesAsync();
+
+        
+        // Копирование действий
+        foreach (var action in _context.TaskActions.Where(ta => ta.TaskId == existingTask.TaskId))
+        {
+            var newAction = new TaskActionsDto
+            {
+                TaskId = newTask.TaskId, // Связываем новое действие с новой задачей
+                //CreatedAt = DateTimeOffset.UtcNow,
+                Status = action.Status,
+                Location = action.Location,
+                ActionType = action.ActionType,
+                ActionOrder = action.ActionOrder
+            };
+
+            _context.TaskActions.Add(newAction);
+        }
+
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(nameof(CopyTask), new { taskId = newTask.TaskId }, newTask);
+    }
+
+
 
     // GET: api/warehouse/stores
     [HttpGet("stores")]
