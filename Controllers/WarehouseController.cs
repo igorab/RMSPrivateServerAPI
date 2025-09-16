@@ -12,7 +12,6 @@ namespace RMSPrivateServerAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[ApiExplorerSettings(IgnoreApi = true)]
 public class WarehouseController : ControllerBase
 {
     private readonly WmsDbContext _context;
@@ -22,7 +21,12 @@ public class WarehouseController : ControllerBase
         _context = context;
     }
 
-    [HttpPost("copy/{taskId}")]
+    /// <summary>
+    /// Копирование задачи
+    /// </summary>
+    /// <param name="taskId">Task Guid</param>
+    /// <returns></returns>
+    [HttpPost("CopyTask/{taskId}")]    
     public async Task<IActionResult> CopyTask(Guid taskId)
     {
         var existingTask = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == taskId);
@@ -35,7 +39,7 @@ public class WarehouseController : ControllerBase
         var newTask = new TasksDto
         {
             TaskId = Guid.NewGuid(), // Генерация нового уникального идентификатора
-            //CreatedAt = DateTimeOffset.UtcNow,
+            CreatedAt = DateTime.UtcNow,
             Status = "Received", // Установка статуса
             StoreWmsId = existingTask.StoreWmsId,
             AreaWmsId = existingTask.AreaWmsId,
@@ -52,7 +56,7 @@ public class WarehouseController : ControllerBase
             var newAction = new TaskActionsDto
             {
                 TaskId = newTask.TaskId, // Связываем новое действие с новой задачей
-                //CreatedAt = DateTimeOffset.UtcNow,
+                CreatedAt = DateTime.UtcNow,
                 Status = action.Status,
                 Location = action.Location,
                 ActionType = action.ActionType,
@@ -68,7 +72,7 @@ public class WarehouseController : ControllerBase
     }
 
 
-
+    [ApiExplorerSettings(IgnoreApi = true)]
     // GET: api/warehouse/stores
     [HttpGet("stores")]
     public async Task<ActionResult<IEnumerable<Store>>> GetStores()
@@ -76,6 +80,7 @@ public class WarehouseController : ControllerBase
         return await _context.Stores.ToListAsync();
     }
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     // GET: api/warehouse/areas
     [HttpGet("areas")]
     public async Task<ActionResult<IEnumerable<Area>>> GetAreas()
@@ -83,6 +88,7 @@ public class WarehouseController : ControllerBase
         return await _context.Areas.ToListAsync();
     }
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     // GET: api/warehouse/zones
     [HttpGet("zones")]
     public async Task<ActionResult<IEnumerable<Zone>>> GetZones()
@@ -90,6 +96,7 @@ public class WarehouseController : ControllerBase
         return await _context.Zones.ToListAsync();
     }
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     // GET: api/warehouse/points
     [HttpGet("points")]
     public async Task<ActionResult<IEnumerable<Point>>> GetPoints()
@@ -97,6 +104,7 @@ public class WarehouseController : ControllerBase
         return await _context.Points.ToListAsync();
     }
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     // GET: api/warehouse/paths
     [HttpGet("paths")]
     public async Task<ActionResult<IEnumerable<StoreMapPOCO.Path>>> GetPaths()
@@ -104,6 +112,7 @@ public class WarehouseController : ControllerBase
         return await _context.Paths.ToListAsync();
     }
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     // GET: api/warehouse/pathElements
     [HttpGet("pathElements")]
     public async Task<ActionResult<IEnumerable<PathElement>>> GetPathElements()
@@ -111,6 +120,7 @@ public class WarehouseController : ControllerBase
         return await _context.PathElements.ToListAsync();
     }
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     // GET: api/warehouse/zoneTypes
     [HttpGet("zoneTypes")]
     public async Task<ActionResult<IEnumerable<ZoneType>>> GetZoneTypes()
@@ -118,6 +128,7 @@ public class WarehouseController : ControllerBase
         return await _context.ZoneTypes.ToListAsync();
     }
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     // GET: api/warehouse/pointTypes
     [HttpGet("pointTypes")]
     public async Task<ActionResult<IEnumerable<PointType>>> GetPointTypes()
@@ -125,6 +136,7 @@ public class WarehouseController : ControllerBase
         return await _context.PointTypes.ToListAsync();
     }
 
+    [ApiExplorerSettings(IgnoreApi = true)]
     // GET: api/warehouse/pathElementTypes
     [HttpGet("pathElementTypes")]
     public async Task<ActionResult<IEnumerable<PathElementType>>> GetPathElementTypes()
