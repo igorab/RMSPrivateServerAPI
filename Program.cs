@@ -37,16 +37,12 @@ public partial class Program
         });
 
         services.AddAutoMapper(typeof(Program));
-        
-        string? connectionString = configuration.GetConnectionString("DefaultConnection");
-
-        // Добавление контекста базы данных
-        services.AddDbContext<WmsDbContext>(op => op.UseNpgsql(connectionString));
-
-        // Добавление контекста базы данных
-        services.AddDbContext<RmsDbContext>(options => options.UseNpgsql(connectionString));
 
         IConfigurationSection configSection = configuration.GetSection("ConnectionStrings");
+        string? connectionString = configSection.GetSection("DefaultConnection").Value; // configuration.GetConnectionString("DefaultConnection");
+        // Добавление контекста базы данных
+        services.AddDbContext<WmsDbContext>(op => op.UseNpgsql(connectionString));        
+        services.AddDbContext<RmsDbContext>(options => options.UseNpgsql(connectionString));        
         services.Configure<DbSettings>(configSection);
         services.AddTransient<DatabaseConnectionFactory>();
 
@@ -70,19 +66,19 @@ public partial class Program
     /// Запуск сервиса создания задач
     /// </summary>
     /// <param name="args"></param>
+    /// <param name="configuration"></param>
     /// <returns></returns>
-    public static IHostBuilder CreateHostBuilder(string[] args)
+    public static IHostBuilder CreateHostBuilder(string[] args, ConfigurationManager configuration)
     {
         return Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
-                    var config = hostContext.Configuration;
-
-                    string? connectionString = config.GetConnectionString("DefaultConnection");
+                    var config = configuration;//  hostContext.Configuration;
+                    IConfigurationSection configSection = config.GetSection("ConnectionStrings");
+                    string? connectionString = configSection.GetSection("DefaultConnection").Value;
 
                     services.AddDbContext<WmsDbContext>(op => op.UseNpgsql(connectionString));
-
-                    IConfigurationSection configSection = config.GetSection("ConnectionStrings");
+                    
                     services.Configure<DbSettings>(configSection);
                     services.AddSingleton<DatabaseConnectionFactory>();
 
@@ -125,7 +121,7 @@ public partial class Program
             return Results.Ok("OK");
         });
         
-        var hostTask = Task.Run(() => CreateHostBuilder(args).Build().Run());
+        var hostTask = Task.Run(() => CreateHostBuilder(args, builder.Configuration).Build().Run());
 
         app.Run();        
     }   
