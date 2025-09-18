@@ -40,9 +40,9 @@ namespace RMSPrivateServerAPI.Services
 
             if (robotActions == null || wmsTask == null  || wmsTaskAction == null)  return null;
 
-            var area = _context.Areas.FirstOrDefault(q => q.WmsID == wmsTask.AreaWmsId);
-            if (area == null)
-                return null;
+            //var area = _context.Areas.FirstOrDefault(q => q.WmsID == wmsTask.AreaWmsId);
+            //if (area == null)
+            //    return null;
 
             foreach (var taskAction in wmsTaskAction)
             {
@@ -156,17 +156,18 @@ namespace RMSPrivateServerAPI.Services
             {
                 // Находим Task
                 var tsk = await _context.Tasks.FirstOrDefaultAsync(t => t.TaskId == RTaskId);
-
                 // Проверяем, найдено ли действие
-                if (tsk == null) return false; // Действие не найдено
-
-                await _robotTaskRepository.DeleteAsync(RTaskId);
-
+                if (tsk == null) return false;                 
                 // Обновляем статус
                 tsk.Status = RMSSetup.StatusDone;
-
                 // Сохраняем изменения в базе данных
-                await _context.SaveChangesAsync();
+                var idone = await _context.SaveChangesAsync();
+
+                if (idone > 0)
+                {
+                    // удалить из списка текущих задач
+                    var idel = await _robotTaskRepository.DeleteAsync(RTaskId);
+                }
 
                 return true; // Успешное обновление
             }
@@ -199,7 +200,7 @@ namespace RMSPrivateServerAPI.Services
                 taskAction.Status = RMSSetup.StatusDone;
 
                 // Сохраняем изменения в базе данных
-                await _context.SaveChangesAsync();
+                var idone = await _context.SaveChangesAsync();
 
                 return true; // Успешное обновление
             }
@@ -303,27 +304,33 @@ namespace RMSPrivateServerAPI.Services
         }
 
         public async Task<RobotActionsDone> AddRobotAction(Guid robotId, ActionDoneRequest request)
-        {            
-            var robotAction = new RobotActionsDone
+        {
+            RobotActionsDone? robotAction = _context.RobotActions.Where(ra => ra.RobotId == robotId && 
+                                                                              ra.TaskId == request.TaskId && 
+                                                                              ra.ActionIndex == request.ActionIndex).FirstOrDefault();
+            if (robotAction == null)
             {
-                ActionId = Guid.NewGuid(),
-                RobotId = robotId,
-                TaskId = request.TaskId,
-                Result = request.Result,
-                Reason = request.Reason,
-                ActionIndex = request.ActionIndex,
-                ActionType = 0,
-                Pose_X = 0,
-                Pose_Y = 0,
-                Heading = 0,
-                Direction = 0,
-                Distance = 0,
-                Angle = 0,
-                Radius = 0
-            };
+                robotAction = new RobotActionsDone
+                {
+                    ActionId = Guid.NewGuid(),
+                    RobotId = robotId,
+                    TaskId = request.TaskId,
+                    Result = request.Result,
+                    Reason = request.Reason,
+                    ActionIndex = request.ActionIndex,
+                    ActionType = 0,
+                    Pose_X = 0,
+                    Pose_Y = 0,
+                    Heading = 0,
+                    Direction = 0,
+                    Distance = 0,
+                    Angle = 0,
+                    Radius = 0
+                };
 
-            _context.RobotActions.Add(robotAction);
-            await _context.SaveChangesAsync();
+                _context.RobotActions.Add(robotAction);
+                await _context.SaveChangesAsync();
+            }
 
             return robotAction;
         }

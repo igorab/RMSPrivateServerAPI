@@ -139,20 +139,17 @@ namespace RMSPrivateServerAPI.Controllers
                 allActionsDone = await _robotTaskService.AllActionsDone(robotId, request.TaskId);
 
                 if (allActionsDone)
-                {
-                    foreach (robot_task rtask in robot_tasks.Where(rt => rt.TaskId == request.TaskId) )
-                    {
-                        await _robotTaskService.TaskStatusDone(rtask.TaskId);
-                    }
-
+                {                    
                     List<TaskActionsDto>? taskActions = _context.TaskActions.
                         Where(q => q.TaskId == request.TaskId).ToList();
 
+                    //TODO need refactoring
                     foreach (TaskActionsDto taskAction in taskActions)
                     {
                         await _robotTaskService.UpdateTaskActionStatusToCompleted(taskAction.TaskId, taskAction.Id);
                     }
-
+                    
+                    await _robotTaskService.TaskStatusDone(request.TaskId);                    
                 }
                 
                 return Ok( new { command = nameof(RobotCommand.next) });
