@@ -1,4 +1,4 @@
-using AutoMapper;
+п»їusing AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -46,9 +46,9 @@ namespace RMSPrivateServerAPI.Controllers
         }
 
         /// <summary>
-        /// Получение текущей задачи для робота
+        /// РџРѕР»СѓС‡РµРЅРёРµ С‚РµРєСѓС‰РµР№ Р·Р°РґР°С‡Рё РґР»СЏ СЂРѕР±РѕС‚Р°
         /// </summary>
-        /// <param name="robotId">Id робота</param>
+        /// <param name="robotId">Id СЂРѕР±РѕС‚Р°</param>
         /// <returns></returns>
         [HttpGet("{robotId}/current/")]
         public async Task<ActionResult<RobotTaskDto?>> GetCurrentTask(Guid robotId)
@@ -83,9 +83,9 @@ namespace RMSPrivateServerAPI.Controllers
 
 
         /// <summary>
-        /// Получение текущей задачи для робота
+        /// РџРѕР»СѓС‡РµРЅРёРµ С‚РµРєСѓС‰РµР№ Р·Р°РґР°С‡Рё РґР»СЏ СЂРѕР±РѕС‚Р°
         /// </summary>
-        /// <param name="robotId">Id робота</param>
+        /// <param name="robotId">Id СЂРѕР±РѕС‚Р°</param>
         /// <returns></returns>
         [HttpGet("{robotId}/cur/")]
         [ApiExplorerSettings(IgnoreApi = true)]
@@ -104,13 +104,13 @@ namespace RMSPrivateServerAPI.Controllers
         }
 
         /// <summary>
-        /// Робот кидает событие в момент завершения текущей операции (подзадачи), 
-        /// сервер должен принять это к сведению и ответить, двигаться ли роботу дальше или подождать, 
-	    /// а может, вообще, планы кардинально изменились и нужно заново запрашивать весь список
+        /// Р РѕР±РѕС‚ РєРёРґР°РµС‚ СЃРѕР±С‹С‚РёРµ РІ РјРѕРјРµРЅС‚ Р·Р°РІРµСЂС€РµРЅРёСЏ С‚РµРєСѓС‰РµР№ РѕРїРµСЂР°С†РёРё (РїРѕРґР·Р°РґР°С‡Рё), 
+        /// СЃРµСЂРІРµСЂ РґРѕР»Р¶РµРЅ РїСЂРёРЅСЏС‚СЊ СЌС‚Рѕ Рє СЃРІРµРґРµРЅРёСЋ Рё РѕС‚РІРµС‚РёС‚СЊ, РґРІРёРіР°С‚СЊСЃСЏ Р»Рё СЂРѕР±РѕС‚Сѓ РґР°Р»СЊС€Рµ РёР»Рё РїРѕРґРѕР¶РґР°С‚СЊ, 
+	    /// Р° РјРѕР¶РµС‚, РІРѕРѕР±С‰Рµ, РїР»Р°РЅС‹ РєР°СЂРґРёРЅР°Р»СЊРЅРѕ РёР·РјРµРЅРёР»РёСЃСЊ Рё РЅСѓР¶РЅРѕ Р·Р°РЅРѕРІРѕ Р·Р°РїСЂР°С€РёРІР°С‚СЊ РІРµСЃСЊ СЃРїРёСЃРѕРє
         /// </summary>
-        /// <param name="robotId">Id робота</param>
-        /// <param name="request">Результат выполнения текущей операции</param>
-        /// <returns>Робот завершил текущую операцию</returns>
+        /// <param name="robotId">Id СЂРѕР±РѕС‚Р°</param>
+        /// <param name="request">Р РµР·СѓР»СЊС‚Р°С‚ РІС‹РїРѕР»РЅРµРЅРёСЏ С‚РµРєСѓС‰РµР№ РѕРїРµСЂР°С†РёРё</param>
+        /// <returns>Р РѕР±РѕС‚ Р·Р°РІРµСЂС€РёР» С‚РµРєСѓС‰СѓСЋ РѕРїРµСЂР°С†РёСЋ</returns>
         [HttpPost("{robotId}/action-done")]
         public async Task<IActionResult> ActionDone(Guid robotId, 
                                                     [FromBody] ActionDoneRequest request)
@@ -170,7 +170,7 @@ namespace RMSPrivateServerAPI.Controllers
         /// <response code="200">Robot task returned</response>
         /// <response code="404">Specified task not found</response>
         /// <response code="500">An Internal Server Error prevented the request from being executed.</response>
-        /// <param name="robotId">Id робота</param>
+        /// <param name="robotId">Id СЂРѕР±РѕС‚Р°</param>
         /// <returns></returns>
         [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
@@ -185,9 +185,9 @@ namespace RMSPrivateServerAPI.Controllers
 
 
         /// <summary>
-        /// Получить задачу по ее уникальному коду
+        /// РџРѕР»СѓС‡РёС‚СЊ Р·Р°РґР°С‡Сѓ РїРѕ РµРµ СѓРЅРёРєР°Р»СЊРЅРѕРјСѓ РєРѕРґСѓ
         /// </summary>
-        /// <param name="taskId">Id задачи</param>
+        /// <param name="taskId">Id Р·Р°РґР°С‡Рё</param>
         /// <returns></returns>
         [HttpGet("{taskId}/")]
         public async Task<ActionResult<RobotTaskDto>> GetById(Guid taskId)
@@ -206,11 +206,11 @@ namespace RMSPrivateServerAPI.Controllers
 
                               
         /// <summary>
-        /// Добавить задачу
+        /// Р”РѕР±Р°РІРёС‚СЊ Р·Р°РґР°С‡Сѓ
         /// </summary>
-        /// <param name="robotId">id робота</param>
+        /// <param name="robotId">id СЂРѕР±РѕС‚Р°</param>
         /// <param name="taskId">id task</param>
-        /// <param name="title">описание</param>
+        /// <param name="title">РѕРїРёСЃР°РЅРёРµ</param>
         /// <returns></returns>
         [HttpPut("Add")]
         public async Task<IActionResult> Add(Guid robotId, Guid taskId, string? title)
@@ -232,7 +232,7 @@ namespace RMSPrivateServerAPI.Controllers
 
 
         /// <summary>
-        /// Редактировать задачу
+        /// Р РµРґР°РєС‚РёСЂРѕРІР°С‚СЊ Р·Р°РґР°С‡Сѓ
         /// </summary>
         /// <param name="robotTask"></param>
         /// <returns></returns>
@@ -252,7 +252,7 @@ namespace RMSPrivateServerAPI.Controllers
         }
 
         /// <summary>
-        /// Удалить задачу
+        /// РЈРґР°Р»РёС‚СЊ Р·Р°РґР°С‡Сѓ
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
